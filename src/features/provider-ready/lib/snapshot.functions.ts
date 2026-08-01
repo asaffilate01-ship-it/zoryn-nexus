@@ -199,13 +199,7 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
         tier: loyaltyPersonal?.tier ?? "silver",
         valueCents: Number(loyaltyPersonal?.points ?? 0),
       },
-      providerHealth: (healthRes.data ?? []).map((p) => ({
-        provider: asProvider(p.provider),
-        status: p.status as ProviderHealth["status"],
-        latencyMs: p.latency_ms,
-        ...(p.last_event_at ? { lastEventAt: p.last_event_at } : {}),
-        message: p.message,
-      })),
+      providerHealth: derivedHealth,
       webhookEvents: (eventsRes.data ?? []).map((e) => ({
         id: e.id,
         provider: asProvider(e.provider),
