@@ -172,7 +172,7 @@ function CorporateHome() {
                 can be added or replaced without changing the customer experience.
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-background/50 p-6">
+            <div id="offer" className="scroll-mt-24 rounded-2xl border border-border bg-background/50 p-6">
               <b className="font-display text-lg">What Zoryn offers</b>
               <ul className="mt-4 space-y-4">
                 {products.map(({ icon: Icon, name, text }) => (
