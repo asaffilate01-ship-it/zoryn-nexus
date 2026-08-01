@@ -15,11 +15,16 @@ export function Panel({
   className?: string;
 }) {
   return (
-    <section className={cn("rounded-2xl border border-border bg-card/70 p-5 sm:p-6", className)}>
+    <section
+      className={cn(
+        "surface-card rounded-3xl border border-border bg-card/60 p-5 backdrop-blur-sm sm:p-6",
+        className,
+      )}
+    >
       {(title || action) && (
-        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-          <div>
-            {title && <h3 className="font-display text-lg">{title}</h3>}
+        <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3 sm:flex sm:flex-wrap sm:justify-between">
+          <div className="min-w-0">
+            {title && <h3 className="font-display text-lg tracking-tight">{title}</h3>}
             {subtitle && <p className="mt-1 text-sm text-muted-foreground">{subtitle}</p>}
           </div>
           {action}
@@ -30,12 +35,39 @@ export function Panel({
   );
 }
 
-export function StatCard({ label, value, hint }: { label: string; value: string; hint?: string }) {
+export function StatCard({
+  label,
+  value,
+  hint,
+  emphasis = false,
+  className,
+}: {
+  label: string;
+  value: string;
+  hint?: string;
+  emphasis?: boolean;
+  className?: string;
+}) {
   return (
-    <div className="rounded-2xl border border-border bg-card/70 p-5">
-      <span className="text-xs text-muted-foreground">{label}</span>
-      <strong className="mt-2 block font-display text-2xl">{value}</strong>
-      {hint && <small className="text-xs text-muted-foreground">{hint}</small>}
+    <div
+      className={cn(
+        "surface-card flex flex-col justify-between rounded-3xl border border-border bg-card/60 p-5 backdrop-blur-sm",
+        emphasis && "surface-accent border-primary/25",
+        className,
+      )}
+    >
+      <span className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+        {label}
+      </span>
+      <strong
+        className={cn(
+          "tabular mt-3 block font-display text-2xl leading-tight",
+          emphasis && "text-3xl text-primary sm:text-4xl",
+        )}
+      >
+        {value}
+      </strong>
+      {hint && <small className="mt-1 block text-xs text-muted-foreground">{hint}</small>}
     </div>
   );
 }
@@ -48,13 +80,20 @@ export function Badge({
   tone?: "neutral" | "good" | "warn" | "bad";
 }) {
   const tones = {
-    neutral: "bg-secondary text-muted-foreground",
-    good: "bg-primary/12 text-primary",
-    warn: "bg-amber-500/15 text-amber-400",
-    bad: "bg-destructive/15 text-destructive",
+    neutral: "bg-secondary text-muted-foreground ring-1 ring-inset ring-white/10",
+    good: "bg-primary/12 text-primary ring-1 ring-inset ring-primary/25",
+    warn: "bg-amber-500/15 text-amber-400 ring-1 ring-inset ring-amber-400/25",
+    bad: "bg-destructive/15 text-destructive ring-1 ring-inset ring-destructive/25",
   } as const;
   return (
-    <span className={cn("rounded-full px-2.5 py-1 text-xs font-medium", tones[tone])}>{children}</span>
+    <span
+      className={cn(
+        "inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-[11px] font-semibold tracking-wide",
+        tones[tone],
+      )}
+    >
+      {children}
+    </span>
   );
 }
 
@@ -65,15 +104,16 @@ export function Button({
   ...rest
 }: React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "primary" | "ghost" | "danger" }) {
   const variants = {
-    primary: "bg-primary text-primary-foreground hover:opacity-90",
-    ghost: "border border-border hover:bg-secondary",
-    danger: "border border-destructive/40 text-destructive hover:bg-destructive/10",
+    primary:
+      "bg-primary text-primary-foreground shadow-[0_10px_28px_-14px_oklch(0.82_0.17_165/0.9)] hover:brightness-110 active:translate-y-px",
+    ghost: "border border-border bg-card/40 hover:border-white/20 hover:bg-secondary active:translate-y-px",
+    danger: "border border-destructive/40 text-destructive hover:bg-destructive/10 active:translate-y-px",
   } as const;
   return (
     <button
       {...rest}
       className={cn(
-        "rounded-lg px-4 py-2.5 text-sm font-semibold transition-opacity disabled:opacity-50",
+        "rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 disabled:pointer-events-none disabled:opacity-50",
         variants[variant],
         className,
       )}
@@ -93,12 +133,15 @@ export function Field({ label, children }: { label: string; children: ReactNode 
 }
 
 export const inputClass =
-  "w-full rounded-lg border border-border bg-background/60 px-3 py-2.5 text-sm outline-none focus:border-primary/60";
+  "w-full rounded-xl border border-border bg-background/60 px-3 py-2.5 text-sm transition-colors outline-none placeholder:text-muted-foreground/70 hover:border-white/20 focus:border-primary/60 focus:ring-2 focus:ring-primary/20";
 
 export function Progress({ value }: { value: number }) {
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full bg-secondary">
-      <div className="h-full rounded-full bg-primary" style={{ width: `${Math.min(100, Math.max(0, value))}%` }} />
+    <div className="h-2 w-full overflow-hidden rounded-full bg-secondary ring-1 ring-inset ring-white/5">
+      <div
+        className="h-full rounded-full bg-linear-to-r from-primary/70 to-primary transition-[width] duration-500 ease-out"
+        style={{ width: `${Math.min(100, Math.max(0, value))}%` }}
+      />
     </div>
   );
 }
