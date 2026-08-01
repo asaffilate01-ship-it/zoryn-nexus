@@ -1,9 +1,16 @@
 import { createHmac } from "crypto";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { adyenSigningString, verifyWebhook } from "@/features/provider-ready/lib/webhook-verify.server";
 
 const SECRET = "test-secret";
 
+const clearEnv = () => {
+  delete process.env["PROVIDER_WEBHOOK_SECRET"];
+  delete process.env["SWAN_WEBHOOK_SECRET"];
+  delete process.env["ADYEN_HMAC_KEY"];
+};
+
+beforeEach(clearEnv);
 afterEach(() => {
   delete process.env["PROVIDER_WEBHOOK_SECRET"];
   delete process.env["SWAN_WEBHOOK_SECRET"];
