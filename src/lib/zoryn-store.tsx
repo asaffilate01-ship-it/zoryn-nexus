@@ -106,7 +106,7 @@ const seedTxns: Txn[] = [
   { id: uid(), date: "2026-07-24", name: "Amazon.de", category: "Shopping", amount: -84.2, status: "booked" },
 ];
 
-type State = {
+export type State = {
   personal: {
     holder: string;
     iban: string;
@@ -157,7 +157,7 @@ type State = {
   };
 };
 
-const initialState: State = {
+export const initialState: State = {
   personal: {
     holder: "Amer Saleem",
     iban: "DE89 3704 0044 0532 0130 00",
