@@ -263,27 +263,36 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          idempotency_key: string | null
           is_demo: boolean
           loyalty_account_id: string
           points: number
+          source: string
+          transaction_id: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           description: string
           id?: string
+          idempotency_key?: string | null
           is_demo?: boolean
           loyalty_account_id: string
           points: number
+          source?: string
+          transaction_id?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           description?: string
           id?: string
+          idempotency_key?: string | null
           is_demo?: boolean
           loyalty_account_id?: string
           points?: number
+          source?: string
+          transaction_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -292,6 +301,13 @@ export type Database = {
             columns: ["loyalty_account_id"]
             isOneToOne: false
             referencedRelation: "loyalty_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_entries_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
             referencedColumns: ["id"]
           },
         ]
@@ -598,6 +614,7 @@ export type Database = {
           event_type: string
           id: string
           is_demo: boolean
+          next_attempt_at: string | null
           occurred_at: string
           payload: Json
           processed_at: string | null
@@ -614,6 +631,7 @@ export type Database = {
           event_type: string
           id?: string
           is_demo?: boolean
+          next_attempt_at?: string | null
           occurred_at?: string
           payload?: Json
           processed_at?: string | null
@@ -630,6 +648,7 @@ export type Database = {
           event_type?: string
           id?: string
           is_demo?: boolean
+          next_attempt_at?: string | null
           occurred_at?: string
           payload?: Json
           processed_at?: string | null
@@ -756,6 +775,80 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      rewards_outbox: {
+        Row: {
+          amount_cents: number
+          attempts: number
+          created_at: string
+          currency: string
+          delivered_at: string | null
+          error: string | null
+          event_type: string
+          id: string
+          is_demo: boolean
+          loyalty_account_id: string | null
+          next_attempt_at: string
+          payload: Json
+          platform_user_id: string | null
+          points: number
+          provider: string
+          provider_reference: string
+          status: string
+          tenant_slug: string
+          updated_at: string
+        }
+        Insert: {
+          amount_cents?: number
+          attempts?: number
+          created_at?: string
+          currency?: string
+          delivered_at?: string | null
+          error?: string | null
+          event_type: string
+          id?: string
+          is_demo?: boolean
+          loyalty_account_id?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          platform_user_id?: string | null
+          points?: number
+          provider?: string
+          provider_reference: string
+          status?: string
+          tenant_slug?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_cents?: number
+          attempts?: number
+          created_at?: string
+          currency?: string
+          delivered_at?: string | null
+          error?: string | null
+          event_type?: string
+          id?: string
+          is_demo?: boolean
+          loyalty_account_id?: string | null
+          next_attempt_at?: string
+          payload?: Json
+          platform_user_id?: string | null
+          points?: number
+          provider?: string
+          provider_reference?: string
+          status?: string
+          tenant_slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rewards_outbox_loyalty_account_id_fkey"
+            columns: ["loyalty_account_id"]
+            isOneToOne: false
+            referencedRelation: "loyalty_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       support_cases: {
         Row: {

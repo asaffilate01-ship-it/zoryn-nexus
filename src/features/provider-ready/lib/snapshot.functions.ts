@@ -104,6 +104,29 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
       .filter((t) => t.account_id === merchantRow?.id || t.kind === "settlement")
       .reduce((sum, t) => sum + Math.abs(cents(t.amount)), 0);
 
+    // Health is derived from live adapter configuration and event outcomes,
+    // falling back to the seeded rows if the derivation is unavailable.
+    const { deriveProviderHealth } = await import("./providers.server");
+    const eventRows = eventsRes.data ?? [];
+    const lastEventAt: Record<string, string | null> = {};
+    const failures: Record<string, number> = {};
+    for (const e of eventRows) {
+      const key = asProvider(e.provider);
+      if (!lastEventAt[key] || e.occurred_at > lastEventAt[key]!) lastEventAt[key] = e.occurred_at;
+      if (e.status === "retrying" || e.status === "dead_letter" || e.status === "failed") {
+        failures[key] = (failures[key] ?? 0) + 1;
+      }
+    }
+    const derivedHealth: ProviderHealth[] =
+      deriveProviderHealth(lastEventAt, failures) ??
+      (healthRes.data ?? []).map((p) => ({
+        provider: asProvider(p.provider),
+        status: p.status as ProviderHealth["status"],
+        latencyMs: p.latency_ms,
+        ...(p.last_event_at ? { lastEventAt: p.last_event_at } : {}),
+        message: p.message,
+      }));
+
     return {
       customer: {
         id: personal?.id ?? "unknown",
@@ -199,13 +222,7 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
         tier: loyaltyPersonal?.tier ?? "silver",
         valueCents: Number(loyaltyPersonal?.points ?? 0),
       },
-      providerHealth: (healthRes.data ?? []).map((p) => ({
-        provider: asProvider(p.provider),
-        status: p.status as ProviderHealth["status"],
-        latencyMs: p.latency_ms,
-        ...(p.last_event_at ? { lastEventAt: p.last_event_at } : {}),
-        message: p.message,
-      })),
+      providerHealth: derivedHealth,
       webhookEvents: (eventsRes.data ?? []).map((e) => ({
         id: e.id,
         provider: asProvider(e.provider),

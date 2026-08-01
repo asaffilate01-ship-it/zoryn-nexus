@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
   Activity,
   ArrowLeft,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import { providerSnapshotQueryOptions } from "../lib/snapshot-query";
 import { dateTime, eur } from "../lib/format";
+import { captureTapToPay, moveFunds } from "@/lib/zoryn-mutations.functions";
 import { MetricCard } from "./MetricCard";
 import { StatusBadge } from "./StatusBadge";
 
@@ -51,27 +53,55 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
   };
 
   const [tab, setTab] = useState<Tab>(initialTab);
-  const [pots, setPots] = useState(snapshot.pots);
-  const [mainBalance, setMainBalance] = useState(mainAccount.availableCents);
+  const pots = snapshot.pots;
+  const mainBalance = mainAccount.availableCents;
   const [amount, setAmount] = useState("100");
   const [selectedPot, setSelectedPot] = useState(snapshot.pots[0]?.id ?? "");
+  const [moveError, setMoveError] = useState<string | null>(null);
+  const [tapAmount, setTapAmount] = useState("24.90");
+  const [tapResult, setTapResult] = useState<string | null>(null);
   const activePot = useMemo(
     () => pots.find((p) => p.id === selectedPot) ?? pots[0],
     [pots, selectedPot],
   );
 
+  const queryClient = useQueryClient();
+  const refreshSnapshot = () =>
+    queryClient.invalidateQueries({ queryKey: providerSnapshotQueryOptions.queryKey });
+
+  const moveFundsFn = useServerFn(moveFunds);
+  const captureFn = useServerFn(captureTapToPay);
+
+  const movement = useMutation({
+    mutationFn: moveFundsFn,
+    onSuccess: () => {
+      setMoveError(null);
+      void refreshSnapshot();
+    },
+    onError: (error: unknown) => setMoveError(error instanceof Error ? error.message : "Transfer failed"),
+  });
+
+  const tap = useMutation({
+    mutationFn: captureFn,
+    onSuccess: (result: { pointsEarned: number }) => {
+      setTapResult(`Approved · ${result.pointsEarned} points earned`);
+      void refreshSnapshot();
+    },
+    onError: (error: unknown) => setTapResult(error instanceof Error ? error.message : "Payment declined"),
+  });
+
   const cents = () => Math.round(Number(amount.replace(",", ".")) * 100);
   const moveToPot = () => {
     const c = cents();
-    if (!activePot || !Number.isFinite(c) || c <= 0 || c > mainBalance) return;
-    setMainBalance((v) => v - c);
-    setPots((p) => p.map((x) => (x.id === activePot.id ? { ...x, balanceCents: x.balanceCents + c } : x)));
+    if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError("Enter an amount");
+    if (c > mainBalance) return setMoveError("Not enough in your main balance");
+    movement.mutate({ data: { accountId: mainAccount.id, amountCents: c, toPotId: activePot.id } });
   };
   const moveFromPot = () => {
     const c = cents();
-    if (!activePot || !Number.isFinite(c) || c <= 0 || c > activePot.balanceCents) return;
-    setMainBalance((v) => v + c);
-    setPots((p) => p.map((x) => (x.id === activePot.id ? { ...x, balanceCents: x.balanceCents - c } : x)));
+    if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError("Enter an amount");
+    if (c > activePot.balanceCents) return setMoveError(`Not enough in ${activePot.name}`);
+    movement.mutate({ data: { accountId: mainAccount.id, amountCents: c, fromPotId: activePot.id } });
   };
 
   return (
@@ -208,16 +238,25 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                   />
                 </label>
                 <div className="mt-4 grid grid-cols-2 gap-3">
-                  <button onClick={moveToPot} className="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground">
-                    Move to pot
+                  <button
+                    onClick={moveToPot}
+                    disabled={movement.isPending}
+                    className="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
+                  >
+                    {movement.isPending ? "Moving…" : "Move to pot"}
                   </button>
-                  <button onClick={moveFromPot} className="rounded-xl border border-border px-4 py-3 text-sm font-bold">
+                  <button
+                    onClick={moveFromPot}
+                    disabled={movement.isPending}
+                    className="rounded-xl border border-border px-4 py-3 text-sm font-bold disabled:opacity-60"
+                  >
                     Move to main
                   </button>
                 </div>
+                {moveError && <p className="mt-3 text-xs font-semibold text-destructive">{moveError}</p>}
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Mock allocations persist for this session. In production the banking provider remains the ledger
-                  source of truth.
+                  Allocations are written to the database and audit log. In production the banking provider remains
+                  the ledger source of truth.
                 </p>
               </div>
 
@@ -341,11 +380,37 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                 <h2 className="font-display text-xl">Tap to Pay readiness</h2>
                 <div className="mt-5 rounded-2xl border border-border bg-background p-6">
                   <p className="text-sm text-muted-foreground">ZorynPay · {demoMerchant.name}</p>
-                  <p className="mt-8 text-center font-display text-5xl">€24.90</p>
+                  <label className="mt-6 block text-sm font-semibold">
+                    Amount to charge
+                    <input
+                      value={tapAmount}
+                      onChange={(e) => setTapAmount(e.target.value)}
+                      inputMode="decimal"
+                      className="mt-2 w-full rounded-xl border border-border bg-card px-3 py-3 text-center font-display text-3xl"
+                    />
+                  </label>
                   <div className="mx-auto mt-8 flex h-32 w-32 items-center justify-center rounded-full border-4 border-primary/40 bg-primary/10">
                     <Activity className="h-14 w-14 text-primary" />
                   </div>
-                  <p className="mt-5 text-center font-semibold">Ready for customer tap</p>
+                  <button
+                    onClick={() => {
+                      const c = Math.round(Number(tapAmount.replace(",", ".")) * 100);
+                      if (!Number.isFinite(c) || c <= 0) return setTapResult("Enter an amount");
+                      setTapResult(null);
+                      tap.mutate({
+                        data: {
+                          merchantId: demoMerchant.id,
+                          amountCents: c,
+                          ...(terminals[0]?.id ? { terminalId: terminals[0].id } : {}),
+                        },
+                      });
+                    }}
+                    disabled={tap.isPending}
+                    className="mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
+                  >
+                    {tap.isPending ? "Reading card…" : "Simulate customer tap"}
+                  </button>
+                  <p className="mt-4 text-center font-semibold">{tapResult ?? "Ready for customer tap"}</p>
                   <p className="mt-1 text-center text-xs text-muted-foreground">
                     The acquiring provider's Mobile SDK replaces this simulation.
                   </p>
