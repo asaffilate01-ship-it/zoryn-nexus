@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Badge, Button, Empty, ErrorText, Field, Panel, Progress, StatCard, inputClass } from "./ui";
 import { SupportPanel } from "./SupportPanel";
+import { UnifiedWalletCard } from "./UnifiedWalletCard";
 import { money, useDemo } from "@/lib/zoryn-store";
 import type { PageKey } from "@/lib/zoryn-data";
 
@@ -207,12 +208,13 @@ function Rewards() {
   const [error, setError] = useState<string | null>(null);
   return (
     <div className="space-y-4">
+      <UnifiedWalletCard role="personal" />
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Zoryn Points" value={p.points.toLocaleString("de-DE")} hint="Earn 1 point per €10 sent" />
         <StatCard label="Tier" value={p.tier} hint="Next tier at 3,000 points" />
         <StatCard label="Redeemable value" value={money(Math.floor(p.points / 500) * 5)} hint="500 points = €5" />
       </div>
-      <Panel title="Convert points to cash" subtitle="500 points converts into €5 credited to your main balance">
+      <Panel title="Convert points to cash" subtitle="500 points converts into €5, credited to your chosen cashback destination">
         <div className="flex flex-wrap items-end gap-3">
           <Field label="Points to convert">
             <input className={`${inputClass} w-40`} type="number" min="500" step="500" value={points} onChange={(e) => setPoints(e.target.value)} />
