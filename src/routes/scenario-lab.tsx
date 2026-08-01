@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ProviderReadyCentre } from "@/features/provider-ready/components/ProviderReadyCentre";
+import { providerSnapshotQueryOptions } from "@/features/provider-ready/lib/snapshot-query";
 
 export const Route = createFileRoute("/scenario-lab")({
   head: () => ({
@@ -12,5 +13,10 @@ export const Route = createFileRoute("/scenario-lab")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(providerSnapshotQueryOptions),
+  errorComponent: ({ error }) => (
+    <main role="alert" className="p-10 text-foreground">Scenario data unavailable: {error.message}</main>
+  ),
+  notFoundComponent: () => <main className="p-10 text-foreground">No scenarios found.</main>,
   component: () => <ProviderReadyCentre initialTab="scenarios" />,
 });
