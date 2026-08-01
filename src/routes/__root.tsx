@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { DemoProvider } from "@/lib/zoryn-store";
 import { I18nProvider, useT } from "@/lib/i18n";
+import { supabase } from "@/integrations/supabase/client";
 
 function NotFoundComponent() {
   const t = useT();
