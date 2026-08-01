@@ -79,6 +79,23 @@ function DemoHub() {
         </div>
 
         <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { to: "/provider-ready", label: "Provider-ready centre" },
+            { to: "/onboarding-status", label: "Onboarding states" },
+            { to: "/operations-centre", label: "Operations centre" },
+            { to: "/scenario-lab", label: "Scenario lab" },
+          ].map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className="rounded-xl border border-border bg-card/50 px-4 py-3 text-sm font-semibold hover:border-primary/50 hover:text-primary"
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {providerReadinessByRole.admin.map((p) => (
             <div key={p.label} className="rounded-xl border border-border bg-card/50 px-4 py-3">
               <span className="block text-xs text-muted-foreground">{p.label}</span>
