@@ -307,6 +307,8 @@ type Ctx = {
   toggleCard: (id: string) => void;
   setCardLimit: (id: string, limit: number) => void;
   redeemPoints: (points: number) => string | null;
+  redeemBusinessPoints: (points: number) => string | null;
+  setCashbackDestination: (role: "personal" | "business", destination: string) => void;
   createCase: (role: RoleKey, c: { subject: string; category: string; description: string }) => void;
   resolveCase: (role: RoleKey, id: string) => void;
   supplierPayment: (p: { name: string; iban: string; amount: number; reference: string }) => string | null;
@@ -432,20 +434,56 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         if (points % 500 !== 0) return "Redeem in multiples of 500 points.";
         if (points > state.personal.points) return `You only have ${state.personal.points} points.`;
         const credit = (points / 500) * 5;
+        const destination = state.personal.cashbackDestination;
+        const potName = state.personal.pots.find((p) => `pot:${p.id}` === destination)?.name;
+        const target = destination === "main" ? "your main balance" : destination === "wallet" ? "your rewards wallet" : `your ${potName ?? "pot"} pot`;
         setState((s) => ({
           ...s,
           personal: {
             ...s.personal,
             points: s.personal.points - points,
-            balance: +(s.personal.balance + credit).toFixed(2),
+            balance: destination === "main" ? +(s.personal.balance + credit).toFixed(2) : s.personal.balance,
+            rewardsWallet: destination === "wallet" ? +(s.personal.rewardsWallet + credit).toFixed(2) : s.personal.rewardsWallet,
+            pots: s.personal.pots.map((pot) =>
+              `pot:${pot.id}` === destination ? { ...pot, balance: +(pot.balance + credit).toFixed(2) } : pot,
+            ),
             txns: [
-              { id: uid(), date: nowISO().slice(0, 10), name: "Zoryn Rewards redemption", category: "Zoryn Points", amount: credit, status: "booked" },
+              { id: uid(), date: nowISO().slice(0, 10), name: `Zoryn Rewards redemption → ${target}`, category: "Zoryn Points", amount: destination === "main" ? credit : 0, status: "booked" },
               ...s.personal.txns,
             ],
           },
         }));
-        notify(`${points} points converted into ${money(credit)}.`);
+        notify(`${points} points converted into ${money(credit)} — sent to ${target}.`);
         return null;
+      },
+
+      redeemBusinessPoints: (points) => {
+        if (points < 500) return "Minimum redemption is 500 points.";
+        if (points % 500 !== 0) return "Redeem in multiples of 500 points.";
+        if (points > state.business.points) return `The organisation only has ${state.business.points} points.`;
+        const credit = (points / 500) * 5;
+        const destination = state.business.cashbackDestination;
+        const target = destination === "main" ? "the business balance" : "the rewards wallet";
+        setState((s) => ({
+          ...s,
+          business: {
+            ...s.business,
+            points: s.business.points - points,
+            balance: destination === "main" ? +(s.business.balance + credit).toFixed(2) : s.business.balance,
+            rewardsWallet: destination === "wallet" ? +(s.business.rewardsWallet + credit).toFixed(2) : s.business.rewardsWallet,
+            txns: [
+              { id: uid(), date: nowISO().slice(0, 10), name: `Zoryn Rewards redemption → ${target}`, category: "Zoryn Points", amount: destination === "main" ? credit : 0, status: "booked" },
+              ...s.business.txns,
+            ],
+          },
+        }));
+        notify(`${points} points converted into ${money(credit)} — sent to ${target}.`);
+        return null;
+      },
+
+      setCashbackDestination: (role, destination) => {
+        setState((s) => ({ ...s, [role]: { ...s[role], cashbackDestination: destination } }));
+        notify("Cashback destination updated.");
       },
 
       createCase: (role, c) => {
