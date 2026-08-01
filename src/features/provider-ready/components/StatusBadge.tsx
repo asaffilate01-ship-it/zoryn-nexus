@@ -1,5 +1,18 @@
 import { statusLabel } from "../lib/format";
+
+const has = (s: string, words: string[]) => words.some((w) => s.includes(w));
+
 export function StatusBadge({ status }: { status: string }) {
-  const tone = status.includes("active") || status.includes("completed") || status.includes("processed") || status.includes("operational") ? "bg-emerald-100 text-emerald-800" : status.includes("failed") || status.includes("critical") || status.includes("dead") || status.includes("restricted") ? "bg-red-100 text-red-800" : status.includes("pending") || status.includes("review") || status.includes("retry") || status.includes("required") ? "bg-amber-100 text-amber-800" : "bg-slate-100 text-slate-700";
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${tone}`}>{statusLabel(status)}</span>;
+  const tone = has(status, ["active", "completed", "processed", "operational", "online", "approved", "booked", "captured", "won", "low"])
+    ? "bg-primary/12 text-primary"
+    : has(status, ["failed", "critical", "dead", "restricted", "declined", "lost", "stolen", "outage", "offline", "returned", "chargeback", "rejected", "suspended"])
+      ? "bg-destructive/15 text-destructive"
+      : has(status, ["pending", "review", "retry", "required", "invited", "shipped", "degraded", "frozen", "awaiting", "high", "medium", "not_configured"])
+        ? "bg-amber-500/15 text-amber-400"
+        : "bg-secondary text-muted-foreground";
+  return (
+    <span className={`inline-flex shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold ${tone}`}>
+      {statusLabel(status)}
+    </span>
+  );
 }
