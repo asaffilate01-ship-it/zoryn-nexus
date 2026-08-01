@@ -251,6 +251,7 @@ function PublicHome() {
       {/* Personal */}
       <section
         id="personal"
+        style={undefined}
         className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:px-8 lg:grid-cols-2"
       >
         <div>
