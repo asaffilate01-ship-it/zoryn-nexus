@@ -4,23 +4,25 @@ import { SupportPanel } from "./SupportPanel";
 import { UnifiedWalletCard } from "./UnifiedWalletCard";
 import { money, useDemo } from "@/lib/zoryn-store";
 import type { PageKey } from "@/lib/zoryn-data";
+import { useT } from "@/lib/i18n";
 
 function TxnList({ limit }: { limit?: number }) {
   const { state } = useDemo();
+  const t = useT();
   const txns = limit ? state.personal.txns.slice(0, limit) : state.personal.txns;
   return (
     <div className="divide-y divide-border">
-      {txns.map((t) => (
-        <div key={t.id} className="flex items-center justify-between gap-4 py-3">
+      {txns.map((t2) => (
+        <div key={t2.id} className="flex items-center justify-between gap-4 py-3">
           <div className="min-w-0">
-            <b className="block truncate text-sm font-medium">{t.name}</b>
+            <b className="block truncate text-sm font-medium">{t2.name}</b>
             <small className="text-xs text-muted-foreground">
-              {new Date(t.date).toLocaleDateString("de-DE")} · {t.category}
-              {t.status === "pending" ? " · pending" : ""}
+              {new Date(t2.date).toLocaleDateString("de-DE")} · {t2.category}
+              {t2.status === "pending" ? ` · ${t("pending")}` : ""}
             </small>
           </div>
-          <span className={t.amount > 0 ? "font-display text-sm text-primary" : "font-display text-sm"}>
-            {t.amount === 0 ? "—" : `${t.amount > 0 ? "+" : ""}${money(t.amount)}`}
+          <span className={t2.amount > 0 ? "font-display text-sm text-primary" : "font-display text-sm"}>
+            {t2.amount === 0 ? "—" : `${t2.amount > 0 ? "+" : ""}${money(t2.amount)}`}
           </span>
         </div>
       ))}
@@ -30,67 +32,68 @@ function TxnList({ limit }: { limit?: number }) {
 
 function Accounts() {
   const { state, movePersonalFunds } = useDemo();
+  const t = useT();
   const p = state.personal;
   const [from, setFrom] = useState("main");
   const [to, setTo] = useState(p.pots[0]?.id ?? "main");
   const [amount, setAmount] = useState("100");
   const [error, setError] = useState<string | null>(null);
 
-  const options = [{ id: "main", name: `Main balance — ${money(p.balance)}` }, ...p.pots.map((pot) => ({ id: pot.id, name: `${pot.name} — ${money(pot.balance)}` }))];
+  const options = [{ id: "main", name: `${t("Main balance")} — ${money(p.balance)}` }, ...p.pots.map((pot) => ({ id: pot.id, name: `${pot.name} — ${money(pot.balance)}` }))];
 
   const move = () => setError(movePersonalFunds(from, to, Number(amount)));
 
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Available balance" value={money(p.balance)} hint={p.iban} />
-        <StatCard label="Total in pots" value={money(p.pots.reduce((a, b) => a + b.balance, 0))} hint={`${p.pots.length} savings pots`} />
-        <StatCard label="BIC" value={p.bic} hint="German IBAN · EUR" />
+        <StatCard label={t("Available balance")} value={money(p.balance)} hint={p.iban} />
+        <StatCard label={t("Total in pots")} value={money(p.pots.reduce((a, b) => a + b.balance, 0))} hint={t("{count} savings pots", { count: p.pots.length })} />
+        <StatCard label={t("BIC")} value={p.bic} hint={t("German IBAN · EUR")} />
       </div>
 
-      <Panel title="Savings pots" subtitle="Targets and progress update instantly when you move money">
+      <Panel title={t("Savings pots")} subtitle={t("Targets and progress update instantly when you move money")}>
         <div className="grid gap-4 sm:grid-cols-3">
           {p.pots.map((pot) => (
             <div key={pot.id} className="rounded-xl border border-border bg-background/40 p-4">
               <b className="text-sm">{pot.name}</b>
               <strong className="mt-1 block font-display text-xl">{money(pot.balance)}</strong>
-              <small className="text-xs text-muted-foreground">Target {money(pot.target)}</small>
+              <small className="text-xs text-muted-foreground">{t("Target {amount}", { amount: money(pot.target) })}</small>
               <div className="mt-3">
                 <Progress value={(pot.balance / pot.target) * 100} />
               </div>
               <small className="mt-1 block text-xs text-muted-foreground">
-                {Math.round((pot.balance / pot.target) * 100)}% funded
+                {t("{percent}% funded", { percent: Math.round((pot.balance / pot.target) * 100) })}
               </small>
             </div>
           ))}
         </div>
       </Panel>
 
-      <Panel title="Move money" subtitle="Main balance → pot, pot → main balance, or pot → pot">
+      <Panel title={t("Move money")} subtitle={t("Main balance → pot, pot → main balance, or pot → pot")}>
         <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-end">
-          <Field label="From">
+          <Field label={t("From")}>
             <select className={inputClass} value={from} onChange={(e) => setFrom(e.target.value)}>
               {options.map((o) => (
                 <option key={o.id} value={o.id}>{o.name}</option>
               ))}
             </select>
           </Field>
-          <Field label="To">
+          <Field label={t("To")}>
             <select className={inputClass} value={to} onChange={(e) => setTo(e.target.value)}>
               {options.map((o) => (
                 <option key={o.id} value={o.id}>{o.name}</option>
               ))}
             </select>
           </Field>
-          <Field label="Amount (€)">
+          <Field label={t("Amount (€)")}>
             <input className={inputClass} type="number" min="0" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
           </Field>
-          <Button onClick={move}>Move</Button>
+          <Button onClick={move}>{t("Move")}</Button>
         </div>
         <ErrorText>{error}</ErrorText>
       </Panel>
 
-      <Panel title="Transaction history" subtitle="Seeded demo history plus everything you do here">
+      <Panel title={t("Transaction history")} subtitle={t("Seeded demo history plus everything you do here")}>
         <TxnList />
       </Panel>
     </div>
@@ -99,6 +102,7 @@ function Accounts() {
 
 function Cards() {
   const { state, toggleCard, setCardLimit } = useDemo();
+  const t = useT();
   return (
     <div className="grid gap-4 lg:grid-cols-3">
       {state.personal.cards.map((c) => (
@@ -106,9 +110,9 @@ function Cards() {
           <div className="flex items-start justify-between gap-3">
             <div>
               <b className="text-sm">{c.label}</b>
-              <p className="text-xs text-muted-foreground">{c.type === "physical" ? "Physical" : "Virtual"} · •••• {c.last4}</p>
+              <p className="text-xs text-muted-foreground">{c.type === "physical" ? t("Physical") : t("Virtual")} · •••• {c.last4}</p>
             </div>
-            <Badge tone={c.frozen ? "bad" : "good"}>{c.frozen ? "Frozen" : "Active"}</Badge>
+            <Badge tone={c.frozen ? "bad" : "good"}>{c.frozen ? t("Frozen") : t("Active")}</Badge>
           </div>
           <div className="mt-4 rounded-xl border border-primary/25 bg-gradient-to-br from-primary/15 to-accent/10 p-4">
             <span className="text-[11px] uppercase tracking-widest text-primary">Zoryn</span>
@@ -117,21 +121,21 @@ function Cards() {
           </div>
           <div className="mt-4">
             <div className="flex justify-between text-xs text-muted-foreground">
-              <span>Spent {money(c.spent)}</span>
-              <span>Limit {money(c.limit)}</span>
+              <span>{t("Spent {amount}", { amount: money(c.spent) })}</span>
+              <span>{t("Limit {amount}", { amount: money(c.limit) })}</span>
             </div>
             <div className="mt-2">
               <Progress value={(c.spent / c.limit) * 100} />
             </div>
             <small className="mt-1 block text-xs text-muted-foreground">
-              {Math.round((c.spent / c.limit) * 100)}% of monthly limit used
+              {t("{percent}% of monthly limit used", { percent: Math.round((c.spent / c.limit) * 100) })}
             </small>
           </div>
           <div className="mt-4 flex flex-wrap items-end gap-2">
             <Button variant={c.frozen ? "primary" : "danger"} className="px-3 py-2 text-xs" onClick={() => toggleCard(c.id)}>
-              {c.frozen ? "Unfreeze card" : "Freeze card"}
+              {c.frozen ? t("Unfreeze card") : t("Freeze card")}
             </Button>
-            <Field label="Monthly limit (€)">
+            <Field label={t("Monthly limit (€)")}>
               <input
                 className={`${inputClass} w-32`}
                 type="number"
@@ -150,6 +154,7 @@ function Cards() {
 
 function Payments() {
   const { state, sepaTransfer } = useDemo();
+  const t = useT();
   const p = state.personal;
   const [name, setName] = useState(p.beneficiaries[0]!.name);
   const [iban, setIban] = useState(p.beneficiaries[0]!.iban);
@@ -159,9 +164,9 @@ function Payments() {
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_1fr]">
-      <Panel title="New SEPA transfer" subtitle={`Debited from ${p.iban}`}>
+      <Panel title={t("New SEPA transfer")} subtitle={t("Debited from {iban}", { iban: p.iban })}>
         <div className="space-y-3">
-          <Field label="Payee">
+          <Field label={t("Payee")}>
             <select
               className={inputClass}
               value={name}
@@ -176,25 +181,25 @@ function Payments() {
               ))}
             </select>
           </Field>
-          <Field label="IBAN">
+          <Field label={t("IBAN")}>
             <input className={inputClass} value={iban} onChange={(e) => setIban(e.target.value)} maxLength={34} />
           </Field>
-          <Field label="Amount (€)">
+          <Field label={t("Amount (€)")}>
             <input className={inputClass} type="number" min="0" step="0.01" value={amount} onChange={(e) => setAmount(e.target.value)} />
           </Field>
-          <Field label="Reference">
+          <Field label={t("Reference")}>
             <input className={inputClass} value={reference} maxLength={140} onChange={(e) => setReference(e.target.value)} />
           </Field>
           <ErrorText>{error}</ErrorText>
           <Button onClick={() => setError(sepaTransfer({ name, iban, amount: Number(amount), reference }))}>
-            Send {money(Number(amount) || 0)}
+            {t("Send {amount}", { amount: money(Number(amount) || 0) })}
           </Button>
           <p className="text-xs text-muted-foreground">
-            Simulated SEPA Credit Transfer — balance is validated before the payment is created.
+            {t("Simulated SEPA Credit Transfer — balance is validated before the payment is created.")}
           </p>
         </div>
       </Panel>
-      <Panel title="Recent transfers" subtitle="Newest first">
+      <Panel title={t("Recent transfers")} subtitle={t("Newest first")}>
         <TxnList limit={10} />
       </Panel>
     </div>
@@ -203,6 +208,7 @@ function Payments() {
 
 function Rewards() {
   const { state, redeemPoints } = useDemo();
+  const t = useT();
   const p = state.personal;
   const [points, setPoints] = useState("500");
   const [error, setError] = useState<string | null>(null);
@@ -210,27 +216,27 @@ function Rewards() {
     <div className="space-y-4">
       <UnifiedWalletCard role="personal" />
       <div className="grid gap-4 sm:grid-cols-3">
-        <StatCard label="Zoryn Points" value={p.points.toLocaleString("de-DE")} hint="Earn 1 point per €10 sent" />
-        <StatCard label="Tier" value={p.tier} hint="Next tier at 3,000 points" />
-        <StatCard label="Redeemable value" value={money(Math.floor(p.points / 500) * 5)} hint="500 points = €5" />
+        <StatCard label={t("Zoryn Points")} value={p.points.toLocaleString("de-DE")} hint={t("Earn 1 point per €10 sent")} />
+        <StatCard label={t("Tier")} value={p.tier} hint={t("Next tier at 3,000 points")} />
+        <StatCard label={t("Redeemable value")} value={money(Math.floor(p.points / 500) * 5)} hint={t("500 points = €5")} />
       </div>
-      <Panel title="Convert points to cash" subtitle="500 points converts into €5, credited to your chosen cashback destination">
+      <Panel title={t("Convert points to cash")} subtitle={t("500 points converts into €5, credited to your chosen cashback destination")}>
         <div className="flex flex-wrap items-end gap-3">
-          <Field label="Points to convert">
+          <Field label={t("Points to convert")}>
             <input className={`${inputClass} w-40`} type="number" min="500" step="500" value={points} onChange={(e) => setPoints(e.target.value)} />
           </Field>
           <Button onClick={() => setError(redeemPoints(Number(points)))}>
-            Convert for {money((Math.floor(Number(points) / 500) || 0) * 5)}
+            {t("Convert for {amount}", { amount: money((Math.floor(Number(points) / 500) || 0) * 5) })}
           </Button>
         </div>
         <ErrorText>{error}</ErrorText>
       </Panel>
-      <Panel title="Partner offers">
+      <Panel title={t("Partner offers")}>
         <div className="grid gap-3 sm:grid-cols-3">
           {[
-            ["Cafe 1 Demo", "10th coffee free"],
-            ["DB Bahn", "2× points on tickets"],
-            ["REWE Markt", "1% cashback"],
+            ["Cafe 1 Demo", t("10th coffee free")],
+            ["DB Bahn", t("2× points on tickets")],
+            ["REWE Markt", t("1% cashback")],
           ].map(([n, r]) => (
             <div key={n} className="rounded-xl border border-border bg-background/40 p-4">
               <b className="text-sm">{n}</b>
@@ -245,32 +251,33 @@ function Rewards() {
 
 function Overview() {
   const { state } = useDemo();
+  const t = useT();
   const p = state.personal;
   const spent = p.txns.filter((t) => t.amount < 0).reduce((a, b) => a + Math.abs(b.amount), 0);
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Available balance" value={money(p.balance)} hint={p.iban} />
-        <StatCard label="In savings pots" value={money(p.pots.reduce((a, b) => a + b.balance, 0))} hint={`${p.pots.length} pots`} />
-        <StatCard label="Spent this period" value={money(spent)} hint="Across all cards" />
-        <StatCard label="Zoryn Points" value={p.points.toLocaleString("de-DE")} hint={`${p.tier} tier`} />
+        <StatCard label={t("Available balance")} value={money(p.balance)} hint={p.iban} />
+        <StatCard label={t("In savings pots")} value={money(p.pots.reduce((a, b) => a + b.balance, 0))} hint={t("{count} pots", { count: p.pots.length })} />
+        <StatCard label={t("Spent this period")} value={money(spent)} hint={t("Across all cards")} />
+        <StatCard label={t("Zoryn Points")} value={p.points.toLocaleString("de-DE")} hint={t("{tier} tier", { tier: p.tier })} />
       </div>
       <div className="grid gap-4 lg:grid-cols-[1.3fr_1fr]">
-        <Panel title="Recent transactions">
+        <Panel title={t("Recent transactions")}>
           <TxnList limit={6} />
         </Panel>
         <div className="space-y-4">
-          <Panel title="Cards">
+          <Panel title={t("Cards")}>
             <ul className="space-y-3 text-sm">
               {p.cards.map((c) => (
                 <li key={c.id} className="flex items-center justify-between gap-3">
                   <span className="text-muted-foreground">{c.label} · •••• {c.last4}</span>
-                  <Badge tone={c.frozen ? "bad" : "good"}>{c.frozen ? "Frozen" : "Active"}</Badge>
+                  <Badge tone={c.frozen ? "bad" : "good"}>{c.frozen ? t("Frozen") : t("Active")}</Badge>
                 </li>
               ))}
             </ul>
           </Panel>
-          <Panel title="Pots progress">
+          <Panel title={t("Pots progress")}>
             <ul className="space-y-3">
               {p.pots.map((pot) => (
                 <li key={pot.id}>
@@ -290,6 +297,7 @@ function Overview() {
 }
 
 export function PersonalModules({ page }: { page: PageKey }) {
+  const t = useT();
   switch (page) {
     case "accounts":
       return <Accounts />;
@@ -300,7 +308,7 @@ export function PersonalModules({ page }: { page: PageKey }) {
     case "rewards":
       return <Rewards />;
     case "support":
-      return <SupportPanel role="personal" title="Zoryn Personal support" />;
+      return <SupportPanel role="personal" title={t("Zoryn Personal support")} />;
     default:
       return <Overview />;
   }
