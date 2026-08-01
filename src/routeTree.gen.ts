@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BusinessRouteImport } from './routes/business'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as MerchantRouteImport } from './routes/merchant'
+import { Route as OnboardingStatusRouteImport } from './routes/onboarding-status'
 import { Route as OperationsCentreRouteImport } from './routes/operations-centre'
 import { Route as PersonalRouteImport } from './routes/personal'
 import { Route as ProductsRouteImport } from './routes/products'
@@ -43,6 +44,11 @@ const DemoRoute = DemoRouteImport.update({
 const MerchantRoute = MerchantRouteImport.update({
   id: '/merchant',
   path: '/merchant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingStatusRoute = OnboardingStatusRouteImport.update({
+  id: '/onboarding-status',
+  path: '/onboarding-status',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OperationsCentreRoute = OperationsCentreRouteImport.update({
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/business': typeof BusinessRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/onboarding-status': typeof OnboardingStatusRoute
   '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
   '/products': typeof ProductsRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/business': typeof BusinessRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/onboarding-status': typeof OnboardingStatusRoute
   '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
   '/products': typeof ProductsRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/business': typeof BusinessRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/onboarding-status': typeof OnboardingStatusRoute
   '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
   '/products': typeof ProductsRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/business'
     | '/demo'
     | '/merchant'
+    | '/onboarding-status'
     | '/operations-centre'
     | '/personal'
     | '/products'
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/business'
     | '/demo'
     | '/merchant'
+    | '/onboarding-status'
     | '/operations-centre'
     | '/personal'
     | '/products'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/business'
     | '/demo'
     | '/merchant'
+    | '/onboarding-status'
     | '/operations-centre'
     | '/personal'
     | '/products'
@@ -153,6 +165,7 @@ export interface RootRouteChildren {
   BusinessRoute: typeof BusinessRoute
   DemoRoute: typeof DemoRoute
   MerchantRoute: typeof MerchantRoute
+  OnboardingStatusRoute: typeof OnboardingStatusRoute
   OperationsCentreRoute: typeof OperationsCentreRoute
   PersonalRoute: typeof PersonalRoute
   ProductsRoute: typeof ProductsRoute
@@ -195,6 +208,13 @@ declare module '@tanstack/react-router' {
       path: '/merchant'
       fullPath: '/merchant'
       preLoaderRoute: typeof MerchantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding-status': {
+      id: '/onboarding-status'
+      path: '/onboarding-status'
+      fullPath: '/onboarding-status'
+      preLoaderRoute: typeof OnboardingStatusRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/operations-centre': {
@@ -241,6 +261,7 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessRoute: BusinessRoute,
   DemoRoute: DemoRoute,
   MerchantRoute: MerchantRoute,
+  OnboardingStatusRoute: OnboardingStatusRoute,
   OperationsCentreRoute: OperationsCentreRoute,
   PersonalRoute: PersonalRoute,
   ProductsRoute: ProductsRoute,
