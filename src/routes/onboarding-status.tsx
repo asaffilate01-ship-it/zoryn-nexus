@@ -1,6 +1,24 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, FileCheck2, ShieldAlert, UserCheck } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { ArrowLeft, BadgeEuro, FileCheck2, ShieldAlert, UserCheck } from "lucide-react";
 import { StatePanel } from "@/features/provider-ready/components/StatePanel";
+import { providerSnapshotQueryOptions } from "@/features/provider-ready/lib/snapshot-query";
+
+const actionIcons: Record<string, React.ReactNode> = {
+  verify: <UserCheck className="h-5 w-5" />,
+  upload: <FileCheck2 className="h-5 w-5" />,
+  review: <ShieldAlert className="h-5 w-5" />,
+  fund: <BadgeEuro className="h-5 w-5" />,
+  contact_support: <ShieldAlert className="h-5 w-5" />,
+};
+
+const actionLabels: Record<string, string | null> = {
+  verify: "Continue verification",
+  upload: "Upload document",
+  review: null,
+  fund: "Add funds",
+  contact_support: "Contact support",
+};
 
 export const Route = createFileRoute("/onboarding-status")({
   head: () => ({
@@ -21,10 +39,16 @@ export const Route = createFileRoute("/onboarding-status")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(providerSnapshotQueryOptions),
+  errorComponent: ({ error }) => (
+    <main role="alert" className="p-10 text-foreground">Onboarding states unavailable: {error.message}</main>
+  ),
+  notFoundComponent: () => <main className="p-10 text-foreground">No onboarding states found.</main>,
   component: OnboardingStatus,
 });
 
 function OnboardingStatus() {
+  const { data } = useSuspenseQuery(providerSnapshotQueryOptions);
   return (
     <main className="min-h-screen bg-background p-6 text-foreground">
       <div className="mx-auto max-w-4xl space-y-6">
@@ -39,27 +63,30 @@ function OnboardingStatus() {
             actions.
           </p>
         </div>
-        <StatePanel
-          icon={<UserCheck className="h-5 w-5" />}
-          title="Identity check required"
-          description="Resume the secure hosted verification process before the account can be opened."
-          action={
-            <button className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">
-              Continue verification
-            </button>
-          }
-        />
-        <StatePanel
-          icon={<FileCheck2 className="h-5 w-5" />}
-          title="One document needed"
-          description="Upload proof of address issued within the last three months."
-          action={<button className="rounded-xl border border-border px-4 py-2 text-sm font-bold">Upload document</button>}
-        />
-        <StatePanel
-          icon={<ShieldAlert className="h-5 w-5" />}
-          title="Application under review"
-          description="No action is needed. We will notify the customer when the regulated partner completes its review."
-        />
+        {data.onboardingActions.map((a) => {
+          const label = actionLabels[a.action];
+          return (
+            <StatePanel
+              key={a.id}
+              icon={actionIcons[a.action] ?? <ShieldAlert className="h-5 w-5" />}
+              title={a.title}
+              description={
+                a.dueAt
+                  ? `${a.description} Due by ${new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" }).format(new Date(a.dueAt))}.`
+                  : a.description
+              }
+              {...(label
+                ? {
+                    action: (
+                      <button className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">
+                        {label}
+                      </button>
+                    ),
+                  }
+                : {})}
+            />
+          );
+        })}
       </div>
     </main>
   );
