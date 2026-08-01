@@ -18,10 +18,11 @@ Centre, server functions, public API routes, database).
 
 ## 2. Functional gaps
 
-- **G6 Authentication & roles (still open).** All portals use a mock session;
-  there is no sign-in, no `profiles` bootstrap, no per-role portal scoping and
-  no `user_roles` table. This is the single largest remaining gap — S3 cannot
-  be closed without it.
+- **G6 Authentication & roles — delivered.** Email/password and Google sign-in
+  at `/auth`, a `user_roles` table with a `has_role` helper, a signup trigger
+  that bootstraps `profiles` and grants the `personal` role, all portals behind
+  the `_authenticated` gate, per-role portal scoping and sign-out. S3 (adding
+  `requireSupabaseAuth` + ownership checks to money movement) is now unblocked.
 - **Provider live mode untested.** Swan (GraphQL) and Adyen (Checkout/
   Management) adapters exist but have only ever run with `PROVIDER_MODE=mock`;
   no sandbox credentials, so error mapping and pagination are unverified.
