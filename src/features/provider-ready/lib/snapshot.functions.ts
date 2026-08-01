@@ -22,6 +22,7 @@ export interface ProviderSnapshot {
   pots: Pot[];
   transactions: Transaction[];
   cards: Card[];
+  staffCards: Card[];
   team: TeamMember[];
   merchant: MerchantSummary;
   terminals: { id: string; name: string; status: string; battery: number }[];
@@ -164,6 +165,18 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
         spentCents: cents(c.spent),
         controls: { online: true, contactless: c.card_type !== "virtual", atm: c.card_type === "physical", international: c.card_type === "physical" },
       })),
+      staffCards: (cardsRes.data ?? [])
+        .filter((c) => c.account_id === business?.id)
+        .map((c) => ({
+          id: c.id,
+          label: c.name,
+          last4: c.last_four,
+          type: c.card_type as Card["type"],
+          status: c.status as Card["status"],
+          monthlyLimitCents: cents(c.monthly_limit),
+          spentCents: cents(c.spent),
+          controls: { online: true, contactless: c.card_type !== "virtual", atm: c.card_type === "physical", international: false },
+        })),
       team: (membersRes.data ?? []).map((m) => ({
         id: m.id,
         name: m.display_name,
