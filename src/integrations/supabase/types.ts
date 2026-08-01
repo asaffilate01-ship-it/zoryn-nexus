@@ -340,6 +340,51 @@ export type Database = {
           },
         ]
       }
+      onboarding_actions: {
+        Row: {
+          action_type: string
+          created_at: string
+          description: string
+          due_at: string | null
+          id: string
+          is_demo: boolean
+          sort_order: number
+          state: string
+          subject_kind: string
+          subject_reference: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          action_type?: string
+          created_at?: string
+          description: string
+          due_at?: string | null
+          id?: string
+          is_demo?: boolean
+          sort_order?: number
+          state: string
+          subject_kind?: string
+          subject_reference: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          description?: string
+          due_at?: string | null
+          id?: string
+          is_demo?: boolean
+          sort_order?: number
+          state?: string
+          subject_kind?: string
+          subject_reference?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       organisation_members: {
         Row: {
           created_at: string
@@ -595,6 +640,42 @@ export type Database = {
         }
         Relationships: []
       }
+      provider_health: {
+        Row: {
+          created_at: string
+          id: string
+          is_demo: boolean
+          last_event_at: string | null
+          latency_ms: number
+          message: string
+          provider: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          last_event_at?: string | null
+          latency_ms?: number
+          message?: string
+          provider: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          last_event_at?: string | null
+          latency_ms?: number
+          message?: string
+          provider?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       provider_resources: {
         Row: {
           created_at: string
@@ -634,6 +715,45 @@ export type Database = {
           updated_at?: string
           zoryn_id?: string | null
           zoryn_reference?: string | null
+        }
+        Relationships: []
+      }
+      provider_scenarios: {
+        Row: {
+          created_at: string
+          description: string
+          group_key: string
+          id: string
+          is_demo: boolean
+          severity: string
+          sort_order: number
+          state: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          group_key: string
+          id?: string
+          is_demo?: boolean
+          severity?: string
+          sort_order?: number
+          state: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          group_key?: string
+          id?: string
+          is_demo?: boolean
+          severity?: string
+          sort_order?: number
+          state?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
