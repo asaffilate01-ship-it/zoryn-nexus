@@ -88,13 +88,13 @@
   --chart-3: oklch(0.78 0.15 85);
   --chart-4: oklch(0.68 0.15 22);
   --chart-5: oklch(0.72 0.1 220);
-  --sidebar: oklch(0.2 0.033 254);
+  --sidebar: oklch(0.125 0.03 254);
   --sidebar-foreground: oklch(0.95 0.01 250);
   --sidebar-primary: oklch(0.82 0.17 165);
   --sidebar-primary-foreground: oklch(0.19 0.05 168);
-  --sidebar-accent: oklch(0.27 0.035 254);
+  --sidebar-accent: oklch(0.2 0.035 254);
   --sidebar-accent-foreground: oklch(0.97 0.008 250);
-  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-border: oklch(1 0 0 / 8%);
   --sidebar-ring: oklch(0.82 0.17 165);
   --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
