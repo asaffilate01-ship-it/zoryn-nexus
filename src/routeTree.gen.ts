@@ -10,22 +10,22 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as BusinessRouteImport } from './routes/business'
-import { Route as BusinessWorkspaceRouteImport } from './routes/business-workspace'
 import { Route as DemoRouteImport } from './routes/demo'
-import { Route as MerchantRouteImport } from './routes/merchant'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as OnboardingStatusRouteImport } from './routes/onboarding-status'
 import { Route as OperationsRouteImport } from './routes/operations'
 import { Route as OperationsCentreRouteImport } from './routes/operations-centre'
-import { Route as PersonalRouteImport } from './routes/personal'
-import { Route as PersonalWorkspaceRouteImport } from './routes/personal-workspace'
 import { Route as ProductionReadyRouteImport } from './routes/production-ready'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ProviderReadyRouteImport } from './routes/provider-ready'
 import { Route as ScenarioLabRouteImport } from './routes/scenario-lab'
-import { Route as ZorynpayWorkspaceRouteImport } from './routes/zorynpay-workspace'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedBusinessRouteImport } from './routes/_authenticated/business'
+import { Route as AuthenticatedBusinessWorkspaceRouteImport } from './routes/_authenticated/business-workspace'
+import { Route as AuthenticatedMerchantRouteImport } from './routes/_authenticated/merchant'
+import { Route as AuthenticatedPersonalRouteImport } from './routes/_authenticated/personal'
+import { Route as AuthenticatedPersonalWorkspaceRouteImport } from './routes/_authenticated/personal-workspace'
+import { Route as AuthenticatedZorynpayWorkspaceRouteImport } from './routes/_authenticated/zorynpay-workspace'
 import { Route as ApiPublicProviderApiRouteImport } from './routes/api/public/provider-api'
 import { Route as ApiPublicProviderJobsRouteImport } from './routes/api/public/provider-jobs'
 import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/public/provider-webhooks'
@@ -35,29 +35,9 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BusinessRoute = BusinessRouteImport.update({
-  id: '/business',
-  path: '/business',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BusinessWorkspaceRoute = BusinessWorkspaceRouteImport.update({
-  id: '/business-workspace',
-  path: '/business-workspace',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DemoRoute = DemoRouteImport.update({
   id: '/demo',
   path: '/demo',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MerchantRoute = MerchantRouteImport.update({
-  id: '/merchant',
-  path: '/merchant',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -80,16 +60,6 @@ const OperationsCentreRoute = OperationsCentreRouteImport.update({
   path: '/operations-centre',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PersonalRoute = PersonalRouteImport.update({
-  id: '/personal',
-  path: '/personal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PersonalWorkspaceRoute = PersonalWorkspaceRouteImport.update({
-  id: '/personal-workspace',
-  path: '/personal-workspace',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ProductionReadyRoute = ProductionReadyRouteImport.update({
   id: '/production-ready',
   path: '/production-ready',
@@ -110,11 +80,44 @@ const ScenarioLabRoute = ScenarioLabRouteImport.update({
   path: '/scenario-lab',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ZorynpayWorkspaceRoute = ZorynpayWorkspaceRouteImport.update({
-  id: '/zorynpay-workspace',
-  path: '/zorynpay-workspace',
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/_authenticated/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedBusinessRoute = AuthenticatedBusinessRouteImport.update({
+  id: '/_authenticated/business',
+  path: '/business',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedBusinessWorkspaceRoute =
+  AuthenticatedBusinessWorkspaceRouteImport.update({
+    id: '/_authenticated/business-workspace',
+    path: '/business-workspace',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedMerchantRoute = AuthenticatedMerchantRouteImport.update({
+  id: '/_authenticated/merchant',
+  path: '/merchant',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedPersonalRoute = AuthenticatedPersonalRouteImport.update({
+  id: '/_authenticated/personal',
+  path: '/personal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedPersonalWorkspaceRoute =
+  AuthenticatedPersonalWorkspaceRouteImport.update({
+    id: '/_authenticated/personal-workspace',
+    path: '/personal-workspace',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedZorynpayWorkspaceRoute =
+  AuthenticatedZorynpayWorkspaceRouteImport.update({
+    id: '/_authenticated/zorynpay-workspace',
+    path: '/zorynpay-workspace',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicProviderApiRoute = ApiPublicProviderApiRouteImport.update({
   id: '/api/public/provider-api',
   path: '/api/public/provider-api',
@@ -134,44 +137,44 @@ const ApiPublicProviderWebhooksRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/business': typeof BusinessRoute
-  '/business-workspace': typeof BusinessWorkspaceRoute
   '/demo': typeof DemoRoute
-  '/merchant': typeof MerchantRoute
   '/onboarding': typeof OnboardingRoute
   '/onboarding-status': typeof OnboardingStatusRoute
   '/operations': typeof OperationsRoute
   '/operations-centre': typeof OperationsCentreRoute
-  '/personal': typeof PersonalRoute
-  '/personal-workspace': typeof PersonalWorkspaceRoute
   '/production-ready': typeof ProductionReadyRoute
   '/products': typeof ProductsRoute
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
-  '/zorynpay-workspace': typeof ZorynpayWorkspaceRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/business': typeof AuthenticatedBusinessRoute
+  '/business-workspace': typeof AuthenticatedBusinessWorkspaceRoute
+  '/merchant': typeof AuthenticatedMerchantRoute
+  '/personal': typeof AuthenticatedPersonalRoute
+  '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
+  '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/business': typeof BusinessRoute
-  '/business-workspace': typeof BusinessWorkspaceRoute
   '/demo': typeof DemoRoute
-  '/merchant': typeof MerchantRoute
   '/onboarding': typeof OnboardingRoute
   '/onboarding-status': typeof OnboardingStatusRoute
   '/operations': typeof OperationsRoute
   '/operations-centre': typeof OperationsCentreRoute
-  '/personal': typeof PersonalRoute
-  '/personal-workspace': typeof PersonalWorkspaceRoute
   '/production-ready': typeof ProductionReadyRoute
   '/products': typeof ProductsRoute
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
-  '/zorynpay-workspace': typeof ZorynpayWorkspaceRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/business': typeof AuthenticatedBusinessRoute
+  '/business-workspace': typeof AuthenticatedBusinessWorkspaceRoute
+  '/merchant': typeof AuthenticatedMerchantRoute
+  '/personal': typeof AuthenticatedPersonalRoute
+  '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
+  '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -179,22 +182,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
-  '/business': typeof BusinessRoute
-  '/business-workspace': typeof BusinessWorkspaceRoute
   '/demo': typeof DemoRoute
-  '/merchant': typeof MerchantRoute
   '/onboarding': typeof OnboardingRoute
   '/onboarding-status': typeof OnboardingStatusRoute
   '/operations': typeof OperationsRoute
   '/operations-centre': typeof OperationsCentreRoute
-  '/personal': typeof PersonalRoute
-  '/personal-workspace': typeof PersonalWorkspaceRoute
   '/production-ready': typeof ProductionReadyRoute
   '/products': typeof ProductsRoute
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
-  '/zorynpay-workspace': typeof ZorynpayWorkspaceRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/business': typeof AuthenticatedBusinessRoute
+  '/_authenticated/business-workspace': typeof AuthenticatedBusinessWorkspaceRoute
+  '/_authenticated/merchant': typeof AuthenticatedMerchantRoute
+  '/_authenticated/personal': typeof AuthenticatedPersonalRoute
+  '/_authenticated/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
+  '/_authenticated/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -203,21 +206,21 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
-    | '/business'
-    | '/business-workspace'
     | '/demo'
-    | '/merchant'
     | '/onboarding'
     | '/onboarding-status'
     | '/operations'
     | '/operations-centre'
-    | '/personal'
-    | '/personal-workspace'
     | '/production-ready'
     | '/products'
     | '/provider-ready'
     | '/scenario-lab'
+    | '/admin'
+    | '/business'
+    | '/business-workspace'
+    | '/merchant'
+    | '/personal'
+    | '/personal-workspace'
     | '/zorynpay-workspace'
     | '/api/public/provider-api'
     | '/api/public/provider-jobs'
@@ -225,21 +228,21 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
-    | '/business'
-    | '/business-workspace'
     | '/demo'
-    | '/merchant'
     | '/onboarding'
     | '/onboarding-status'
     | '/operations'
     | '/operations-centre'
-    | '/personal'
-    | '/personal-workspace'
     | '/production-ready'
     | '/products'
     | '/provider-ready'
     | '/scenario-lab'
+    | '/admin'
+    | '/business'
+    | '/business-workspace'
+    | '/merchant'
+    | '/personal'
+    | '/personal-workspace'
     | '/zorynpay-workspace'
     | '/api/public/provider-api'
     | '/api/public/provider-jobs'
@@ -247,22 +250,22 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/admin'
-    | '/business'
-    | '/business-workspace'
     | '/demo'
-    | '/merchant'
     | '/onboarding'
     | '/onboarding-status'
     | '/operations'
     | '/operations-centre'
-    | '/personal'
-    | '/personal-workspace'
     | '/production-ready'
     | '/products'
     | '/provider-ready'
     | '/scenario-lab'
-    | '/zorynpay-workspace'
+    | '/_authenticated/admin'
+    | '/_authenticated/business'
+    | '/_authenticated/business-workspace'
+    | '/_authenticated/merchant'
+    | '/_authenticated/personal'
+    | '/_authenticated/personal-workspace'
+    | '/_authenticated/zorynpay-workspace'
     | '/api/public/provider-api'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
@@ -270,22 +273,22 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
-  BusinessRoute: typeof BusinessRoute
-  BusinessWorkspaceRoute: typeof BusinessWorkspaceRoute
   DemoRoute: typeof DemoRoute
-  MerchantRoute: typeof MerchantRoute
   OnboardingRoute: typeof OnboardingRoute
   OnboardingStatusRoute: typeof OnboardingStatusRoute
   OperationsRoute: typeof OperationsRoute
   OperationsCentreRoute: typeof OperationsCentreRoute
-  PersonalRoute: typeof PersonalRoute
-  PersonalWorkspaceRoute: typeof PersonalWorkspaceRoute
   ProductionReadyRoute: typeof ProductionReadyRoute
   ProductsRoute: typeof ProductsRoute
   ProviderReadyRoute: typeof ProviderReadyRoute
   ScenarioLabRoute: typeof ScenarioLabRoute
-  ZorynpayWorkspaceRoute: typeof ZorynpayWorkspaceRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedBusinessRoute: typeof AuthenticatedBusinessRoute
+  AuthenticatedBusinessWorkspaceRoute: typeof AuthenticatedBusinessWorkspaceRoute
+  AuthenticatedMerchantRoute: typeof AuthenticatedMerchantRoute
+  AuthenticatedPersonalRoute: typeof AuthenticatedPersonalRoute
+  AuthenticatedPersonalWorkspaceRoute: typeof AuthenticatedPersonalWorkspaceRoute
+  AuthenticatedZorynpayWorkspaceRoute: typeof AuthenticatedZorynpayWorkspaceRoute
   ApiPublicProviderApiRoute: typeof ApiPublicProviderApiRoute
   ApiPublicProviderJobsRoute: typeof ApiPublicProviderJobsRoute
   ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
@@ -300,39 +303,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/business': {
-      id: '/business'
-      path: '/business'
-      fullPath: '/business'
-      preLoaderRoute: typeof BusinessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/business-workspace': {
-      id: '/business-workspace'
-      path: '/business-workspace'
-      fullPath: '/business-workspace'
-      preLoaderRoute: typeof BusinessWorkspaceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/demo': {
       id: '/demo'
       path: '/demo'
       fullPath: '/demo'
       preLoaderRoute: typeof DemoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/merchant': {
-      id: '/merchant'
-      path: '/merchant'
-      fullPath: '/merchant'
-      preLoaderRoute: typeof MerchantRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -363,20 +338,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OperationsCentreRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/personal': {
-      id: '/personal'
-      path: '/personal'
-      fullPath: '/personal'
-      preLoaderRoute: typeof PersonalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/personal-workspace': {
-      id: '/personal-workspace'
-      path: '/personal-workspace'
-      fullPath: '/personal-workspace'
-      preLoaderRoute: typeof PersonalWorkspaceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/production-ready': {
       id: '/production-ready'
       path: '/production-ready'
@@ -405,11 +366,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ScenarioLabRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/zorynpay-workspace': {
-      id: '/zorynpay-workspace'
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/business': {
+      id: '/_authenticated/business'
+      path: '/business'
+      fullPath: '/business'
+      preLoaderRoute: typeof AuthenticatedBusinessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/business-workspace': {
+      id: '/_authenticated/business-workspace'
+      path: '/business-workspace'
+      fullPath: '/business-workspace'
+      preLoaderRoute: typeof AuthenticatedBusinessWorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/merchant': {
+      id: '/_authenticated/merchant'
+      path: '/merchant'
+      fullPath: '/merchant'
+      preLoaderRoute: typeof AuthenticatedMerchantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/personal': {
+      id: '/_authenticated/personal'
+      path: '/personal'
+      fullPath: '/personal'
+      preLoaderRoute: typeof AuthenticatedPersonalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/personal-workspace': {
+      id: '/_authenticated/personal-workspace'
+      path: '/personal-workspace'
+      fullPath: '/personal-workspace'
+      preLoaderRoute: typeof AuthenticatedPersonalWorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/zorynpay-workspace': {
+      id: '/_authenticated/zorynpay-workspace'
       path: '/zorynpay-workspace'
       fullPath: '/zorynpay-workspace'
-      preLoaderRoute: typeof ZorynpayWorkspaceRouteImport
+      preLoaderRoute: typeof AuthenticatedZorynpayWorkspaceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/provider-api': {
@@ -438,22 +441,22 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
-  BusinessRoute: BusinessRoute,
-  BusinessWorkspaceRoute: BusinessWorkspaceRoute,
   DemoRoute: DemoRoute,
-  MerchantRoute: MerchantRoute,
   OnboardingRoute: OnboardingRoute,
   OnboardingStatusRoute: OnboardingStatusRoute,
   OperationsRoute: OperationsRoute,
   OperationsCentreRoute: OperationsCentreRoute,
-  PersonalRoute: PersonalRoute,
-  PersonalWorkspaceRoute: PersonalWorkspaceRoute,
   ProductionReadyRoute: ProductionReadyRoute,
   ProductsRoute: ProductsRoute,
   ProviderReadyRoute: ProviderReadyRoute,
   ScenarioLabRoute: ScenarioLabRoute,
-  ZorynpayWorkspaceRoute: ZorynpayWorkspaceRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedBusinessRoute: AuthenticatedBusinessRoute,
+  AuthenticatedBusinessWorkspaceRoute: AuthenticatedBusinessWorkspaceRoute,
+  AuthenticatedMerchantRoute: AuthenticatedMerchantRoute,
+  AuthenticatedPersonalRoute: AuthenticatedPersonalRoute,
+  AuthenticatedPersonalWorkspaceRoute: AuthenticatedPersonalWorkspaceRoute,
+  AuthenticatedZorynpayWorkspaceRoute: AuthenticatedZorynpayWorkspaceRoute,
   ApiPublicProviderApiRoute: ApiPublicProviderApiRoute,
   ApiPublicProviderJobsRoute: ApiPublicProviderJobsRoute,
   ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
