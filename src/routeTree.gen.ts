@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BusinessRouteImport } from './routes/business'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as MerchantRouteImport } from './routes/merchant'
 import { Route as PersonalRouteImport } from './routes/personal'
 
@@ -30,6 +31,11 @@ const BusinessRoute = BusinessRouteImport.update({
   path: '/business',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MerchantRoute = MerchantRouteImport.update({
   id: '/merchant',
   path: '/merchant',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/business': typeof BusinessRoute
+  '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
   '/personal': typeof PersonalRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/business': typeof BusinessRoute
+  '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
   '/personal': typeof PersonalRoute
 }
@@ -60,21 +68,30 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/business': typeof BusinessRoute
+  '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
   '/personal': typeof PersonalRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/business' | '/merchant' | '/personal'
+  fullPaths: '/' | '/admin' | '/business' | '/demo' | '/merchant' | '/personal'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/business' | '/merchant' | '/personal'
-  id: '__root__' | '/' | '/admin' | '/business' | '/merchant' | '/personal'
+  to: '/' | '/admin' | '/business' | '/demo' | '/merchant' | '/personal'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/business'
+    | '/demo'
+    | '/merchant'
+    | '/personal'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   BusinessRoute: typeof BusinessRoute
+  DemoRoute: typeof DemoRoute
   MerchantRoute: typeof MerchantRoute
   PersonalRoute: typeof PersonalRoute
 }
@@ -102,6 +119,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BusinessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/merchant': {
       id: '/merchant'
       path: '/merchant'
@@ -123,9 +147,20 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   BusinessRoute: BusinessRoute,
+  DemoRoute: DemoRoute,
   MerchantRoute: MerchantRoute,
   PersonalRoute: PersonalRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
