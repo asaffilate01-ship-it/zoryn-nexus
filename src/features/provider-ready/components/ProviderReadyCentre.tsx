@@ -16,6 +16,7 @@ import { dateTime, eur } from "../lib/format";
 import { captureTapToPay, moveFunds } from "@/lib/zoryn-mutations.functions";
 import { MetricCard } from "./MetricCard";
 import { StatusBadge } from "./StatusBadge";
+import { useT } from "@/lib/i18n";
 
 type Tab = "overview" | "personal" | "business" | "pay" | "operations" | "scenarios";
 
@@ -29,6 +30,7 @@ const tabs: { id: Tab; label: string }[] = [
 ];
 
 export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: Tab }) {
+  const t = useT();
   const { data: snapshot } = useSuspenseQuery(providerSnapshotQueryOptions);
   const {
     customer: demoCustomer,
@@ -47,7 +49,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
   } = snapshot;
   const mainAccount = snapshot.accounts[0] ?? {
     id: "none",
-    name: "No account",
+    name: t("No account"),
     iban: "",
     availableCents: 0,
   };
@@ -78,29 +80,29 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
       setMoveError(null);
       void refreshSnapshot();
     },
-    onError: (error: unknown) => setMoveError(error instanceof Error ? error.message : "Transfer failed"),
+    onError: (error: unknown) => setMoveError(error instanceof Error ? error.message : t("Transfer failed")),
   });
 
   const tap = useMutation({
     mutationFn: captureFn,
     onSuccess: (result: { pointsEarned: number }) => {
-      setTapResult(`Approved · ${result.pointsEarned} points earned`);
+      setTapResult(t("Approved · {points} points earned", { points: result.pointsEarned }));
       void refreshSnapshot();
     },
-    onError: (error: unknown) => setTapResult(error instanceof Error ? error.message : "Payment declined"),
+    onError: (error: unknown) => setTapResult(error instanceof Error ? error.message : t("Payment declined")),
   });
 
   const cents = () => Math.round(Number(amount.replace(",", ".")) * 100);
   const moveToPot = () => {
     const c = cents();
-    if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError("Enter an amount");
-    if (c > mainBalance) return setMoveError("Not enough in your main balance");
+    if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError(t("Enter an amount"));
+    if (c > mainBalance) return setMoveError(t("Not enough in your main balance"));
     movement.mutate({ data: { accountId: mainAccount.id, amountCents: c, toPotId: activePot.id } });
   };
   const moveFromPot = () => {
     const c = cents();
-    if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError("Enter an amount");
-    if (c > activePot.balanceCents) return setMoveError(`Not enough in ${activePot.name}`);
+    if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError(t("Enter an amount"));
+    if (c > activePot.balanceCents) return setMoveError(t("Not enough in {name}", { name: activePot.name }));
     movement.mutate({ data: { accountId: mainAccount.id, amountCents: c, fromPotId: activePot.id } });
   };
 
@@ -109,15 +111,16 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
       <header className="border-b border-border bg-card/40">
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
           <Link to="/demo" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-            <ArrowLeft className="h-4 w-4" /> Product centre
+            <ArrowLeft className="h-4 w-4" /> {t("Product centre")}
           </Link>
           <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Zoryn Nexus</p>
-              <h1 className="mt-2 font-display text-3xl sm:text-4xl">Provider-ready product centre</h1>
+              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">{t("Zoryn Nexus")}</p>
+              <h1 className="mt-2 font-display text-3xl sm:text-4xl">{t("Provider-ready product centre")}</h1>
               <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
-                Production-state UX for banking, business, acquiring, rewards and operations — mapped behind the
-                Swan and Adyen adapter boundaries and running in mock mode until sandbox credentials are added.
+                {t(
+                  "Production-state UX for banking, business, acquiring, rewards and operations — mapped behind the Swan and Adyen adapter boundaries and running in mock mode until sandbox credentials are added.",
+                )}
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -131,7 +134,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                       : "bg-secondary text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  {x.label}
+                  {t(x.label)}
                 </button>
               ))}
             </div>
@@ -143,13 +146,13 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
         {tab === "overview" && (
           <div className="space-y-8">
             <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <MetricCard label="Available balance" value={eur(mainBalance)} help={mainAccount.iban} icon={<Landmark className="h-5 w-5 text-primary" />} />
-              <MetricCard label="Rewards value" value={eur(rewards.valueCents)} help={`${rewards.points.toLocaleString("de-DE")} points · ${rewards.tier} tier`} icon={<WalletCards className="h-5 w-5 text-primary" />} />
-              <MetricCard label="Today's merchant sales" value={eur(demoMerchant.todaySalesCents)} help={`${demoMerchant.terminalsOnline}/${demoMerchant.terminalsTotal} terminals online`} icon={<CreditCard className="h-5 w-5 text-primary" />} />
+              <MetricCard label={t("Available balance")} value={eur(mainBalance)} help={mainAccount.iban} icon={<Landmark className="h-5 w-5 text-primary" />} />
+              <MetricCard label={t("Rewards value")} value={eur(rewards.valueCents)} help={`${rewards.points.toLocaleString("de-DE")} ${t("points")} · ${t(rewards.tier)}`} icon={<WalletCards className="h-5 w-5 text-primary" />} />
+              <MetricCard label={t("Today's merchant sales")} value={eur(demoMerchant.todaySalesCents)} help={`${demoMerchant.terminalsOnline}/${demoMerchant.terminalsTotal} ${t("terminals online")}`} icon={<CreditCard className="h-5 w-5 text-primary" />} />
               <MetricCard
-                label="Open review actions"
+                label={t("Open review actions")}
                 value={String(snapshot.onboardingActions.length + webhookEvents.filter((e) => e.status !== "processed").length)}
-                help={`${scenarios.filter((s) => s.severity === "critical" || s.severity === "high").length} high priority`}
+                help={`${scenarios.filter((s) => s.severity === "critical" || s.severity === "high").length} ${t("high priority")}`}
                 icon={<ShieldCheck className="h-5 w-5 text-primary" />}
               />
             </section>
@@ -158,21 +161,21 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
               <div className="rounded-2xl border border-border bg-card/70 p-6">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h2 className="font-display text-xl">Account readiness</h2>
-                    <p className="text-sm text-muted-foreground">Customer and provider state mapping</p>
+                    <h2 className="font-display text-xl">{t("Account readiness")}</h2>
+                    <p className="text-sm text-muted-foreground">{t("Customer and provider state mapping")}</p>
                   </div>
                   <StatusBadge status={demoCustomer.status} />
                 </div>
                 <div className="mt-6 grid gap-3 sm:grid-cols-2">
                   <div className="rounded-xl bg-secondary/60 p-4">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Account holder</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">{t("Account holder")}</p>
                     <p className="mt-2 font-semibold">{demoCustomer.name}</p>
-                    <p className="text-sm text-muted-foreground">Risk score {demoCustomer.riskScore}/100</p>
+                    <p className="text-sm text-muted-foreground">{t("Risk score")} {demoCustomer.riskScore}/100</p>
                   </div>
                   <div className="rounded-xl bg-secondary/60 p-4">
-                    <p className="text-xs uppercase tracking-wide text-muted-foreground">Regulated source</p>
-                    <p className="mt-2 font-semibold">Swan adapter</p>
-                    <p className="text-sm text-muted-foreground">Mock mode until sandbox keys are added</p>
+                    <p className="text-xs uppercase tracking-wide text-muted-foreground">{t("Regulated source")}</p>
+                    <p className="mt-2 font-semibold">{t("Swan adapter")}</p>
+                    <p className="text-sm text-muted-foreground">{t("Mock mode until sandbox keys are added")}</p>
                   </div>
                 </div>
                 <div className="mt-4 space-y-2">
@@ -186,7 +189,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
               </div>
 
               <div className="rounded-2xl border border-border bg-card/70 p-6">
-                <h2 className="font-display text-xl">Provider health</h2>
+                <h2 className="font-display text-xl">{t("Provider health")}</h2>
                 <div className="mt-4 space-y-3">
                   {providerHealth.map((p) => (
                     <div key={p.provider} className="flex items-start justify-between gap-3 rounded-xl bg-secondary/50 p-3">
@@ -206,16 +209,16 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
         {tab === "personal" && (
           <div className="space-y-8">
             <section className="grid gap-4 lg:grid-cols-3">
-              <MetricCard label="Main account" value={eur(mainBalance)} help={mainAccount.iban} />
-              <MetricCard label="Pots" value={eur(pots.reduce((a, p) => a + p.balanceCents, 0))} help={`${pots.length} savings goals`} />
-              <MetricCard label="Cards" value={`${demoCards.filter((c) => c.status === "active").length} active`} help={`${demoCards.length} total`} />
+              <MetricCard label={t("Main account")} value={eur(mainBalance)} help={mainAccount.iban} />
+              <MetricCard label={t("Pots")} value={eur(pots.reduce((a, p) => a + p.balanceCents, 0))} help={`${pots.length} ${t("savings goals")}`} />
+              <MetricCard label={t("Cards")} value={`${demoCards.filter((c) => c.status === "active").length} ${t("active")}`} help={`${demoCards.length} ${t("total")}`} />
             </section>
 
             <section className="grid gap-6 lg:grid-cols-[.85fr_1.15fr]">
               <div className="rounded-2xl border border-border bg-card/70 p-6">
-                <h2 className="font-display text-xl">Move money between account and pots</h2>
+                <h2 className="font-display text-xl">{t("Move money between account and pots")}</h2>
                 <label className="mt-5 block text-sm font-semibold">
-                  Savings pot
+                  {t("Savings pot")}
                   <select
                     value={selectedPot}
                     onChange={(e) => setSelectedPot(e.target.value)}
@@ -229,7 +232,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                   </select>
                 </label>
                 <label className="mt-4 block text-sm font-semibold">
-                  Amount
+                  {t("Amount")}
                   <input
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
@@ -243,25 +246,26 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                     disabled={movement.isPending}
                     className="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
                   >
-                    {movement.isPending ? "Moving…" : "Move to pot"}
+                    {movement.isPending ? t("Moving…") : t("Move to pot")}
                   </button>
                   <button
                     onClick={moveFromPot}
                     disabled={movement.isPending}
                     className="rounded-xl border border-border px-4 py-3 text-sm font-bold disabled:opacity-60"
                   >
-                    Move to main
+                    {t("Move to main")}
                   </button>
                 </div>
                 {moveError && <p className="mt-3 text-xs font-semibold text-destructive">{moveError}</p>}
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Allocations are written to the database and audit log. In production the banking provider remains
-                  the ledger source of truth.
+                  {t(
+                    "Allocations are written to the database and audit log. In production the banking provider remains the ledger source of truth.",
+                  )}
                 </p>
               </div>
 
               <div className="rounded-2xl border border-border bg-card/70 p-6">
-                <h2 className="font-display text-xl">Recent transactions</h2>
+                <h2 className="font-display text-xl">{t("Recent transactions")}</h2>
                 <div className="mt-4 divide-y divide-border">
                   {demoTransactions.map((tx) => (
                     <div key={tx.id} className="flex items-center justify-between gap-4 py-4">
@@ -273,7 +277,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                         {tx.rewardsPoints != null && (
                           <p className="mt-1 text-xs font-medium text-primary">
                             {tx.rewardsPoints > 0 ? "+" : ""}
-                            {tx.rewardsPoints} reward points
+                            {tx.rewardsPoints} {t("reward points")}
                           </p>
                         )}
                       </div>
@@ -296,7 +300,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                   </div>
                   <p className="mt-10 text-xl tracking-[0.25em]">•••• {c.last4}</p>
                   <p className="mt-4 text-xs text-muted-foreground">
-                    Spent {eur(c.spentCents)} of {eur(c.monthlyLimitCents)}
+                    {t("Spent {spent} of {limit}", { spent: eur(c.spentCents), limit: eur(c.monthlyLimitCents) })}
                   </p>
                 </div>
               ))}
@@ -307,16 +311,16 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
         {tab === "business" && (
           <div className="space-y-8">
             <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <MetricCard label="Operating balance" value={eur(business.balanceCents)} help="Business account" />
-              <MetricCard label="Pending approvals" value={eur(business.pendingApprovalCents)} help="Held against available balance" />
-              <MetricCard label="Card spend" value={eur(business.cardSpendCents)} help={`Across ${demoTeam.length} team members`} />
-              <MetricCard label="Team members" value={String(demoTeam.length)} help="Roles and approval limits below" />
+              <MetricCard label={t("Operating balance")} value={eur(business.balanceCents)} help={t("Business account")} />
+              <MetricCard label={t("Pending approvals")} value={eur(business.pendingApprovalCents)} help={t("Held against available balance")} />
+              <MetricCard label={t("Card spend")} value={eur(business.cardSpendCents)} help={t("Across {count} team members", { count: demoTeam.length })} />
+              <MetricCard label={t("Team members")} value={String(demoTeam.length)} help={t("Roles and approval limits below")} />
             </section>
             <section className="grid gap-6 lg:grid-cols-2">
               <div className="rounded-2xl border border-border bg-card/70 p-6">
                 <div className="flex items-center gap-3">
                   <Building2 className="h-5 w-5 text-primary" />
-                  <h2 className="font-display text-xl">Team and permissions</h2>
+                  <h2 className="font-display text-xl">{t("Team and permissions")}</h2>
                 </div>
                 <div className="mt-4 space-y-3">
                   {demoTeam.map((m) => (
@@ -324,7 +328,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                       <div>
                         <p className="font-semibold">{m.name}</p>
                         <p className="text-xs capitalize text-muted-foreground">
-                          {m.role} · approval limit {eur(m.approvalLimitCents)}
+                          {m.role} · {t("approval limit")} {eur(m.approvalLimitCents)}
                         </p>
                       </div>
                       <StatusBadge status={m.status} />
@@ -333,18 +337,18 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                 </div>
               </div>
               <div className="rounded-2xl border border-border bg-card/70 p-6">
-                <h2 className="font-display text-xl">Business actions</h2>
+                <h2 className="font-display text-xl">{t("Business actions")}</h2>
                 <div className="mt-4 grid gap-3 sm:grid-cols-2">
                   {["Create supplier transfer", "Invite team member", "Issue staff card", "Upload receipt", "Export DATEV data", "Create approval policy"].map((x) => (
                     <Link key={x} to="/business" className="rounded-xl border border-border bg-secondary/40 p-4 text-left text-sm font-semibold hover:bg-secondary/70">
-                      {x}
+                      {t(x)}
                     </Link>
                   ))}
                 </div>
               </div>
             </section>
             <section className="rounded-2xl border border-border bg-card/70 p-6">
-              <h2 className="font-display text-xl">Staff and expense cards</h2>
+              <h2 className="font-display text-xl">{t("Staff and expense cards")}</h2>
               <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
                 {staffCards.map((c) => (
                   <div key={c.id} className="rounded-xl bg-secondary/50 p-4">
@@ -358,7 +362,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                       <StatusBadge status={c.status} />
                     </div>
                     <p className="mt-3 text-xs text-muted-foreground">
-                      Spent {eur(c.spentCents)} of {eur(c.monthlyLimitCents)}
+                      {t("Spent {spent} of {limit}", { spent: eur(c.spentCents), limit: eur(c.monthlyLimitCents) })}
                     </p>
                   </div>
                 ))}
@@ -370,18 +374,18 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
         {tab === "pay" && (
           <div className="space-y-8">
             <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <MetricCard label="Today's sales" value={eur(pay.todaySalesCents)} help="Settled and pending payments" />
-              <MetricCard label="Pending settlement" value={eur(pay.pendingSettlementCents)} help="Expected next banking day" />
-              <MetricCard label="Refunds" value={eur(pay.refundsCents)} help="Refunded transactions" />
-              <MetricCard label="Rewards balance" value={`${rewards.points.toLocaleString("de-DE")} pts`} help={`${rewards.tier} tier`} />
+              <MetricCard label={t("Today's sales")} value={eur(pay.todaySalesCents)} help={t("Settled and pending payments")} />
+              <MetricCard label={t("Pending settlement")} value={eur(pay.pendingSettlementCents)} help={t("Expected next banking day")} />
+              <MetricCard label={t("Refunds")} value={eur(pay.refundsCents)} help={t("Refunded transactions")} />
+              <MetricCard label={t("Rewards balance")} value={`${rewards.points.toLocaleString("de-DE")} ${t("pts")}`} help={t(rewards.tier)} />
             </section>
             <section className="grid gap-6 lg:grid-cols-[1fr_.8fr]">
               <div className="rounded-2xl border border-border bg-card/70 p-6">
-                <h2 className="font-display text-xl">Tap to Pay readiness</h2>
+                <h2 className="font-display text-xl">{t("Tap to Pay readiness")}</h2>
                 <div className="mt-5 rounded-2xl border border-border bg-background p-6">
                   <p className="text-sm text-muted-foreground">ZorynPay · {demoMerchant.name}</p>
                   <label className="mt-6 block text-sm font-semibold">
-                    Amount to charge
+                    {t("Amount to charge")}
                     <input
                       value={tapAmount}
                       onChange={(e) => setTapAmount(e.target.value)}
@@ -395,7 +399,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                   <button
                     onClick={() => {
                       const c = Math.round(Number(tapAmount.replace(",", ".")) * 100);
-                      if (!Number.isFinite(c) || c <= 0) return setTapResult("Enter an amount");
+                      if (!Number.isFinite(c) || c <= 0) return setTapResult(t("Enter an amount"));
                       setTapResult(null);
                       tap.mutate({
                         data: {
@@ -408,24 +412,24 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                     disabled={tap.isPending}
                     className="mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
                   >
-                    {tap.isPending ? "Reading card…" : "Simulate customer tap"}
+                    {tap.isPending ? t("Reading card…") : t("Simulate customer tap")}
                   </button>
-                  <p className="mt-4 text-center font-semibold">{tapResult ?? "Ready for customer tap"}</p>
+                  <p className="mt-4 text-center font-semibold">{tapResult ?? t("Ready for customer tap")}</p>
                   <p className="mt-1 text-center text-xs text-muted-foreground">
-                    The acquiring provider's Mobile SDK replaces this simulation.
+                    {t("The acquiring provider's Mobile SDK replaces this simulation.")}
                   </p>
                 </div>
               </div>
               <div className="rounded-2xl border border-border bg-card/70 p-6">
-                <h2 className="font-display text-xl">Terminal estate</h2>
+                <h2 className="font-display text-xl">{t("Terminal estate")}</h2>
                 <div className="mt-4 space-y-3">
-                  {terminals.map((t) => (
-                    <div key={t.id} className="flex items-center justify-between gap-3 rounded-xl bg-secondary/50 p-4">
+                  {terminals.map((term) => (
+                    <div key={term.id} className="flex items-center justify-between gap-3 rounded-xl bg-secondary/50 p-4">
                       <div>
-                        <p className="font-semibold">{t.name}</p>
-                        <p className="text-xs text-muted-foreground">Battery {t.battery}%</p>
+                        <p className="font-semibold">{term.name}</p>
+                        <p className="text-xs text-muted-foreground">{t("Battery {percent}%", { percent: term.battery })}</p>
                       </div>
-                      <StatusBadge status={t.status} />
+                      <StatusBadge status={term.status} />
                     </div>
                   ))}
                 </div>
@@ -440,9 +444,9 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
               <div className="flex items-center gap-3">
                 <ShieldCheck className="h-5 w-5 text-primary" />
                 <div>
-                  <h2 className="font-display text-xl">Webhook event centre</h2>
+                  <h2 className="font-display text-xl">{t("Webhook event centre")}</h2>
                   <p className="text-sm text-muted-foreground">
-                    Idempotency, retries, ordering and dead-letter visibility.
+                    {t("Idempotency, retries, ordering and dead-letter visibility.")}
                   </p>
                 </div>
               </div>
@@ -450,12 +454,12 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                 <table className="w-full min-w-[760px] text-left text-sm">
                   <thead>
                     <tr className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
-                      <th className="py-3">Provider</th>
-                      <th>Event</th>
-                      <th>Resource</th>
-                      <th>Occurred</th>
-                      <th>Attempts</th>
-                      <th>Status</th>
+                      <th className="py-3">{t("Provider")}</th>
+                      <th>{t("Event")}</th>
+                      <th>{t("Resource")}</th>
+                      <th>{t("Occurred")}</th>
+                      <th>{t("Attempts")}</th>
+                      <th>{t("Status")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -486,9 +490,9 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
         {tab === "scenarios" && (
           <div className="space-y-6">
             <div>
-              <h2 className="font-display text-2xl">Realistic scenario lab</h2>
+              <h2 className="font-display text-2xl">{t("Realistic scenario lab")}</h2>
               <p className="mt-1 text-sm text-muted-foreground">
-                Successful, failed, restricted and asynchronous journeys for demos and acceptance testing.
+                {t("Successful, failed, restricted and asynchronous journeys for demos and acceptance testing.")}
               </p>
             </div>
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
