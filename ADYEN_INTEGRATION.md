@@ -1,22 +1,11 @@
-# Go-live checklist
+# Adyen integration checklist
 
-## Product
-- All loading, empty, error, offline, restricted and provider-unavailable states tested.
-- German and English copy reviewed.
-- Accessibility keyboard and screen-reader checks complete.
-- Mobile layouts tested on iOS and Android breakpoints.
-
-## Banking
-- Swan sandbox journeys pass end-to-end.
-- KYC/KYB action states mapped.
-- SEPA success, failure and return states tested.
-- Card order, freeze, replacement and lost-card states tested.
-
-## Acquiring
-- Adyen onboarding, authorisation, capture, refund, chargeback and settlement tested.
-- Tap to Pay/terminal states tested.
-
-## Operations
-- Webhook signatures, retries, duplicate and out-of-order events tested.
-- Support, complaint SLA and audit logging tested.
-- Monitoring, alerting and incident runbooks active.
+- Create Adyen test platform and API credentials.
+- Choose hosted onboarding/components for merchant verification.
+- Map account holders, balance accounts, stores and terminals.
+- Implement online payment sessions, payment links and refunds server-side.
+- Integrate Mobile SDK for Tap to Pay where approved.
+- Map payment/settlement/capability states.
+- Verify Adyen HMAC webhooks and store idempotently.
+- Configure split instructions, platform fees and merchant settlement logic.
+- Complete Adyen go-live and compliance review.

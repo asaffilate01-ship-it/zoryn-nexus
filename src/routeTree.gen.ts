@@ -14,8 +14,14 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BusinessRouteImport } from './routes/business'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as MerchantRouteImport } from './routes/merchant'
+import { Route as OnboardingStatusRouteImport } from './routes/onboarding-status'
+import { Route as OperationsCentreRouteImport } from './routes/operations-centre'
 import { Route as PersonalRouteImport } from './routes/personal'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as ProviderReadyRouteImport } from './routes/provider-ready'
+import { Route as ScenarioLabRouteImport } from './routes/scenario-lab'
+import { Route as ApiPublicProviderApiRouteImport } from './routes/api/public/provider-api'
+import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/public/provider-webhooks'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -42,6 +48,16 @@ const MerchantRoute = MerchantRouteImport.update({
   path: '/merchant',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingStatusRoute = OnboardingStatusRouteImport.update({
+  id: '/onboarding-status',
+  path: '/onboarding-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OperationsCentreRoute = OperationsCentreRouteImport.update({
+  id: '/operations-centre',
+  path: '/operations-centre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PersonalRoute = PersonalRouteImport.update({
   id: '/personal',
   path: '/personal',
@@ -52,6 +68,27 @@ const ProductsRoute = ProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProviderReadyRoute = ProviderReadyRouteImport.update({
+  id: '/provider-ready',
+  path: '/provider-ready',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScenarioLabRoute = ScenarioLabRouteImport.update({
+  id: '/scenario-lab',
+  path: '/scenario-lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicProviderApiRoute = ApiPublicProviderApiRouteImport.update({
+  id: '/api/public/provider-api',
+  path: '/api/public/provider-api',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicProviderWebhooksRoute =
+  ApiPublicProviderWebhooksRouteImport.update({
+    id: '/api/public/provider-webhooks',
+    path: '/api/public/provider-webhooks',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,8 +96,14 @@ export interface FileRoutesByFullPath {
   '/business': typeof BusinessRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/onboarding-status': typeof OnboardingStatusRoute
+  '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
   '/products': typeof ProductsRoute
+  '/provider-ready': typeof ProviderReadyRoute
+  '/scenario-lab': typeof ScenarioLabRoute
+  '/api/public/provider-api': typeof ApiPublicProviderApiRoute
+  '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -68,8 +111,14 @@ export interface FileRoutesByTo {
   '/business': typeof BusinessRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/onboarding-status': typeof OnboardingStatusRoute
+  '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
   '/products': typeof ProductsRoute
+  '/provider-ready': typeof ProviderReadyRoute
+  '/scenario-lab': typeof ScenarioLabRoute
+  '/api/public/provider-api': typeof ApiPublicProviderApiRoute
+  '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -78,8 +127,14 @@ export interface FileRoutesById {
   '/business': typeof BusinessRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/onboarding-status': typeof OnboardingStatusRoute
+  '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
   '/products': typeof ProductsRoute
+  '/provider-ready': typeof ProviderReadyRoute
+  '/scenario-lab': typeof ScenarioLabRoute
+  '/api/public/provider-api': typeof ApiPublicProviderApiRoute
+  '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -89,8 +144,14 @@ export interface FileRouteTypes {
     | '/business'
     | '/demo'
     | '/merchant'
+    | '/onboarding-status'
+    | '/operations-centre'
     | '/personal'
     | '/products'
+    | '/provider-ready'
+    | '/scenario-lab'
+    | '/api/public/provider-api'
+    | '/api/public/provider-webhooks'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -98,8 +159,14 @@ export interface FileRouteTypes {
     | '/business'
     | '/demo'
     | '/merchant'
+    | '/onboarding-status'
+    | '/operations-centre'
     | '/personal'
     | '/products'
+    | '/provider-ready'
+    | '/scenario-lab'
+    | '/api/public/provider-api'
+    | '/api/public/provider-webhooks'
   id:
     | '__root__'
     | '/'
@@ -107,8 +174,14 @@ export interface FileRouteTypes {
     | '/business'
     | '/demo'
     | '/merchant'
+    | '/onboarding-status'
+    | '/operations-centre'
     | '/personal'
     | '/products'
+    | '/provider-ready'
+    | '/scenario-lab'
+    | '/api/public/provider-api'
+    | '/api/public/provider-webhooks'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,8 +190,14 @@ export interface RootRouteChildren {
   BusinessRoute: typeof BusinessRoute
   DemoRoute: typeof DemoRoute
   MerchantRoute: typeof MerchantRoute
+  OnboardingStatusRoute: typeof OnboardingStatusRoute
+  OperationsCentreRoute: typeof OperationsCentreRoute
   PersonalRoute: typeof PersonalRoute
   ProductsRoute: typeof ProductsRoute
+  ProviderReadyRoute: typeof ProviderReadyRoute
+  ScenarioLabRoute: typeof ScenarioLabRoute
+  ApiPublicProviderApiRoute: typeof ApiPublicProviderApiRoute
+  ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,6 +237,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MerchantRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding-status': {
+      id: '/onboarding-status'
+      path: '/onboarding-status'
+      fullPath: '/onboarding-status'
+      preLoaderRoute: typeof OnboardingStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/operations-centre': {
+      id: '/operations-centre'
+      path: '/operations-centre'
+      fullPath: '/operations-centre'
+      preLoaderRoute: typeof OperationsCentreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/personal': {
       id: '/personal'
       path: '/personal'
@@ -172,6 +265,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/provider-ready': {
+      id: '/provider-ready'
+      path: '/provider-ready'
+      fullPath: '/provider-ready'
+      preLoaderRoute: typeof ProviderReadyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scenario-lab': {
+      id: '/scenario-lab'
+      path: '/scenario-lab'
+      fullPath: '/scenario-lab'
+      preLoaderRoute: typeof ScenarioLabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/provider-api': {
+      id: '/api/public/provider-api'
+      path: '/api/public/provider-api'
+      fullPath: '/api/public/provider-api'
+      preLoaderRoute: typeof ApiPublicProviderApiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/provider-webhooks': {
+      id: '/api/public/provider-webhooks'
+      path: '/api/public/provider-webhooks'
+      fullPath: '/api/public/provider-webhooks'
+      preLoaderRoute: typeof ApiPublicProviderWebhooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -181,8 +302,14 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessRoute: BusinessRoute,
   DemoRoute: DemoRoute,
   MerchantRoute: MerchantRoute,
+  OnboardingStatusRoute: OnboardingStatusRoute,
+  OperationsCentreRoute: OperationsCentreRoute,
   PersonalRoute: PersonalRoute,
   ProductsRoute: ProductsRoute,
+  ProviderReadyRoute: ProviderReadyRoute,
+  ScenarioLabRoute: ScenarioLabRoute,
+  ApiPublicProviderApiRoute: ApiPublicProviderApiRoute,
+  ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
