@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as OnboardingStatusRouteImport } from './routes/onboarding-status'
@@ -33,6 +34,10 @@ import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/publ
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DemoRoute = DemoRouteImport.update({
@@ -81,42 +86,42 @@ const ScenarioLabRoute = ScenarioLabRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/_authenticated/admin',
+  id: '/admin',
   path: '/admin',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedBusinessRoute = AuthenticatedBusinessRouteImport.update({
-  id: '/_authenticated/business',
+  id: '/business',
   path: '/business',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedBusinessWorkspaceRoute =
   AuthenticatedBusinessWorkspaceRouteImport.update({
-    id: '/_authenticated/business-workspace',
+    id: '/business-workspace',
     path: '/business-workspace',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedMerchantRoute = AuthenticatedMerchantRouteImport.update({
-  id: '/_authenticated/merchant',
+  id: '/merchant',
   path: '/merchant',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPersonalRoute = AuthenticatedPersonalRouteImport.update({
-  id: '/_authenticated/personal',
+  id: '/personal',
   path: '/personal',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedPersonalWorkspaceRoute =
   AuthenticatedPersonalWorkspaceRouteImport.update({
-    id: '/_authenticated/personal-workspace',
+    id: '/personal-workspace',
     path: '/personal-workspace',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedZorynpayWorkspaceRoute =
   AuthenticatedZorynpayWorkspaceRouteImport.update({
-    id: '/_authenticated/zorynpay-workspace',
+    id: '/zorynpay-workspace',
     path: '/zorynpay-workspace',
-    getParentRoute: () => rootRouteImport,
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const ApiPublicProviderApiRoute = ApiPublicProviderApiRouteImport.update({
   id: '/api/public/provider-api',
@@ -182,6 +187,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/demo': typeof DemoRoute
   '/onboarding': typeof OnboardingRoute
   '/onboarding-status': typeof OnboardingStatusRoute
@@ -250,6 +256,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/demo'
     | '/onboarding'
     | '/onboarding-status'
@@ -273,6 +280,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   DemoRoute: typeof DemoRoute
   OnboardingRoute: typeof OnboardingRoute
   OnboardingStatusRoute: typeof OnboardingStatusRoute
@@ -282,13 +290,6 @@ export interface RootRouteChildren {
   ProductsRoute: typeof ProductsRoute
   ProviderReadyRoute: typeof ProviderReadyRoute
   ScenarioLabRoute: typeof ScenarioLabRoute
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedBusinessRoute: typeof AuthenticatedBusinessRoute
-  AuthenticatedBusinessWorkspaceRoute: typeof AuthenticatedBusinessWorkspaceRoute
-  AuthenticatedMerchantRoute: typeof AuthenticatedMerchantRoute
-  AuthenticatedPersonalRoute: typeof AuthenticatedPersonalRoute
-  AuthenticatedPersonalWorkspaceRoute: typeof AuthenticatedPersonalWorkspaceRoute
-  AuthenticatedZorynpayWorkspaceRoute: typeof AuthenticatedZorynpayWorkspaceRoute
   ApiPublicProviderApiRoute: typeof ApiPublicProviderApiRoute
   ApiPublicProviderJobsRoute: typeof ApiPublicProviderJobsRoute
   ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
@@ -301,6 +302,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/demo': {
@@ -371,49 +379,49 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/business': {
       id: '/_authenticated/business'
       path: '/business'
       fullPath: '/business'
       preLoaderRoute: typeof AuthenticatedBusinessRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/business-workspace': {
       id: '/_authenticated/business-workspace'
       path: '/business-workspace'
       fullPath: '/business-workspace'
       preLoaderRoute: typeof AuthenticatedBusinessWorkspaceRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/merchant': {
       id: '/_authenticated/merchant'
       path: '/merchant'
       fullPath: '/merchant'
       preLoaderRoute: typeof AuthenticatedMerchantRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/personal': {
       id: '/_authenticated/personal'
       path: '/personal'
       fullPath: '/personal'
       preLoaderRoute: typeof AuthenticatedPersonalRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/personal-workspace': {
       id: '/_authenticated/personal-workspace'
       path: '/personal-workspace'
       fullPath: '/personal-workspace'
       preLoaderRoute: typeof AuthenticatedPersonalWorkspaceRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/zorynpay-workspace': {
       id: '/_authenticated/zorynpay-workspace'
       path: '/zorynpay-workspace'
       fullPath: '/zorynpay-workspace'
       preLoaderRoute: typeof AuthenticatedZorynpayWorkspaceRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/api/public/provider-api': {
       id: '/api/public/provider-api'
@@ -439,8 +447,32 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedBusinessRoute: typeof AuthenticatedBusinessRoute
+  AuthenticatedBusinessWorkspaceRoute: typeof AuthenticatedBusinessWorkspaceRoute
+  AuthenticatedMerchantRoute: typeof AuthenticatedMerchantRoute
+  AuthenticatedPersonalRoute: typeof AuthenticatedPersonalRoute
+  AuthenticatedPersonalWorkspaceRoute: typeof AuthenticatedPersonalWorkspaceRoute
+  AuthenticatedZorynpayWorkspaceRoute: typeof AuthenticatedZorynpayWorkspaceRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedBusinessRoute: AuthenticatedBusinessRoute,
+  AuthenticatedBusinessWorkspaceRoute: AuthenticatedBusinessWorkspaceRoute,
+  AuthenticatedMerchantRoute: AuthenticatedMerchantRoute,
+  AuthenticatedPersonalRoute: AuthenticatedPersonalRoute,
+  AuthenticatedPersonalWorkspaceRoute: AuthenticatedPersonalWorkspaceRoute,
+  AuthenticatedZorynpayWorkspaceRoute: AuthenticatedZorynpayWorkspaceRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   DemoRoute: DemoRoute,
   OnboardingRoute: OnboardingRoute,
   OnboardingStatusRoute: OnboardingStatusRoute,
@@ -450,13 +482,6 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsRoute: ProductsRoute,
   ProviderReadyRoute: ProviderReadyRoute,
   ScenarioLabRoute: ScenarioLabRoute,
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedBusinessRoute: AuthenticatedBusinessRoute,
-  AuthenticatedBusinessWorkspaceRoute: AuthenticatedBusinessWorkspaceRoute,
-  AuthenticatedMerchantRoute: AuthenticatedMerchantRoute,
-  AuthenticatedPersonalRoute: AuthenticatedPersonalRoute,
-  AuthenticatedPersonalWorkspaceRoute: AuthenticatedPersonalWorkspaceRoute,
-  AuthenticatedZorynpayWorkspaceRoute: AuthenticatedZorynpayWorkspaceRoute,
   ApiPublicProviderApiRoute: ApiPublicProviderApiRoute,
   ApiPublicProviderJobsRoute: ApiPublicProviderJobsRoute,
   ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
