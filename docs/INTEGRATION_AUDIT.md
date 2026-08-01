@@ -73,3 +73,42 @@ the German-first requirement is unmet outside seeded German copy.
 3. Mutation server functions for money movement, writing `audit_logs`.
 4. Rewards outbox + signed emitter to the Hub, and a Hub balance reader.
 5. Auth + roles, then reconciliation, SCA and localisation.
+
+## 4. Delivered in this pass
+
+- **Adapters** (`src/features/provider-ready/lib/providers.server.ts`): mock,
+  Swan (GraphQL) and Adyen (Checkout/Management) implementations behind
+  `getBankingAdapter()` / `getAcquiringAdapter()`, selected by `PROVIDER_MODE`
+  plus credential presence. `deriveProviderHealth` now computes health from
+  configuration and event outcomes.
+- **Webhooks**: per-provider verification (`webhook-verify.server.ts`,
+  including Adyen's HMAC signing string and `[accepted]` response) and a
+  processor (`webhook-process.server.ts`) that advances
+  received → processing → processed | retrying | dead_letter, updates the
+  affected account/card/transaction, upserts `provider_resources`, writes
+  `audit_logs`, and queues rewards. Retry worker at
+  `POST /api/public/provider-jobs` (auth: `apikey` header).
+- **Money movement** (`src/lib/zoryn-mutations.functions.ts`): pot moves,
+  SEPA transfers, card freeze/limits, Tap to Pay capture, payment links,
+  points redemption and support cases — all persisted with balance validation
+  and audit entries, restricted to `is_demo` rows.
+- **Rewards, standalone by design**: points are always written to Zoryn's own
+  `loyalty_accounts` / `loyalty_entries` (idempotent), so rewards-only
+  customers are unaffected by banking or hub availability. `rewards_outbox`
+  mirrors every event to the Zoryn Rewards Hub only when `REWARDS_HUB_URL` and
+  `REWARDS_INGEST_SECRET` are set; otherwise rows are marked `skipped`.
+
+### Environment variables
+
+| Variable | Effect when absent |
+| --- | --- |
+| `PROVIDER_MODE` | defaults to `mock` |
+| `SWAN_API_KEY`, `SWAN_PROJECT_ID`, `SWAN_API_URL`, `SWAN_WEBHOOK_SECRET` | banking stays mock |
+| `ADYEN_API_KEY`, `ADYEN_MERCHANT_ACCOUNT`, `ADYEN_HMAC_KEY` | acquiring stays mock |
+| `REWARDS_HUB_URL`, `REWARDS_INGEST_SECRET`, `REWARDS_TENANT_SLUG` | rewards stay local-only |
+| `PROVIDER_WEBHOOK_SECRET` | mock/Zoryn webhooks rejected |
+
+### Still open
+
+Authentication and organisation roles (gap G6), settlement reconciliation, SCA
+approval steps and full localisation.
