@@ -39,15 +39,26 @@ export const Route = createFileRoute("/api/public/provider-api")({
           return Response.json({ ok: false, error: error.message }, { status: 500 });
         }
 
+        const { bankingConfigured, acquiringConfigured, rewardsHubConfigured, deriveProviderHealth, providerMode } =
+          await import("@/features/provider-ready/lib/providers.server");
+        const lastEventAt: Record<string, string | null> = {};
+        const failures: Record<string, number> = {};
+        for (const e of data ?? []) {
+          if (!lastEventAt[e.provider] || e.created_at > lastEventAt[e.provider]!) lastEventAt[e.provider] = e.created_at;
+        }
+        const health = deriveProviderHealth(lastEventAt, failures);
+
         return Response.json({
           ok: true,
-          mode: process.env["PROVIDER_MODE"] ?? "mock",
+          mode: providerMode(),
           adapters: {
-            banking: { configured: Boolean(process.env["SWAN_API_KEY"]), status: "mock" },
-            acquiring: { configured: Boolean(process.env["ADYEN_API_KEY"]), status: "mock" },
-            rewards: { configured: true, status: "operational" },
+            banking: { configured: bankingConfigured(), status: health.find((h) => h.provider === "swan")?.status },
+            acquiring: { configured: acquiringConfigured(), status: health.find((h) => h.provider === "adyen")?.status },
+            rewards: { configured: rewardsHubConfigured(), status: health.find((h) => h.provider === "rewards")?.status },
           },
+          health,
           webhookEndpoint: "/api/public/provider-webhooks",
+          jobsEndpoint: "/api/public/provider-jobs",
           recentEvents: data ?? [],
         });
       },

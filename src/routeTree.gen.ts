@@ -21,6 +21,7 @@ import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ProviderReadyRouteImport } from './routes/provider-ready'
 import { Route as ScenarioLabRouteImport } from './routes/scenario-lab'
 import { Route as ApiPublicProviderApiRouteImport } from './routes/api/public/provider-api'
+import { Route as ApiPublicProviderJobsRouteImport } from './routes/api/public/provider-jobs'
 import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/public/provider-webhooks'
 
 const IndexRoute = IndexRouteImport.update({
@@ -83,6 +84,11 @@ const ApiPublicProviderApiRoute = ApiPublicProviderApiRouteImport.update({
   path: '/api/public/provider-api',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicProviderJobsRoute = ApiPublicProviderJobsRouteImport.update({
+  id: '/api/public/provider-jobs',
+  path: '/api/public/provider-jobs',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicProviderWebhooksRoute =
   ApiPublicProviderWebhooksRouteImport.update({
     id: '/api/public/provider-webhooks',
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
+  '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRoutesByTo {
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
+  '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRoutesById {
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
+  '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRouteTypes {
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/provider-ready'
     | '/scenario-lab'
     | '/api/public/provider-api'
+    | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/provider-ready'
     | '/scenario-lab'
     | '/api/public/provider-api'
+    | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
   id:
     | '__root__'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/provider-ready'
     | '/scenario-lab'
     | '/api/public/provider-api'
+    | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
   fileRoutesById: FileRoutesById
 }
@@ -197,6 +209,7 @@ export interface RootRouteChildren {
   ProviderReadyRoute: typeof ProviderReadyRoute
   ScenarioLabRoute: typeof ScenarioLabRoute
   ApiPublicProviderApiRoute: typeof ApiPublicProviderApiRoute
+  ApiPublicProviderJobsRoute: typeof ApiPublicProviderJobsRoute
   ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
 }
 
@@ -286,6 +299,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicProviderApiRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/provider-jobs': {
+      id: '/api/public/provider-jobs'
+      path: '/api/public/provider-jobs'
+      fullPath: '/api/public/provider-jobs'
+      preLoaderRoute: typeof ApiPublicProviderJobsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/provider-webhooks': {
       id: '/api/public/provider-webhooks'
       path: '/api/public/provider-webhooks'
@@ -309,6 +329,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProviderReadyRoute: ProviderReadyRoute,
   ScenarioLabRoute: ScenarioLabRoute,
   ApiPublicProviderApiRoute: ApiPublicProviderApiRoute,
+  ApiPublicProviderJobsRoute: ApiPublicProviderJobsRoute,
   ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
 }
 export const routeTree = rootRouteImport
