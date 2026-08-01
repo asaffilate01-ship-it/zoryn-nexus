@@ -47,17 +47,17 @@ export const Route = createFileRoute("/api/public/provider-webhooks")({
         const resourceId = payload["resourceId"] == null ? null : String(payload["resourceId"]);
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { error } = await supabaseAdmin.from("provider_events").upsert(
-          {
-            provider,
-            event_id: eventId,
-            event_type: eventType,
-            resource_id: resourceId,
-            status: "received",
-            payload: payload as never,
-          },
-          { onConflict: "provider,event_id", ignoreDuplicates: true },
-        );
+        const row = {
+          provider,
+          event_id: eventId,
+          event_type: eventType,
+          resource_id: resourceId,
+          status: "received",
+          payload,
+        };
+        const { error } = await supabaseAdmin
+          .from("provider_events")
+          .upsert(row as never, { onConflict: "provider,event_id", ignoreDuplicates: true });
         if (error) {
           console.error("provider-webhooks insert failed", error);
           return Response.json({ ok: false, error: error.message }, { status: 500 });

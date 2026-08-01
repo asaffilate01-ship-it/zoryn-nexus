@@ -20,6 +20,7 @@ import { Route as PersonalRouteImport } from './routes/personal'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ProviderReadyRouteImport } from './routes/provider-ready'
 import { Route as ScenarioLabRouteImport } from './routes/scenario-lab'
+import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/public/provider-webhooks'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,6 +77,12 @@ const ScenarioLabRoute = ScenarioLabRouteImport.update({
   path: '/scenario-lab',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicProviderWebhooksRoute =
+  ApiPublicProviderWebhooksRouteImport.update({
+    id: '/api/public/provider-webhooks',
+    path: '/api/public/provider-webhooks',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/products': typeof ProductsRoute
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
+  '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -102,6 +110,7 @@ export interface FileRoutesByTo {
   '/products': typeof ProductsRoute
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
+  '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -116,6 +125,7 @@ export interface FileRoutesById {
   '/products': typeof ProductsRoute
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
+  '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/provider-ready'
     | '/scenario-lab'
+    | '/api/public/provider-webhooks'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/provider-ready'
     | '/scenario-lab'
+    | '/api/public/provider-webhooks'
   id:
     | '__root__'
     | '/'
@@ -157,6 +169,7 @@ export interface FileRouteTypes {
     | '/products'
     | '/provider-ready'
     | '/scenario-lab'
+    | '/api/public/provider-webhooks'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -171,6 +184,7 @@ export interface RootRouteChildren {
   ProductsRoute: typeof ProductsRoute
   ProviderReadyRoute: typeof ProviderReadyRoute
   ScenarioLabRoute: typeof ScenarioLabRoute
+  ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -252,6 +266,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ScenarioLabRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/provider-webhooks': {
+      id: '/api/public/provider-webhooks'
+      path: '/api/public/provider-webhooks'
+      fullPath: '/api/public/provider-webhooks'
+      preLoaderRoute: typeof ApiPublicProviderWebhooksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -267,6 +288,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProductsRoute: ProductsRoute,
   ProviderReadyRoute: ProviderReadyRoute,
   ScenarioLabRoute: ScenarioLabRoute,
+  ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
