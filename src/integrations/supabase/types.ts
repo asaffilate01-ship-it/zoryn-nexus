@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_rate_limits: {
+        Row: {
+          bucket: string
+          count: number
+          window_start: string
+        }
+        Insert: {
+          bucket: string
+          count?: number
+          window_start?: string
+        }
+        Update: {
+          bucket?: string
+          count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action: string
@@ -1075,6 +1093,10 @@ export type Database = {
       }
       can_access_merchant: {
         Args: { _merchant_id: string; _user_id: string }
+        Returns: boolean
+      }
+      check_rate_limit: {
+        Args: { _bucket: string; _limit: number; _window_seconds: number }
         Returns: boolean
       }
       has_role: {

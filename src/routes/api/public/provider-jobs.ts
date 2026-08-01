@@ -16,6 +16,10 @@ export const Route = createFileRoute("/api/public/provider-jobs")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const { enforceRateLimit } = await import("@/lib/rate-limit.server");
+        const limited = await enforceRateLimit(request, "provider-jobs", 60, 60);
+        if (limited) return limited;
+
         const { checkJobsSecret } = await import("@/lib/demo-reset.server");
         if (!checkJobsSecret(request)) return new Response("Unauthorized", { status: 401 });
 
