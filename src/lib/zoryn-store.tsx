@@ -313,7 +313,6 @@ const DemoContext = createContext<Ctx | null>(null);
 export function DemoProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(initialState);
   const [notice, setNotice] = useState("");
-  const [hydrated, setHydrated] = useState(false);
 
   // Load the seeded demo dataset from the database; the built-in constants
   // remain the fallback so the portals render even if the read fails.
@@ -326,8 +325,6 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         if (!cancelled) setState(next);
       } catch {
         /* keep fallback data */
-      } finally {
-        if (!cancelled) setHydrated(true);
       }
     })();
     return () => {
