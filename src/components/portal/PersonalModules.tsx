@@ -257,7 +257,13 @@ function Overview() {
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label={t("Available balance")} value={money(p.balance)} hint={p.iban} />
+        <StatCard
+          label={t("Available balance")}
+          value={money(p.balance)}
+          hint={p.iban}
+          emphasis
+          className="sm:col-span-2"
+        />
         <StatCard label={t("In savings pots")} value={money(p.pots.reduce((a, b) => a + b.balance, 0))} hint={t("{count} pots", { count: p.pots.length })} />
         <StatCard label={t("Spent this period")} value={money(spent)} hint={t("Across all cards")} />
         <StatCard label={t("Zoryn Points")} value={p.points.toLocaleString("de-DE")} hint={t("{tier} tier", { tier: p.tier })} />
