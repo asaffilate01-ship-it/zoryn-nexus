@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
 import {
   Activity,
   ArrowLeft,
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import { providerSnapshotQueryOptions } from "../lib/snapshot-query";
 import { dateTime, eur } from "../lib/format";
+import { captureTapToPay, moveFunds } from "@/lib/zoryn-mutations.functions";
 import { MetricCard } from "./MetricCard";
 import { StatusBadge } from "./StatusBadge";
 
@@ -51,27 +53,55 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
   };
 
   const [tab, setTab] = useState<Tab>(initialTab);
-  const [pots, setPots] = useState(snapshot.pots);
-  const [mainBalance, setMainBalance] = useState(mainAccount.availableCents);
+  const pots = snapshot.pots;
+  const mainBalance = mainAccount.availableCents;
   const [amount, setAmount] = useState("100");
   const [selectedPot, setSelectedPot] = useState(snapshot.pots[0]?.id ?? "");
+  const [moveError, setMoveError] = useState<string | null>(null);
+  const [tapAmount, setTapAmount] = useState("24.90");
+  const [tapResult, setTapResult] = useState<string | null>(null);
   const activePot = useMemo(
     () => pots.find((p) => p.id === selectedPot) ?? pots[0],
     [pots, selectedPot],
   );
 
+  const queryClient = useQueryClient();
+  const refreshSnapshot = () =>
+    queryClient.invalidateQueries({ queryKey: providerSnapshotQueryOptions.queryKey });
+
+  const moveFundsFn = useServerFn(moveFunds);
+  const captureFn = useServerFn(captureTapToPay);
+
+  const movement = useMutation({
+    mutationFn: moveFundsFn,
+    onSuccess: () => {
+      setMoveError(null);
+      void refreshSnapshot();
+    },
+    onError: (error: unknown) => setMoveError(error instanceof Error ? error.message : "Transfer failed"),
+  });
+
+  const tap = useMutation({
+    mutationFn: captureFn,
+    onSuccess: (result: { pointsEarned: number }) => {
+      setTapResult(`Approved · ${result.pointsEarned} points earned`);
+      void refreshSnapshot();
+    },
+    onError: (error: unknown) => setTapResult(error instanceof Error ? error.message : "Payment declined"),
+  });
+
   const cents = () => Math.round(Number(amount.replace(",", ".")) * 100);
   const moveToPot = () => {
     const c = cents();
-    if (!activePot || !Number.isFinite(c) || c <= 0 || c > mainBalance) return;
-    setMainBalance((v) => v - c);
-    setPots((p) => p.map((x) => (x.id === activePot.id ? { ...x, balanceCents: x.balanceCents + c } : x)));
+    if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError("Enter an amount");
+    if (c > mainBalance) return setMoveError("Not enough in your main balance");
+    movement.mutate({ data: { accountId: mainAccount.id, amountCents: c, toPotId: activePot.id } });
   };
   const moveFromPot = () => {
     const c = cents();
-    if (!activePot || !Number.isFinite(c) || c <= 0 || c > activePot.balanceCents) return;
-    setMainBalance((v) => v + c);
-    setPots((p) => p.map((x) => (x.id === activePot.id ? { ...x, balanceCents: x.balanceCents - c } : x)));
+    if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError("Enter an amount");
+    if (c > activePot.balanceCents) return setMoveError(`Not enough in ${activePot.name}`);
+    movement.mutate({ data: { accountId: mainAccount.id, amountCents: c, fromPotId: activePot.id } });
   };
 
   return (
