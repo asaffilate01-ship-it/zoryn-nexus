@@ -546,37 +546,94 @@ export type Database = {
       }
       provider_events: {
         Row: {
+          attempts: number
           created_at: string
+          error: string | null
           event_id: string
           event_type: string
           id: string
           is_demo: boolean
+          occurred_at: string
           payload: Json
           processed_at: string | null
           provider: string
+          resource_id: string | null
+          status: string
           updated_at: string
         }
         Insert: {
+          attempts?: number
           created_at?: string
+          error?: string | null
           event_id: string
           event_type: string
           id?: string
           is_demo?: boolean
+          occurred_at?: string
           payload?: Json
           processed_at?: string | null
           provider: string
+          resource_id?: string | null
+          status?: string
           updated_at?: string
         }
         Update: {
+          attempts?: number
           created_at?: string
+          error?: string | null
           event_id?: string
           event_type?: string
           id?: string
           is_demo?: boolean
+          occurred_at?: string
           payload?: Json
           processed_at?: string | null
           provider?: string
+          resource_id?: string | null
+          status?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      provider_resources: {
+        Row: {
+          created_at: string
+          id: string
+          is_demo: boolean
+          last_synced_at: string
+          metadata: Json
+          provider: string
+          provider_id: string
+          resource_type: string
+          updated_at: string
+          zoryn_id: string | null
+          zoryn_reference: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          last_synced_at?: string
+          metadata?: Json
+          provider: string
+          provider_id: string
+          resource_type: string
+          updated_at?: string
+          zoryn_id?: string | null
+          zoryn_reference?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_demo?: boolean
+          last_synced_at?: string
+          metadata?: Json
+          provider?: string
+          provider_id?: string
+          resource_type?: string
+          updated_at?: string
+          zoryn_id?: string | null
+          zoryn_reference?: string | null
         }
         Relationships: []
       }
