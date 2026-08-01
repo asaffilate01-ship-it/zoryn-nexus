@@ -31,7 +31,7 @@ export function PortalShell({ role }: { role: Role }) {
     <div className="min-h-screen lg:flex">
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-72 flex-col justify-between border-r border-sidebar-border bg-sidebar/95 p-6 backdrop-blur-xl transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 flex w-72 flex-col justify-between border-r border-sidebar-border bg-sidebar p-6 transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0",
           menuOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
@@ -42,11 +42,16 @@ export function PortalShell({ role }: { role: Role }) {
           >
             Zoryn<span className="text-primary">.</span>
           </Link>
-          <p className="mt-1 text-xs tracking-wide text-muted-foreground">
+          <p className="mt-1 text-xs tracking-wide text-sidebar-foreground/60">
             {t("Money. Payments. Rewards.")}
           </p>
 
-          <nav className="mt-8 space-y-1.5">
+          <div className="mt-8 px-3 pb-3">
+            <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-sidebar-foreground/40">
+              {t("Platform")}
+            </p>
+          </div>
+          <nav className="space-y-1">
             {items.map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
@@ -55,33 +60,33 @@ export function PortalShell({ role }: { role: Role }) {
                   setMenuOpen(false);
                 }}
                 className={cn(
-                  "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
+                  "group flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-semibold transition-all duration-200",
                   page === key
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-[0_10px_26px_-16px_oklch(0.82_0.17_165/0.95)]"
-                    : "text-muted-foreground hover:translate-x-0.5 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    ? "border border-primary/20 bg-primary/10 text-primary shadow-[0_10px_26px_-16px_oklch(0.82_0.17_165/0.95)]"
+                    : "text-sidebar-foreground/70 hover:translate-x-0.5 hover:bg-sidebar-accent hover:text-sidebar-foreground",
                 )}
               >
-                <Icon size={18} className="shrink-0" />
+                <Icon size={18} className="shrink-0 transition-transform duration-200 group-hover:scale-110" />
                 {t(label)}
               </button>
             ))}
           </nav>
         </div>
 
-        <div className="space-y-2">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+        <div className="space-y-3">
+          <p className="px-3 text-[10px] font-extrabold uppercase tracking-[0.2em] text-sidebar-foreground/40">
             {t("Switch portal")}
           </p>
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-2 gap-2 rounded-3xl border border-sidebar-border bg-sidebar-accent/40 p-2">
             {roleOrder.map((r) => (
               <Link
                 key={r}
                 to={rolePaths[r]}
                 className={cn(
-                  "rounded-xl border border-sidebar-border px-2 py-2 text-center text-xs font-medium transition-colors",
+                  "rounded-2xl px-2 py-2.5 text-center text-xs font-semibold transition-all",
                   r === role
-                    ? "border-primary/60 bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    ? "border border-primary/20 bg-primary/10 text-primary shadow-sm"
+                    : "text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground",
                 )}
               >
                 {t(portalConfigs[r].name)}
