@@ -476,8 +476,46 @@ function PublicHome() {
         </div>
       </section>
 
+      {/* LoungeTech ecosystem & European expansion */}
+      <section id="ecosystem" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+        <Eyebrow>LoungeTech ecosystem</Eyebrow>
+        <h2 className="mt-3 max-w-3xl font-display text-3xl sm:text-4xl">
+          Germany first, then across Europe.
+        </h2>
+        <p className="mt-4 max-w-3xl text-muted-foreground">
+          Zoryn is part of the wider LoungeTech ecosystem, where customer apps, participating
+          merchants and business services share one identity, one rewards currency and one payments
+          backbone. We start where our roots are — Germany — and expand market by market on the same
+          European-ready architecture.
+        </p>
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {[
+            {
+              Icon: Landmark,
+              t: "Germany-first positioning",
+              d: "German IBANs, SEPA Instant, local card habits, German-language support and DE-based operations from day one.",
+            },
+            {
+              Icon: Globe2,
+              t: "European expansion",
+              d: "Multi-country IBANs, EEA passporting through partners and a data model built for multi-currency and multi-market growth.",
+            },
+            {
+              Icon: Users,
+              t: "One connected ecosystem",
+              d: "Shared accounts, rewards and merchant network across LoungeTech apps and participating businesses.",
+            },
+          ].map(({ Icon, t, d }) => (
+            <article key={t} className="rounded-2xl border border-border bg-card/60 p-6">
+              <Icon size={20} className="text-primary" />
+              <h3 className="mt-4 font-display text-lg">{t}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{d}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       {/* Security & adapter boundaries */}
-*** placeholder
       <section id="security" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-[auto_1fr]">
           <div className="w-fit rounded-2xl bg-primary/12 p-5 text-primary">
