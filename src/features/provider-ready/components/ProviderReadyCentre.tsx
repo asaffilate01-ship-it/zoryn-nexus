@@ -238,16 +238,25 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                   />
                 </label>
                 <div className="mt-4 grid grid-cols-2 gap-3">
-                  <button onClick={moveToPot} className="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground">
-                    Move to pot
+                  <button
+                    onClick={moveToPot}
+                    disabled={movement.isPending}
+                    className="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
+                  >
+                    {movement.isPending ? "Moving…" : "Move to pot"}
                   </button>
-                  <button onClick={moveFromPot} className="rounded-xl border border-border px-4 py-3 text-sm font-bold">
+                  <button
+                    onClick={moveFromPot}
+                    disabled={movement.isPending}
+                    className="rounded-xl border border-border px-4 py-3 text-sm font-bold disabled:opacity-60"
+                  >
                     Move to main
                   </button>
                 </div>
+                {moveError && <p className="mt-3 text-xs font-semibold text-destructive">{moveError}</p>}
                 <p className="mt-3 text-xs text-muted-foreground">
-                  Mock allocations persist for this session. In production the banking provider remains the ledger
-                  source of truth.
+                  Allocations are written to the database and audit log. In production the banking provider remains
+                  the ledger source of truth.
                 </p>
               </div>
 
