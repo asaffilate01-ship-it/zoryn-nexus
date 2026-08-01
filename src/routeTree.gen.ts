@@ -12,14 +12,20 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BusinessRouteImport } from './routes/business'
+import { Route as BusinessWorkspaceRouteImport } from './routes/business-workspace'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as MerchantRouteImport } from './routes/merchant'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as OnboardingStatusRouteImport } from './routes/onboarding-status'
+import { Route as OperationsRouteImport } from './routes/operations'
 import { Route as OperationsCentreRouteImport } from './routes/operations-centre'
 import { Route as PersonalRouteImport } from './routes/personal'
+import { Route as PersonalWorkspaceRouteImport } from './routes/personal-workspace'
+import { Route as ProductionReadyRouteImport } from './routes/production-ready'
 import { Route as ProductsRouteImport } from './routes/products'
 import { Route as ProviderReadyRouteImport } from './routes/provider-ready'
 import { Route as ScenarioLabRouteImport } from './routes/scenario-lab'
+import { Route as ZorynpayWorkspaceRouteImport } from './routes/zorynpay-workspace'
 import { Route as ApiPublicProviderApiRouteImport } from './routes/api/public/provider-api'
 import { Route as ApiPublicProviderJobsRouteImport } from './routes/api/public/provider-jobs'
 import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/public/provider-webhooks'
@@ -39,6 +45,11 @@ const BusinessRoute = BusinessRouteImport.update({
   path: '/business',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BusinessWorkspaceRoute = BusinessWorkspaceRouteImport.update({
+  id: '/business-workspace',
+  path: '/business-workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DemoRoute = DemoRouteImport.update({
   id: '/demo',
   path: '/demo',
@@ -49,9 +60,19 @@ const MerchantRoute = MerchantRouteImport.update({
   path: '/merchant',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OnboardingStatusRoute = OnboardingStatusRouteImport.update({
   id: '/onboarding-status',
   path: '/onboarding-status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OperationsRoute = OperationsRouteImport.update({
+  id: '/operations',
+  path: '/operations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OperationsCentreRoute = OperationsCentreRouteImport.update({
@@ -62,6 +83,16 @@ const OperationsCentreRoute = OperationsCentreRouteImport.update({
 const PersonalRoute = PersonalRouteImport.update({
   id: '/personal',
   path: '/personal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PersonalWorkspaceRoute = PersonalWorkspaceRouteImport.update({
+  id: '/personal-workspace',
+  path: '/personal-workspace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProductionReadyRoute = ProductionReadyRouteImport.update({
+  id: '/production-ready',
+  path: '/production-ready',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProductsRoute = ProductsRouteImport.update({
@@ -77,6 +108,11 @@ const ProviderReadyRoute = ProviderReadyRouteImport.update({
 const ScenarioLabRoute = ScenarioLabRouteImport.update({
   id: '/scenario-lab',
   path: '/scenario-lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ZorynpayWorkspaceRoute = ZorynpayWorkspaceRouteImport.update({
+  id: '/zorynpay-workspace',
+  path: '/zorynpay-workspace',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicProviderApiRoute = ApiPublicProviderApiRouteImport.update({
@@ -100,14 +136,20 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/business': typeof BusinessRoute
+  '/business-workspace': typeof BusinessWorkspaceRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/onboarding': typeof OnboardingRoute
   '/onboarding-status': typeof OnboardingStatusRoute
+  '/operations': typeof OperationsRoute
   '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
+  '/personal-workspace': typeof PersonalWorkspaceRoute
+  '/production-ready': typeof ProductionReadyRoute
   '/products': typeof ProductsRoute
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
+  '/zorynpay-workspace': typeof ZorynpayWorkspaceRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -116,14 +158,20 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/business': typeof BusinessRoute
+  '/business-workspace': typeof BusinessWorkspaceRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/onboarding': typeof OnboardingRoute
   '/onboarding-status': typeof OnboardingStatusRoute
+  '/operations': typeof OperationsRoute
   '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
+  '/personal-workspace': typeof PersonalWorkspaceRoute
+  '/production-ready': typeof ProductionReadyRoute
   '/products': typeof ProductsRoute
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
+  '/zorynpay-workspace': typeof ZorynpayWorkspaceRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -133,14 +181,20 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/business': typeof BusinessRoute
+  '/business-workspace': typeof BusinessWorkspaceRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/onboarding': typeof OnboardingRoute
   '/onboarding-status': typeof OnboardingStatusRoute
+  '/operations': typeof OperationsRoute
   '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
+  '/personal-workspace': typeof PersonalWorkspaceRoute
+  '/production-ready': typeof ProductionReadyRoute
   '/products': typeof ProductsRoute
   '/provider-ready': typeof ProviderReadyRoute
   '/scenario-lab': typeof ScenarioLabRoute
+  '/zorynpay-workspace': typeof ZorynpayWorkspaceRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -151,14 +205,20 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/business'
+    | '/business-workspace'
     | '/demo'
     | '/merchant'
+    | '/onboarding'
     | '/onboarding-status'
+    | '/operations'
     | '/operations-centre'
     | '/personal'
+    | '/personal-workspace'
+    | '/production-ready'
     | '/products'
     | '/provider-ready'
     | '/scenario-lab'
+    | '/zorynpay-workspace'
     | '/api/public/provider-api'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
@@ -167,14 +227,20 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/business'
+    | '/business-workspace'
     | '/demo'
     | '/merchant'
+    | '/onboarding'
     | '/onboarding-status'
+    | '/operations'
     | '/operations-centre'
     | '/personal'
+    | '/personal-workspace'
+    | '/production-ready'
     | '/products'
     | '/provider-ready'
     | '/scenario-lab'
+    | '/zorynpay-workspace'
     | '/api/public/provider-api'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
@@ -183,14 +249,20 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/business'
+    | '/business-workspace'
     | '/demo'
     | '/merchant'
+    | '/onboarding'
     | '/onboarding-status'
+    | '/operations'
     | '/operations-centre'
     | '/personal'
+    | '/personal-workspace'
+    | '/production-ready'
     | '/products'
     | '/provider-ready'
     | '/scenario-lab'
+    | '/zorynpay-workspace'
     | '/api/public/provider-api'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
@@ -200,14 +272,20 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   BusinessRoute: typeof BusinessRoute
+  BusinessWorkspaceRoute: typeof BusinessWorkspaceRoute
   DemoRoute: typeof DemoRoute
   MerchantRoute: typeof MerchantRoute
+  OnboardingRoute: typeof OnboardingRoute
   OnboardingStatusRoute: typeof OnboardingStatusRoute
+  OperationsRoute: typeof OperationsRoute
   OperationsCentreRoute: typeof OperationsCentreRoute
   PersonalRoute: typeof PersonalRoute
+  PersonalWorkspaceRoute: typeof PersonalWorkspaceRoute
+  ProductionReadyRoute: typeof ProductionReadyRoute
   ProductsRoute: typeof ProductsRoute
   ProviderReadyRoute: typeof ProviderReadyRoute
   ScenarioLabRoute: typeof ScenarioLabRoute
+  ZorynpayWorkspaceRoute: typeof ZorynpayWorkspaceRoute
   ApiPublicProviderApiRoute: typeof ApiPublicProviderApiRoute
   ApiPublicProviderJobsRoute: typeof ApiPublicProviderJobsRoute
   ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
@@ -236,6 +314,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BusinessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/business-workspace': {
+      id: '/business-workspace'
+      path: '/business-workspace'
+      fullPath: '/business-workspace'
+      preLoaderRoute: typeof BusinessWorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/demo': {
       id: '/demo'
       path: '/demo'
@@ -250,11 +335,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MerchantRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/onboarding-status': {
       id: '/onboarding-status'
       path: '/onboarding-status'
       fullPath: '/onboarding-status'
       preLoaderRoute: typeof OnboardingStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/operations': {
+      id: '/operations'
+      path: '/operations'
+      fullPath: '/operations'
+      preLoaderRoute: typeof OperationsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/operations-centre': {
@@ -269,6 +368,20 @@ declare module '@tanstack/react-router' {
       path: '/personal'
       fullPath: '/personal'
       preLoaderRoute: typeof PersonalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/personal-workspace': {
+      id: '/personal-workspace'
+      path: '/personal-workspace'
+      fullPath: '/personal-workspace'
+      preLoaderRoute: typeof PersonalWorkspaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/production-ready': {
+      id: '/production-ready'
+      path: '/production-ready'
+      fullPath: '/production-ready'
+      preLoaderRoute: typeof ProductionReadyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/products': {
@@ -290,6 +403,13 @@ declare module '@tanstack/react-router' {
       path: '/scenario-lab'
       fullPath: '/scenario-lab'
       preLoaderRoute: typeof ScenarioLabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/zorynpay-workspace': {
+      id: '/zorynpay-workspace'
+      path: '/zorynpay-workspace'
+      fullPath: '/zorynpay-workspace'
+      preLoaderRoute: typeof ZorynpayWorkspaceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/provider-api': {
@@ -320,14 +440,20 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   BusinessRoute: BusinessRoute,
+  BusinessWorkspaceRoute: BusinessWorkspaceRoute,
   DemoRoute: DemoRoute,
   MerchantRoute: MerchantRoute,
+  OnboardingRoute: OnboardingRoute,
   OnboardingStatusRoute: OnboardingStatusRoute,
+  OperationsRoute: OperationsRoute,
   OperationsCentreRoute: OperationsCentreRoute,
   PersonalRoute: PersonalRoute,
+  PersonalWorkspaceRoute: PersonalWorkspaceRoute,
+  ProductionReadyRoute: ProductionReadyRoute,
   ProductsRoute: ProductsRoute,
   ProviderReadyRoute: ProviderReadyRoute,
   ScenarioLabRoute: ScenarioLabRoute,
+  ZorynpayWorkspaceRoute: ZorynpayWorkspaceRoute,
   ApiPublicProviderApiRoute: ApiPublicProviderApiRoute,
   ApiPublicProviderJobsRoute: ApiPublicProviderJobsRoute,
   ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
@@ -335,13 +461,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
