@@ -64,3 +64,16 @@ Upload the contents of this folder to a private GitHub repository, connect the r
 ## Important
 
 This is a mock product environment. It does not hold or move real funds and does not itself provide regulated financial services.
+
+
+## Site routes
+
+- Default / `#` — Zoryn corporate homepage
+- `#products` — customer product website (the previous homepage)
+- `#demo` — interactive demo and testing centre
+
+The corporate homepage presents Zoryn as a company and platform. The product page explains Personal, Business, ZorynPay and Rewards. The demo centre contains all realistic mock banking and payment workflows.
+
+
+## Zoryn Rewards integration
+See `src/lib/rewardsGateway.ts`, `src/components/rewards/UnifiedWalletCard.tsx`, the rewards bridge migration and Edge Function.
