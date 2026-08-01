@@ -565,11 +565,11 @@ function PublicHome() {
           <div>
             <Eyebrow>{t("Security and trust")}</Eyebrow>
             <h2 className="mt-3 font-display text-3xl sm:text-4xl">
-              {t("Designed around regulated partners and strong controls.")}
+              {t("Built on Swan for banking and Adyen for payments.")}
             </h2>
             <p className="mt-4 max-w-3xl text-muted-foreground">
               {t(
-                "Zoryn's customer experience is separated from the regulated banking and acquiring infrastructure. Identity checks, account services, card processing and payments connect through approved provider adapters, while Zoryn applies secure access, audit trails and clear customer controls.",
+                "Zoryn's customer experience is separated from the regulated banking and acquiring infrastructure. Swan handles KYC/KYB, accounts, IBANs, SEPA transfers and card issuing. Adyen handles PCI scope, Tap to Pay, terminals, payment links and settlements. Zoryn applies secure access, audit trails and clear customer controls on top.",
               )}
             </p>
             <div className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -585,18 +585,18 @@ function PublicHome() {
             </div>
             <div className="mt-6 grid gap-3 sm:grid-cols-2">
               <div className="rounded-xl border border-border bg-card/60 p-5">
-                <b className="font-display text-sm">{t("Banking adapter boundary")}</b>
+                <b className="font-display text-sm">{t("Banking by Swan")}</b>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {t(
-                    "Accounts, IBANs, SEPA transfers and card issuing sit behind a single banking adapter — swappable without touching the Zoryn data model.",
+                    "Accounts, German IBANs, SEPA transfers and card issuing sit behind the Swan banking adapter. KYC, KYB and AML decisions are made by the licensed partner.",
                   )}
                 </p>
               </div>
               <div className="rounded-xl border border-border bg-card/60 p-5">
-                <b className="font-display text-sm">{t("Acquiring adapter boundary")}</b>
+                <b className="font-display text-sm">{t("Payments by Adyen")}</b>
                 <p className="mt-1 text-xs text-muted-foreground">
                   {t(
-                    "Tap to Pay, terminals, payment links and settlements route through one acquiring adapter with webhook events and full audit logging.",
+                    "Tap to Pay, terminals, payment links and settlements route through the Adyen acquiring adapter. Card data and PCI DSS compliance stay within Adyen.",
                   )}
                 </p>
               </div>

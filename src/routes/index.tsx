@@ -261,17 +261,17 @@ function CorporateHome() {
       <section id="trust" className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-20">
         <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-primary">{t("Security & regulated partners")}</span>
         <h2 className="mt-4 max-w-2xl font-display text-3xl sm:text-4xl">
-          {t("Zoryn is the experience layer. Licensed partners hold the funds.")}
+          {t("Zoryn is the experience layer. Swan and Adyen handle the regulated infrastructure.")}
         </h2>
         <div className="mt-10 grid gap-4 sm:grid-cols-2">
           <div className="rounded-2xl border border-border bg-card/60 p-6">
             <span className="inline-flex rounded-xl bg-primary/12 p-3 text-primary">
               <ShieldCheck size={20} />
             </span>
-            <b className="mt-4 block font-display text-lg">{t("Banking adapter boundary")}</b>
+            <b className="mt-4 block font-display text-lg">{t("Banking by Swan")}</b>
             <p className="mt-2 text-sm text-muted-foreground">
               {t(
-                "Accounts, IBANs, SEPA transfers and card issuing are executed by a regulated banking partner behind a single adapter interface.",
+                "Accounts, German IBANs, SEPA transfers and card issuing run through Swan. KYC, KYB and AML decisions are made by the licensed banking partner, not by Zoryn.",
               )}
             </p>
           </div>
@@ -279,17 +279,17 @@ function CorporateHome() {
             <span className="inline-flex rounded-xl bg-primary/12 p-3 text-primary">
               <LockKeyhole size={20} />
             </span>
-            <b className="mt-4 block font-display text-lg">{t("Acquiring adapter boundary")}</b>
+            <b className="mt-4 block font-display text-lg">{t("Payments by Adyen")}</b>
             <p className="mt-2 text-sm text-muted-foreground">
               {t(
-                "Tap to Pay, terminals and settlements run through a regulated acquiring partner, with webhook events and audit logs recorded on the Zoryn side.",
+                "Tap to Pay, terminals, payment links and settlements run through Adyen. Card data, PCI DSS compliance and acquiring risk are handled by the licensed payment provider.",
               )}
             </p>
           </div>
         </div>
         <p className="mt-8 max-w-2xl text-sm text-muted-foreground">
           {t(
-            "This site and the demo platform are a product environment. They do not hold or move real funds and do not themselves provide regulated financial services.",
+            "Zoryn stores only provider references, masked card metadata and its own rewards ledger. This site and the demo platform are a product environment — they do not hold or move real funds and do not themselves provide regulated financial services.",
           )}
         </p>
       </section>
