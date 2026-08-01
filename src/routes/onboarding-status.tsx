@@ -48,7 +48,7 @@ export const Route = createFileRoute("/onboarding-status")({
   component: OnboardingStatus,
 });
 
-function OnboardingStatus() {
+export function OnboardingStatus() {
   const t = useT();
   const { data } = useSuspenseQuery(providerSnapshotQueryOptions);
   return (
