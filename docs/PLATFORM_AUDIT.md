@@ -59,3 +59,45 @@ Centre, server functions, public API routes, database).
 3. Demo reset + scheduled `provider-jobs`.
 4. Dual approval and refund flows.
 5. Tests around money maths and webhook verification.
+
+## Remediation round — August 2026
+
+Closed in this pass:
+
+- **S3 — money movement now requires a session.** Every server function in
+  `src/lib/zoryn-mutations.functions.ts` runs behind `requireSupabaseAuth`.
+  Shared `is_demo` rows stay drivable by any signed-in user; any non-demo row is
+  checked against `can_access_account` / `can_access_merchant` /
+  `can_access_loyalty` before it is written. Audit rows now carry `actor_id`.
+  Helpers moved to `zoryn-mutations.server.ts` so the server-fn module stays a
+  thin wrapper.
+- **UI follow-through.** The public Provider-Ready Centre disables its write
+  actions when signed out and links to `/auth`; reads stay public.
+- **S4 — dedicated job credential.** `/api/public/provider-jobs` and the new
+  `/api/public/demo-reset` authenticate with `ZORYN_JOBS_SECRET`
+  (`x-zoryn-jobs-secret` header, timing-safe compare) instead of the anon key.
+- **Demo reset.** `demo_baseline` snapshots every seeded demo row; the reset
+  endpoint clears demo activity and restores the snapshot, so the sandbox is
+  repeatable.
+- **Tests.** `bun run test` (vitest) covers the money conversion/limits and the
+  three webhook signature schemes, including tampered bodies and the Adyen
+  signing-string escaping.
+- **Typed admin client.** The `any` casts around the service-role client are
+  replaced with `SupabaseClient<Database>`.
+- **Duplicate routes.** `/operations`, `/operations-centre`,
+  `/production-ready`, `/onboarding` and the `*-workspace` aliases now emit
+  canonical links to their primary route.
+
+Still open, and why:
+
+- **Live Swan/Adyen mode** needs sandbox credentials (`SWAN_*`, `ADYEN_*`) from
+  the account owner; the adapters run in mock mode until those exist.
+- **PROVIDER_WEBHOOK_SECRET** still holds its placeholder value — it is a shared
+  secret that must be pasted into the provider dashboards, so it has to be
+  replaced by hand rather than generated.
+- **Dual approval and refunds/chargebacks** are product workflows, not defects;
+  they need a decision on approval thresholds and refund windows before build.
+- **Rate limiting** on `/api/public/*` has no standard backend primitive yet.
+- The `SECURITY DEFINER` linter warnings cover `has_role`, `is_org_member` and
+  the `can_access_*` helpers. They must stay executable because RLS policies
+  call them as the requesting role.
