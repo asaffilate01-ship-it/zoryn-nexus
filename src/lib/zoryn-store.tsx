@@ -114,6 +114,9 @@ export type State = {
     balance: number;
     points: number;
     tier: string;
+    pendingPoints: number;
+    rewardsWallet: number;
+    cashbackDestination: string;
     pots: Pot[];
     txns: Txn[];
     cards: Card[];
@@ -130,6 +133,10 @@ export type State = {
     team: TeamMember[];
     links: PaymentLink[];
     points: number;
+    tier: string;
+    pendingPoints: number;
+    rewardsWallet: number;
+    cashbackDestination: string;
     cases: SupportCase[];
     suppliers: { name: string; iban: string }[];
   };
