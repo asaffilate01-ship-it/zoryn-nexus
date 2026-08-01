@@ -129,6 +129,7 @@ export const portalNav: Record<Role, { key: PageKey; label: string; icon: Lucide
     { key: "overview", label: "Overview", icon: LayoutDashboard },
     { key: "payments", label: "Take payment", icon: Smartphone },
     { key: "accounts", label: "Settlements", icon: WalletCards },
+    { key: "team", label: "Payment links", icon: ReceiptText },
     { key: "cards", label: "Terminals", icon: CreditCard },
     { key: "rewards", label: "Loyalty", icon: Gift },
     { key: "support", label: "Support", icon: ShieldCheck },
