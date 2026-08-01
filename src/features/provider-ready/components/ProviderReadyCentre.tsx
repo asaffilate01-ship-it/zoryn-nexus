@@ -14,6 +14,7 @@ import {
 import { providerSnapshotQueryOptions } from "../lib/snapshot-query";
 import { dateTime, eur } from "../lib/format";
 import { captureTapToPay, moveFunds } from "@/lib/zoryn-mutations.functions";
+import { useSession } from "@/lib/auth";
 import { MetricCard } from "./MetricCard";
 import { StatusBadge } from "./StatusBadge";
 import { useT } from "@/lib/i18n";
@@ -73,6 +74,8 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
 
   const moveFundsFn = useServerFn(moveFunds);
   const captureFn = useServerFn(captureTapToPay);
+  const { session } = useSession();
+  const signedIn = Boolean(session);
 
   const movement = useMutation({
     mutationFn: moveFundsFn,
@@ -94,12 +97,14 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
 
   const cents = () => Math.round(Number(amount.replace(",", ".")) * 100);
   const moveToPot = () => {
+    if (!signedIn) return setMoveError(t("Sign in to run live money movement"));
     const c = cents();
     if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError(t("Enter an amount"));
     if (c > mainBalance) return setMoveError(t("Not enough in your main balance"));
     movement.mutate({ data: { accountId: mainAccount.id, amountCents: c, toPotId: activePot.id } });
   };
   const moveFromPot = () => {
+    if (!signedIn) return setMoveError(t("Sign in to run live money movement"));
     const c = cents();
     if (!activePot || !Number.isFinite(c) || c <= 0) return setMoveError(t("Enter an amount"));
     if (c > activePot.balanceCents) return setMoveError(t("Not enough in {name}", { name: activePot.name }));
@@ -243,20 +248,28 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                 <div className="mt-4 grid grid-cols-2 gap-3">
                   <button
                     onClick={moveToPot}
-                    disabled={movement.isPending}
+                    disabled={movement.isPending || !signedIn}
                     className="rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
                   >
                     {movement.isPending ? t("Moving…") : t("Move to pot")}
                   </button>
                   <button
                     onClick={moveFromPot}
-                    disabled={movement.isPending}
+                    disabled={movement.isPending || !signedIn}
                     className="rounded-xl border border-border px-4 py-3 text-sm font-bold disabled:opacity-60"
                   >
                     {t("Move to main")}
                   </button>
                 </div>
                 {moveError && <p className="mt-3 text-xs font-semibold text-destructive">{moveError}</p>}
+                {!signedIn && (
+                  <p className="mt-3 text-xs text-muted-foreground">
+                    <Link to="/auth" className="font-semibold text-primary underline-offset-4 hover:underline">
+                      {t("Sign in")}
+                    </Link>{" "}
+                    {t("to run live money movement — reads stay open to everyone.")}
+                  </p>
+                )}
                 <p className="mt-3 text-xs text-muted-foreground">
                   {t(
                     "Allocations are written to the database and audit log. In production the banking provider remains the ledger source of truth.",
@@ -398,6 +411,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                   </div>
                   <button
                     onClick={() => {
+                      if (!signedIn) return setTapResult(t("Sign in to run live money movement"));
                       const c = Math.round(Number(tapAmount.replace(",", ".")) * 100);
                       if (!Number.isFinite(c) || c <= 0) return setTapResult(t("Enter an amount"));
                       setTapResult(null);
@@ -409,7 +423,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                         },
                       });
                     }}
-                    disabled={tap.isPending}
+                    disabled={tap.isPending || !signedIn}
                     className="mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
                   >
                     {tap.isPending ? t("Reading card…") : t("Simulate customer tap")}
