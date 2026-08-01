@@ -477,6 +477,7 @@ function PublicHome() {
       </section>
 
       {/* Security & adapter boundaries */}
+*** placeholder
       <section id="security" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-[auto_1fr]">
           <div className="w-fit rounded-2xl bg-primary/12 p-5 text-primary">
