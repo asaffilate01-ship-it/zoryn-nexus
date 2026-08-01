@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   Activity,
   ArrowLeft,
@@ -9,18 +10,7 @@ import {
   ShieldCheck,
   WalletCards,
 } from "lucide-react";
-import {
-  demoAccounts,
-  demoCards,
-  demoCustomer,
-  demoMerchant,
-  demoPots,
-  demoTeam,
-  demoTransactions,
-  providerHealth,
-  scenarios,
-  webhookEvents,
-} from "../data/scenarios";
+import { providerSnapshotQueryOptions } from "../lib/snapshot-query";
 import { dateTime, eur } from "../lib/format";
 import { MetricCard } from "./MetricCard";
 import { StatusBadge } from "./StatusBadge";
@@ -36,26 +26,49 @@ const tabs: { id: Tab; label: string }[] = [
   { id: "scenarios", label: "Scenario Lab" },
 ];
 
-const mainAccount = demoAccounts[0]!;
-
 export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: Tab }) {
+  const { data: snapshot } = useSuspenseQuery(providerSnapshotQueryOptions);
+  const {
+    customer: demoCustomer,
+    cards: demoCards,
+    merchant: demoMerchant,
+    team: demoTeam,
+    transactions: demoTransactions,
+    providerHealth,
+    scenarios,
+    webhookEvents,
+    terminals,
+    rewards,
+    business,
+    pay,
+  } = snapshot;
+  const mainAccount = snapshot.accounts[0] ?? {
+    id: "none",
+    name: "No account",
+    iban: "",
+    availableCents: 0,
+  };
+
   const [tab, setTab] = useState<Tab>(initialTab);
-  const [pots, setPots] = useState(demoPots);
+  const [pots, setPots] = useState(snapshot.pots);
   const [mainBalance, setMainBalance] = useState(mainAccount.availableCents);
   const [amount, setAmount] = useState("100");
-  const [selectedPot, setSelectedPot] = useState(demoPots[0]!.id);
-  const activePot = useMemo(() => pots.find((p) => p.id === selectedPot) ?? pots[0]!, [pots, selectedPot]);
+  const [selectedPot, setSelectedPot] = useState(snapshot.pots[0]?.id ?? "");
+  const activePot = useMemo(
+    () => pots.find((p) => p.id === selectedPot) ?? pots[0],
+    [pots, selectedPot],
+  );
 
   const cents = () => Math.round(Number(amount.replace(",", ".")) * 100);
   const moveToPot = () => {
     const c = cents();
-    if (!Number.isFinite(c) || c <= 0 || c > mainBalance) return;
+    if (!activePot || !Number.isFinite(c) || c <= 0 || c > mainBalance) return;
     setMainBalance((v) => v - c);
     setPots((p) => p.map((x) => (x.id === activePot.id ? { ...x, balanceCents: x.balanceCents + c } : x)));
   };
   const moveFromPot = () => {
     const c = cents();
-    if (!Number.isFinite(c) || c <= 0 || c > activePot.balanceCents) return;
+    if (!activePot || !Number.isFinite(c) || c <= 0 || c > activePot.balanceCents) return;
     setMainBalance((v) => v + c);
     setPots((p) => p.map((x) => (x.id === activePot.id ? { ...x, balanceCents: x.balanceCents - c } : x)));
   };
