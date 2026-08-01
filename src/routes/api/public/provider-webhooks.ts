@@ -1,69 +1,83 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { createHmac, timingSafeEqual } from "crypto";
+import { verifyWebhook } from "@/features/provider-ready/lib/webhook-verify.server";
 
 /**
- * Provider webhook receiver (replaces the "provider-webhooks" function in the
- * overlay — this stack runs server routes, not Edge Functions).
+ * Provider webhook receiver.
  *
- * Verifies an HMAC-SHA256 signature over the raw body, then stores the raw
- * event idempotently on provider_events. Processing stays asynchronous: the
- * row is written as `received` and picked up by the operations centre.
+ * Verifies the provider-specific signature (Swan HMAC hex, Adyen HMAC base64
+ * over the notification item, Zoryn/mock HMAC hex), stores the event
+ * idempotently on provider_events, then processes it immediately. Failures are
+ * left in `retrying` for the retry worker at /api/public/provider-jobs.
+ *
+ * Adyen requires the literal "[accepted]" response body or it keeps retrying.
  */
 export const Route = createFileRoute("/api/public/provider-webhooks")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env["PROVIDER_WEBHOOK_SECRET"];
-        if (!secret) {
-          return Response.json(
-            { ok: false, mode: "mock", error: "PROVIDER_WEBHOOK_SECRET is not configured" },
-            { status: 503 },
-          );
-        }
-
         const body = await request.text();
-        const signature =
-          request.headers.get("x-zoryn-signature") ??
-          request.headers.get("x-swan-signature") ??
-          request.headers.get("hmacsignature") ??
-          "";
-        const expected = createHmac("sha256", secret).update(body).digest("hex");
-        const sig = Buffer.from(signature);
-        const exp = Buffer.from(expected);
-        if (sig.length !== exp.length || !timingSafeEqual(sig, exp)) {
-          return new Response("Invalid signature", { status: 401 });
-        }
 
-        let payload: Record<string, unknown>;
+        let payload: any;
         try {
           payload = JSON.parse(body || "{}");
         } catch {
           return new Response("Invalid JSON", { status: 400 });
         }
 
-        const provider = String(payload["provider"] ?? "unknown");
-        const eventId = String(payload["id"] ?? payload["eventId"] ?? crypto.randomUUID());
-        const eventType = String(payload["type"] ?? payload["eventCode"] ?? "unknown");
-        const resourceId = payload["resourceId"] == null ? null : String(payload["resourceId"]);
-
-        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const row = {
-          provider,
-          event_id: eventId,
-          event_type: eventType,
-          resource_id: resourceId,
-          status: "received",
-          payload,
-        };
-        const { error } = await supabaseAdmin
-          .from("provider_events")
-          .upsert(row as never, { onConflict: "provider,event_id", ignoreDuplicates: true });
-        if (error) {
-          console.error("provider-webhooks insert failed", error);
-          return Response.json({ ok: false, error: error.message }, { status: 500 });
+        const verified = verifyWebhook(request.headers, body, payload);
+        if (!verified.ok) {
+          return Response.json({ ok: false, error: verified.error }, { status: verified.status });
         }
 
-        return Response.json({ accepted: true, provider, eventType });
+        const isAdyen = Array.isArray(payload?.notificationItems);
+        const items: any[] = isAdyen
+          ? payload.notificationItems.map((w: any) => w?.NotificationRequestItem ?? w)
+          : [payload];
+
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+        const { processEvent } = await import("@/features/provider-ready/lib/webhook-process.server");
+
+        const accepted: string[] = [];
+        for (const item of items) {
+          const provider = isAdyen ? "adyen" : String(item?.provider ?? verified.provider);
+          const eventId = String(item?.pspReference ?? item?.id ?? item?.eventId ?? crypto.randomUUID());
+          const eventType = String(item?.eventCode ?? item?.type ?? "unknown");
+          const resourceId =
+            item?.resourceId ?? item?.merchantReference ?? item?.data?.id ?? item?.pspReference ?? null;
+
+          const { data: row, error } = await supabaseAdmin
+            .from("provider_events")
+            .upsert(
+              {
+                provider,
+                event_id: eventId,
+                event_type: eventType,
+                resource_id: resourceId == null ? null : String(resourceId),
+                status: "received",
+                payload: item,
+                is_demo: true,
+              } as never,
+              { onConflict: "provider,event_id", ignoreDuplicates: true },
+            )
+            .select("id")
+            .maybeSingle();
+
+          if (error) {
+            console.error("provider-webhooks insert failed", error);
+            return Response.json({ ok: false, error: error.message }, { status: 500 });
+          }
+
+          // ignoreDuplicates returns no row for a replay — that is a success.
+          if (row?.id) {
+            await processEvent(supabaseAdmin as never, row.id);
+            accepted.push(eventId);
+          }
+        }
+
+        if (isAdyen) {
+          return Response.json({ notificationResponse: "[accepted]" });
+        }
+        return Response.json({ accepted: true, provider: verified.provider, events: accepted.length });
       },
     },
   },
