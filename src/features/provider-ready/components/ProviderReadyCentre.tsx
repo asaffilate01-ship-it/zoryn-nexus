@@ -33,6 +33,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
     cards: demoCards,
     merchant: demoMerchant,
     team: demoTeam,
+    staffCards,
     transactions: demoTransactions,
     providerHealth,
     scenarios,
@@ -301,6 +302,27 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                     </Link>
                   ))}
                 </div>
+              </div>
+            </section>
+            <section className="rounded-2xl border border-border bg-card/70 p-6">
+              <h2 className="font-display text-xl">Staff and expense cards</h2>
+              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {staffCards.map((c) => (
+                  <div key={c.id} className="rounded-xl bg-secondary/50 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-semibold">{c.label}</p>
+                        <p className="text-xs capitalize text-muted-foreground">
+                          {c.type} · •••• {c.last4}
+                        </p>
+                      </div>
+                      <StatusBadge status={c.status} />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      Spent {eur(c.spentCents)} of {eur(c.monthlyLimitCents)}
+                    </p>
+                  </div>
+                ))}
               </div>
             </section>
           </div>
