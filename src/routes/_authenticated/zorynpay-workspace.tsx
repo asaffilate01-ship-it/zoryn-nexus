@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PortalShell } from "@/components/portal/PortalShell";
 
-export const Route = createFileRoute("/zorynpay-workspace")({
+export const Route = createFileRoute("/_authenticated/zorynpay-workspace")({
   head: () => ({
     meta: [
       { title: "ZorynPay workspace — Tap to Pay, settlements and terminals" },

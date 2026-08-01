@@ -4,7 +4,7 @@ import { portalConfigs } from "@/lib/zoryn-data";
 
 const config = portalConfigs["merchant"];
 
-export const Route = createFileRoute("/merchant")({
+export const Route = createFileRoute("/_authenticated/merchant")({
   head: () => ({
     meta: [
       { title: `Zoryn ${config.name} portal — ${config.tagline}` },

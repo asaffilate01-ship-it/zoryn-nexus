@@ -2,9 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { PortalShell } from "@/components/portal/PortalShell";
 import { portalConfigs } from "@/lib/zoryn-data";
 
-const config = portalConfigs["personal"];
+const config = portalConfigs["admin"];
 
-export const Route = createFileRoute("/personal")({
+export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
       { title: `Zoryn ${config.name} portal — ${config.tagline}` },
@@ -15,5 +15,5 @@ export const Route = createFileRoute("/personal")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: () => <PortalShell role="personal" />,
+  component: () => <PortalShell role="admin" />,
 });
