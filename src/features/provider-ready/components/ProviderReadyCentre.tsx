@@ -401,7 +401,7 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                         data: {
                           merchantId: demoMerchant.id,
                           amountCents: c,
-                          ...(terminals[0］?.id ? { terminalId: terminals[0].id } : {}),
+                          ...(terminals[0]?.id ? { terminalId: terminals[0].id } : {}),
                         },
                       });
                     }}
