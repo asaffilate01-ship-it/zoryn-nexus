@@ -214,4 +214,22 @@ export const deMarketing: Record<string, string> = {
   "ZorynPay": "ZorynPay",
   "Zoryn Rewards": "Zoryn Rewards",
   "Zoryn Admin": "Zoryn Admin",
+  "Zoryn is the experience layer. Swan and Adyen handle the regulated infrastructure.":
+    "Zoryn ist die Erlebnisebene. Swan und Adyen übernehmen die regulierte Infrastruktur.",
+  "Banking by Swan": "Banking über Swan",
+  "Accounts, German IBANs, SEPA transfers and card issuing run through Swan. KYC, KYB and AML decisions are made by the licensed banking partner, not by Zoryn.":
+    "Konten, deutsche IBANs, SEPA-Überweisungen und Kartenausgabe laufen über Swan. KYC-, KYB- und AML-Entscheidungen werden vom lizenzierten Banking-Partner getroffen, nicht von Zoryn.",
+  "Payments by Adyen": "Zahlungen über Adyen",
+  "Tap to Pay, terminals, payment links and settlements run through Adyen. Card data, PCI DSS compliance and acquiring risk are handled by the licensed payment provider.":
+    "Tap to Pay, Terminals, Zahlungslinks und Auszahlungen laufen über Adyen. Kartendaten, PCI-DSS-Konformität und Acquiring-Risiko werden vom lizenzierten Zahlungsdienstleister übernommen.",
+  "Zoryn stores only provider references, masked card metadata and its own rewards ledger. This site and the demo platform are a product environment — they do not hold or move real funds and do not themselves provide regulated financial services.":
+    "Zoryn speichert nur Provider-Referenzen, maskierte Kartenmetadaten und sein eigenes Prämienbuch. Diese Website und die Demo-Plattform sind eine Produktumgebung — sie halten oder bewegen keine echten Gelder und erbringen selbst keine regulierten Finanzdienstleistungen.",
+  "Built on Swan for banking and Adyen for payments.":
+    "Aufgebaut auf Swan für Banking und Adyen für Zahlungen.",
+  "Zoryn's customer experience is separated from the regulated banking and acquiring infrastructure. Swan handles KYC/KYB, accounts, IBANs, SEPA transfers and card issuing. Adyen handles PCI scope, Tap to Pay, terminals, payment links and settlements. Zoryn applies secure access, audit trails and clear customer controls on top.":
+    "Das Zoryn-Kundenerlebnis ist von der regulierten Banking- und Acquiring-Infrastruktur getrennt. Swan übernimmt KYC/KYB, Konten, IBANs, SEPA-Überweisungen und Kartenausgabe. Adyen übernimmt PCI-Scope, Tap to Pay, Terminals, Zahlungslinks und Auszahlungen. Zoryn ergänzt sicheren Zugang, Audit-Spuren und klare Kundensteuerungen.",
+  "Accounts, German IBANs, SEPA transfers and card issuing sit behind the Swan banking adapter. KYC, KYB and AML decisions are made by the licensed partner.":
+    "Konten, deutsche IBANs, SEPA-Überweisungen und Kartenausgabe liegen hinter dem Swan-Banking-Adapter. KYC-, KYB- und AML-Entscheidungen werden vom lizenzierten Partner getroffen.",
+  "Tap to Pay, terminals, payment links and settlements route through the Adyen acquiring adapter. Card data and PCI DSS compliance stay within Adyen.":
+    "Tap to Pay, Terminals, Zahlungslinks und Auszahlungen laufen über den Adyen-Acquiring-Adapter. Kartendaten und PCI-DSS-Konformität verbleiben bei Adyen.",
 };
