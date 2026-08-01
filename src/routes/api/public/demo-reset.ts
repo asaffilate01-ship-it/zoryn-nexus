@@ -10,6 +10,10 @@ export const Route = createFileRoute("/api/public/demo-reset")({
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const { enforceRateLimit } = await import("@/lib/rate-limit.server");
+        const limited = await enforceRateLimit(request, "demo-reset", 10, 3600);
+        if (limited) return limited;
+
         const { checkJobsSecret, resetDemoData } = await import("@/lib/demo-reset.server");
         if (!checkJobsSecret(request)) return new Response("Unauthorized", { status: 401 });
 
