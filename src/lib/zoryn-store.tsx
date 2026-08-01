@@ -172,6 +172,9 @@ export const initialState: State = {
     balance: 8420.65,
     points: 1840,
     tier: "Silver",
+    pendingPoints: 620,
+    rewardsWallet: 0,
+    cashbackDestination: "wallet",
     pots: [
       { id: "pot-1", name: "Emergency fund", balance: 2150, target: 5000 },
       { id: "pot-2", name: "Urlaub 2027", balance: 640.2, target: 2500 },
@@ -215,6 +218,10 @@ export const initialState: State = {
       { id: uid(), reference: "PL-8821", description: "Consulting retainer", amount: 2400, url: "https://pay.zoryn.demo/PL-8821", status: "paid", createdAt: "2026-07-28T10:00:00Z" },
     ],
     points: 24600,
+    tier: "Gold",
+    pendingPoints: 1450,
+    rewardsWallet: 0,
+    cashbackDestination: "main",
     cases: [],
     suppliers: [
       { name: "Nordic Beans UG", iban: "DE12 5001 0517 0648 4898 90" },
