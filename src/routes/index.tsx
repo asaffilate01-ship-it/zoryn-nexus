@@ -101,6 +101,7 @@ function CorporateHome() {
             <Link to="/products" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
               {t("Products")}
             </Link>
+            <AuthLink />
             <Link
               to="/demo"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
@@ -126,6 +127,7 @@ function CorporateHome() {
             <Link to="/products" className="text-sm text-muted-foreground">
               {t("Products")}
             </Link>
+            <AuthLink />
             <Link to="/demo" className="text-sm font-semibold text-primary">
               {t("Explore live demo")}
             </Link>
