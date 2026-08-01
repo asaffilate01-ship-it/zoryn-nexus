@@ -214,13 +214,13 @@ function PublicHome() {
               ))}
             </div>
           </div>
-          <div className="absolute -left-4 top-24 hidden items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-xl sm:flex">
+          <div className="absolute -left-10 top-[46%] hidden items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-xl lg:flex">
             <Gift size={15} className="text-primary" />
             <span>
               <b>1,840</b> Zoryn Points
             </span>
           </div>
-          <div className="absolute -right-4 bottom-16 hidden items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-xl sm:flex">
+          <div className="absolute -right-10 bottom-8 hidden items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-xl lg:flex">
             <CheckCircle2 size={15} className="text-primary" />
             <span>
               <b>Payment approved</b> €15.90
