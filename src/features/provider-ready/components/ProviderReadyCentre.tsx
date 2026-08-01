@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   Activity,
   ArrowLeft,
@@ -9,18 +10,7 @@ import {
   ShieldCheck,
   WalletCards,
 } from "lucide-react";
-import {
-  demoAccounts,
-  demoCards,
-  demoCustomer,
-  demoMerchant,
-  demoPots,
-  demoTeam,
-  demoTransactions,
-  providerHealth,
-  scenarios,
-  webhookEvents,
-} from "../data/scenarios";
+import { providerSnapshotQueryOptions } from "../lib/snapshot-query";
 import { dateTime, eur } from "../lib/format";
 import { MetricCard } from "./MetricCard";
 import { StatusBadge } from "./StatusBadge";
@@ -36,26 +26,50 @@ const tabs: { id: Tab; label: string }[] = [
   { id: "scenarios", label: "Scenario Lab" },
 ];
 
-const mainAccount = demoAccounts[0]!;
-
 export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: Tab }) {
+  const { data: snapshot } = useSuspenseQuery(providerSnapshotQueryOptions);
+  const {
+    customer: demoCustomer,
+    cards: demoCards,
+    merchant: demoMerchant,
+    team: demoTeam,
+    staffCards,
+    transactions: demoTransactions,
+    providerHealth,
+    scenarios,
+    webhookEvents,
+    terminals,
+    rewards,
+    business,
+    pay,
+  } = snapshot;
+  const mainAccount = snapshot.accounts[0] ?? {
+    id: "none",
+    name: "No account",
+    iban: "",
+    availableCents: 0,
+  };
+
   const [tab, setTab] = useState<Tab>(initialTab);
-  const [pots, setPots] = useState(demoPots);
+  const [pots, setPots] = useState(snapshot.pots);
   const [mainBalance, setMainBalance] = useState(mainAccount.availableCents);
   const [amount, setAmount] = useState("100");
-  const [selectedPot, setSelectedPot] = useState(demoPots[0]!.id);
-  const activePot = useMemo(() => pots.find((p) => p.id === selectedPot) ?? pots[0]!, [pots, selectedPot]);
+  const [selectedPot, setSelectedPot] = useState(snapshot.pots[0]?.id ?? "");
+  const activePot = useMemo(
+    () => pots.find((p) => p.id === selectedPot) ?? pots[0],
+    [pots, selectedPot],
+  );
 
   const cents = () => Math.round(Number(amount.replace(",", ".")) * 100);
   const moveToPot = () => {
     const c = cents();
-    if (!Number.isFinite(c) || c <= 0 || c > mainBalance) return;
+    if (!activePot || !Number.isFinite(c) || c <= 0 || c > mainBalance) return;
     setMainBalance((v) => v - c);
     setPots((p) => p.map((x) => (x.id === activePot.id ? { ...x, balanceCents: x.balanceCents + c } : x)));
   };
   const moveFromPot = () => {
     const c = cents();
-    if (!Number.isFinite(c) || c <= 0 || c > activePot.balanceCents) return;
+    if (!activePot || !Number.isFinite(c) || c <= 0 || c > activePot.balanceCents) return;
     setMainBalance((v) => v + c);
     setPots((p) => p.map((x) => (x.id === activePot.id ? { ...x, balanceCents: x.balanceCents - c } : x)));
   };
@@ -100,9 +114,14 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
           <div className="space-y-8">
             <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
               <MetricCard label="Available balance" value={eur(mainBalance)} help={mainAccount.iban} icon={<Landmark className="h-5 w-5 text-primary" />} />
-              <MetricCard label="Rewards value" value="€42.80" help="4,280 points + €7.30 cashback" icon={<WalletCards className="h-5 w-5 text-primary" />} />
+              <MetricCard label="Rewards value" value={eur(rewards.valueCents)} help={`${rewards.points.toLocaleString("de-DE")} points · ${rewards.tier} tier`} icon={<WalletCards className="h-5 w-5 text-primary" />} />
               <MetricCard label="Today's merchant sales" value={eur(demoMerchant.todaySalesCents)} help={`${demoMerchant.terminalsOnline}/${demoMerchant.terminalsTotal} terminals online`} icon={<CreditCard className="h-5 w-5 text-primary" />} />
-              <MetricCard label="Open review actions" value="7" help="2 high priority" icon={<ShieldCheck className="h-5 w-5 text-primary" />} />
+              <MetricCard
+                label="Open review actions"
+                value={String(snapshot.onboardingActions.length + webhookEvents.filter((e) => e.status !== "processed").length)}
+                help={`${scenarios.filter((s) => s.severity === "critical" || s.severity === "high").length} high priority`}
+                icon={<ShieldCheck className="h-5 w-5 text-primary" />}
+              />
             </section>
 
             <section className="grid gap-6 lg:grid-cols-[1.2fr_.8fr]">
@@ -249,10 +268,10 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
         {tab === "business" && (
           <div className="space-y-8">
             <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <MetricCard label="Operating balance" value="€64,280.20" help="Active GmbH account" />
-              <MetricCard label="Pending approvals" value="€8,400.00" help="1 supplier payment" />
-              <MetricCard label="Card spend" value="€12,680.40" help="Across 8 active staff cards" />
-              <MetricCard label="Missing receipts" value="6" help="2 overdue" />
+              <MetricCard label="Operating balance" value={eur(business.balanceCents)} help="Business account" />
+              <MetricCard label="Pending approvals" value={eur(business.pendingApprovalCents)} help="Held against available balance" />
+              <MetricCard label="Card spend" value={eur(business.cardSpendCents)} help={`Across ${demoTeam.length} team members`} />
+              <MetricCard label="Team members" value={String(demoTeam.length)} help="Roles and approval limits below" />
             </section>
             <section className="grid gap-6 lg:grid-cols-2">
               <div className="rounded-2xl border border-border bg-card/70 p-6">
@@ -285,16 +304,37 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                 </div>
               </div>
             </section>
+            <section className="rounded-2xl border border-border bg-card/70 p-6">
+              <h2 className="font-display text-xl">Staff and expense cards</h2>
+              <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+                {staffCards.map((c) => (
+                  <div key={c.id} className="rounded-xl bg-secondary/50 p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="font-semibold">{c.label}</p>
+                        <p className="text-xs capitalize text-muted-foreground">
+                          {c.type} · •••• {c.last4}
+                        </p>
+                      </div>
+                      <StatusBadge status={c.status} />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      Spent {eur(c.spentCents)} of {eur(c.monthlyLimitCents)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </section>
           </div>
         )}
 
         {tab === "pay" && (
           <div className="space-y-8">
             <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <MetricCard label="Today's sales" value={eur(demoMerchant.todaySalesCents)} help="124 payments" />
-              <MetricCard label="Pending settlement" value={eur(demoMerchant.pendingSettlementCents)} help="Expected tomorrow" />
-              <MetricCard label="Refunds" value="€184.50" help="3 partial, 1 full" />
-              <MetricCard label="Reward redemptions" value="€96.00" help="24 customers" />
+              <MetricCard label="Today's sales" value={eur(pay.todaySalesCents)} help="Settled and pending payments" />
+              <MetricCard label="Pending settlement" value={eur(pay.pendingSettlementCents)} help="Expected next banking day" />
+              <MetricCard label="Refunds" value={eur(pay.refundsCents)} help="Refunded transactions" />
+              <MetricCard label="Rewards balance" value={`${rewards.points.toLocaleString("de-DE")} pts`} help={`${rewards.tier} tier`} />
             </section>
             <section className="grid gap-6 lg:grid-cols-[1fr_.8fr]">
               <div className="rounded-2xl border border-border bg-card/70 p-6">
@@ -314,17 +354,13 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
               <div className="rounded-2xl border border-border bg-card/70 p-6">
                 <h2 className="font-display text-xl">Terminal estate</h2>
                 <div className="mt-4 space-y-3">
-                  {[
-                    { n: "Mitte counter", s: "online", b: "82%" },
-                    { n: "Mitte mobile", s: "online", b: "61%" },
-                    { n: "Kitchen terminal", s: "offline", b: "14%" },
-                  ].map((x) => (
-                    <div key={x.n} className="flex items-center justify-between gap-3 rounded-xl bg-secondary/50 p-4">
+                  {terminals.map((t) => (
+                    <div key={t.id} className="flex items-center justify-between gap-3 rounded-xl bg-secondary/50 p-4">
                       <div>
-                        <p className="font-semibold">{x.n}</p>
-                        <p className="text-xs text-muted-foreground">Battery {x.b}</p>
+                        <p className="font-semibold">{t.name}</p>
+                        <p className="text-xs text-muted-foreground">Battery {t.battery}%</p>
                       </div>
-                      <StatusBadge status={x.s} />
+                      <StatusBadge status={t.status} />
                     </div>
                   ))}
                 </div>
