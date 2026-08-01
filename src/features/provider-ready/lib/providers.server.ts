@@ -256,14 +256,14 @@ export function deriveProviderHealth(
     entry(
       "swan",
       mode !== "mock" && bankingConfigured(),
-      "Banking adapter connected. Accounts, transfers and cards are live.",
-      "Banking adapter in mock mode. Add sandbox credentials to enable live calls.",
+      "Swan banking adapter connected. KYC/KYB, accounts, transfers and cards are live.",
+      "Swan banking adapter in mock mode. Add SWAN_API_KEY and SWAN_PROJECT_ID to enable live calls.",
     ),
     entry(
       "adyen",
       mode !== "mock" && acquiringConfigured(),
-      "Acquiring adapter connected. Payments, links and settlement are live.",
-      "Acquiring adapter in mock mode. Onboarding, payments and settlement are simulated.",
+      "Adyen acquiring adapter connected. Tap to Pay, terminals, payments and settlement are live.",
+      "Adyen acquiring adapter in mock mode. Add ADYEN_API_KEY and ADYEN_MERCHANT_ACCOUNT to enable live calls.",
     ),
     entry(
       "rewards",
