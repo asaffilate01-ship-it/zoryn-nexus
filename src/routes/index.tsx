@@ -248,13 +248,76 @@ function PublicHome() {
         </div>
       </section>
 
+      {/* About Zoryn */}
+      <section id="about" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1.05fr_1fr]">
+          <div>
+            <Eyebrow>About Zoryn</Eyebrow>
+            <h2 className="mt-3 font-display text-3xl sm:text-4xl">
+              A modern money platform built by LoungeTech.
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              Zoryn is the customer-facing money, payments and rewards platform of the LoungeTech
+              ecosystem. We bring everyday banking, business finance, in-person card acceptance and
+              loyalty into one product experience — designed in Germany, built for Europe, and
+              delivered together with regulated banking and acquiring partners.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              {[
+                { k: "Germany first", v: "German IBANs, SEPA and local payment habits" },
+                { k: "One platform", v: "Personal, business, merchant and rewards" },
+                { k: "Partner powered", v: "Regulated banking and acquiring providers" },
+              ].map((i) => (
+                <div key={i.k} className="rounded-xl border border-border bg-card/60 p-5">
+                  <b className="font-display text-sm">{i.k}</b>
+                  <p className="mt-1 text-xs text-muted-foreground">{i.v}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-2xl border border-border bg-card/60 p-8">
+            <b className="font-display text-lg">What Zoryn offers</b>
+            <div className="mt-5 grid gap-4">
+              {[
+                {
+                  Icon: WalletCards,
+                  t: "Zoryn Personal",
+                  d: "Everyday account, savings pots, SEPA transfers, cards and rewards.",
+                },
+                {
+                  Icon: Building2,
+                  t: "Zoryn Business",
+                  d: "Business account, team cards and limits, supplier payments and payment links.",
+                },
+                {
+                  Icon: Smartphone,
+                  t: "ZorynPay",
+                  d: "Tap to Pay, terminals, payment links and next-day settlements for merchants.",
+                },
+                {
+                  Icon: Gift,
+                  t: "Zoryn Rewards",
+                  d: "Points, cashback and merchant offers across the LoungeTech network.",
+                },
+              ].map(({ Icon, t, d }) => (
+                <div key={t} className="flex gap-3">
+                  <span className="mt-0.5 rounded-lg bg-primary/12 p-2 text-primary">
+                    <Icon size={16} />
+                  </span>
+                  <span>
+                    <b className="block font-display text-sm">{t}</b>
+                    <small className="text-xs text-muted-foreground">{d}</small>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Personal */}
       <section
         id="personal"
-        className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:px-8 lg:grid-cols-2"
-      >
-        <div />
-      </section>
         className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-20 sm:px-8 lg:grid-cols-2"
       >
         <div>
