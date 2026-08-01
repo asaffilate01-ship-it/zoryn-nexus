@@ -24,7 +24,7 @@ function Overview() {
             return (
               <div key={r} className="mb-3">
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span className="capitalize">{t("{risk} risk", { risk: riskLabels[r] })}</span><span>{t("{count} cases", { count: n })}</span>
+                  <span className="capitalize">{t("{risk} risk", { risk: riskLabels[r] ?? r })}</span><span>{t("{count} cases", { count: n })}</span>
                 </div>
                 <div className="mt-1"><Progress value={(n / Math.max(a.queue.length, 1)) * 100} /></div>
               </div>

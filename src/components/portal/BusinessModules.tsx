@@ -259,7 +259,7 @@ function Rewards() {
             <div key={n} className="rounded-xl border border-border bg-background/40 p-4">
               <b className="text-sm">{n}</b>
               <p className="mt-1 text-xs text-muted-foreground">{d}</p>
-              <Button variant="ghost" className="mt-3 px-3 py-1.5 text-xs" onClick={() => notify(t("{name} activated for the demo organisation.", { name: n }))}>
+              <Button variant="ghost" className="mt-3 px-3 py-1.5 text-xs" onClick={() => notify(t("{name} activated for the demo organisation.", { name: n ?? "" }))}>
                 {t("Activate")}
               </Button>
             </div>
