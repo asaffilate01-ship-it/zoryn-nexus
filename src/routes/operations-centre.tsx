@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { ProviderReadyCentre } from "@/features/provider-ready/components/ProviderReadyCentre";
+import { providerSnapshotQueryOptions } from "@/features/provider-ready/lib/snapshot-query";
 
 export const Route = createFileRoute("/operations-centre")({
   head: () => ({
@@ -12,5 +13,10 @@ export const Route = createFileRoute("/operations-centre")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(providerSnapshotQueryOptions),
+  errorComponent: ({ error }) => (
+    <main role="alert" className="p-10 text-foreground">Operations data unavailable: {error.message}</main>
+  ),
+  notFoundComponent: () => <main className="p-10 text-foreground">No operations data found.</main>,
   component: () => <ProviderReadyCentre initialTab="operations" />,
 });
