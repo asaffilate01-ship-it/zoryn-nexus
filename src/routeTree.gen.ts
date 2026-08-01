@@ -14,8 +14,11 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BusinessRouteImport } from './routes/business'
 import { Route as DemoRouteImport } from './routes/demo'
 import { Route as MerchantRouteImport } from './routes/merchant'
+import { Route as OperationsCentreRouteImport } from './routes/operations-centre'
 import { Route as PersonalRouteImport } from './routes/personal'
 import { Route as ProductsRouteImport } from './routes/products'
+import { Route as ProviderReadyRouteImport } from './routes/provider-ready'
+import { Route as ScenarioLabRouteImport } from './routes/scenario-lab'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -42,6 +45,11 @@ const MerchantRoute = MerchantRouteImport.update({
   path: '/merchant',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OperationsCentreRoute = OperationsCentreRouteImport.update({
+  id: '/operations-centre',
+  path: '/operations-centre',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PersonalRoute = PersonalRouteImport.update({
   id: '/personal',
   path: '/personal',
@@ -52,6 +60,16 @@ const ProductsRoute = ProductsRouteImport.update({
   path: '/products',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProviderReadyRoute = ProviderReadyRouteImport.update({
+  id: '/provider-ready',
+  path: '/provider-ready',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ScenarioLabRoute = ScenarioLabRouteImport.update({
+  id: '/scenario-lab',
+  path: '/scenario-lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -59,8 +77,11 @@ export interface FileRoutesByFullPath {
   '/business': typeof BusinessRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
   '/products': typeof ProductsRoute
+  '/provider-ready': typeof ProviderReadyRoute
+  '/scenario-lab': typeof ScenarioLabRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -68,8 +89,11 @@ export interface FileRoutesByTo {
   '/business': typeof BusinessRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
   '/products': typeof ProductsRoute
+  '/provider-ready': typeof ProviderReadyRoute
+  '/scenario-lab': typeof ScenarioLabRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -78,8 +102,11 @@ export interface FileRoutesById {
   '/business': typeof BusinessRoute
   '/demo': typeof DemoRoute
   '/merchant': typeof MerchantRoute
+  '/operations-centre': typeof OperationsCentreRoute
   '/personal': typeof PersonalRoute
   '/products': typeof ProductsRoute
+  '/provider-ready': typeof ProviderReadyRoute
+  '/scenario-lab': typeof ScenarioLabRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -89,8 +116,11 @@ export interface FileRouteTypes {
     | '/business'
     | '/demo'
     | '/merchant'
+    | '/operations-centre'
     | '/personal'
     | '/products'
+    | '/provider-ready'
+    | '/scenario-lab'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -98,8 +128,11 @@ export interface FileRouteTypes {
     | '/business'
     | '/demo'
     | '/merchant'
+    | '/operations-centre'
     | '/personal'
     | '/products'
+    | '/provider-ready'
+    | '/scenario-lab'
   id:
     | '__root__'
     | '/'
@@ -107,8 +140,11 @@ export interface FileRouteTypes {
     | '/business'
     | '/demo'
     | '/merchant'
+    | '/operations-centre'
     | '/personal'
     | '/products'
+    | '/provider-ready'
+    | '/scenario-lab'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -117,8 +153,11 @@ export interface RootRouteChildren {
   BusinessRoute: typeof BusinessRoute
   DemoRoute: typeof DemoRoute
   MerchantRoute: typeof MerchantRoute
+  OperationsCentreRoute: typeof OperationsCentreRoute
   PersonalRoute: typeof PersonalRoute
   ProductsRoute: typeof ProductsRoute
+  ProviderReadyRoute: typeof ProviderReadyRoute
+  ScenarioLabRoute: typeof ScenarioLabRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MerchantRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/operations-centre': {
+      id: '/operations-centre'
+      path: '/operations-centre'
+      fullPath: '/operations-centre'
+      preLoaderRoute: typeof OperationsCentreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/personal': {
       id: '/personal'
       path: '/personal'
@@ -172,6 +218,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/provider-ready': {
+      id: '/provider-ready'
+      path: '/provider-ready'
+      fullPath: '/provider-ready'
+      preLoaderRoute: typeof ProviderReadyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/scenario-lab': {
+      id: '/scenario-lab'
+      path: '/scenario-lab'
+      fullPath: '/scenario-lab'
+      preLoaderRoute: typeof ScenarioLabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -181,8 +241,11 @@ const rootRouteChildren: RootRouteChildren = {
   BusinessRoute: BusinessRoute,
   DemoRoute: DemoRoute,
   MerchantRoute: MerchantRoute,
+  OperationsCentreRoute: OperationsCentreRoute,
   PersonalRoute: PersonalRoute,
   ProductsRoute: ProductsRoute,
+  ProviderReadyRoute: ProviderReadyRoute,
+  ScenarioLabRoute: ScenarioLabRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
