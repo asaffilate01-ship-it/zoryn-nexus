@@ -45,10 +45,12 @@ export const Route = createFileRoute("/")({
 });
 
 const navLinks = [
+  { href: "#about", label: "About" },
   { href: "#personal", label: "Personal" },
   { href: "#business", label: "Business" },
   { href: "#pay", label: "ZorynPay" },
   { href: "#rewards", label: "Rewards" },
+  { href: "#ecosystem", label: "Ecosystem" },
   { href: "#security", label: "Security" },
 ];
 
@@ -246,6 +248,73 @@ function PublicHome() {
         </div>
       </section>
 
+      {/* About Zoryn */}
+      <section id="about" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+        <div className="grid gap-10 lg:grid-cols-[1.05fr_1fr]">
+          <div>
+            <Eyebrow>About Zoryn</Eyebrow>
+            <h2 className="mt-3 font-display text-3xl sm:text-4xl">
+              A modern money platform built by LoungeTech.
+            </h2>
+            <p className="mt-4 text-muted-foreground">
+              Zoryn is the customer-facing money, payments and rewards platform of the LoungeTech
+              ecosystem. We bring everyday banking, business finance, in-person card acceptance and
+              loyalty into one product experience — designed in Germany, built for Europe, and
+              delivered together with regulated banking and acquiring partners.
+            </p>
+            <div className="mt-8 grid gap-3 sm:grid-cols-3">
+              {[
+                { k: "Germany first", v: "German IBANs, SEPA and local payment habits" },
+                { k: "One platform", v: "Personal, business, merchant and rewards" },
+                { k: "Partner powered", v: "Regulated banking and acquiring providers" },
+              ].map((i) => (
+                <div key={i.k} className="rounded-xl border border-border bg-card/60 p-5">
+                  <b className="font-display text-sm">{i.k}</b>
+                  <p className="mt-1 text-xs text-muted-foreground">{i.v}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="rounded-2xl border border-border bg-card/60 p-8">
+            <b className="font-display text-lg">What Zoryn offers</b>
+            <div className="mt-5 grid gap-4">
+              {[
+                {
+                  Icon: WalletCards,
+                  t: "Zoryn Personal",
+                  d: "Everyday account, savings pots, SEPA transfers, cards and rewards.",
+                },
+                {
+                  Icon: Building2,
+                  t: "Zoryn Business",
+                  d: "Business account, team cards and limits, supplier payments and payment links.",
+                },
+                {
+                  Icon: Smartphone,
+                  t: "ZorynPay",
+                  d: "Tap to Pay, terminals, payment links and next-day settlements for merchants.",
+                },
+                {
+                  Icon: Gift,
+                  t: "Zoryn Rewards",
+                  d: "Points, cashback and merchant offers across the LoungeTech network.",
+                },
+              ].map(({ Icon, t, d }) => (
+                <div key={t} className="flex gap-3">
+                  <span className="mt-0.5 rounded-lg bg-primary/12 p-2 text-primary">
+                    <Icon size={16} />
+                  </span>
+                  <span>
+                    <b className="block font-display text-sm">{t}</b>
+                    <small className="text-xs text-muted-foreground">{d}</small>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Personal */}
       <section
         id="personal"
@@ -407,6 +476,45 @@ function PublicHome() {
         </div>
       </section>
 
+      {/* LoungeTech ecosystem & European expansion */}
+      <section id="ecosystem" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
+        <Eyebrow>LoungeTech ecosystem</Eyebrow>
+        <h2 className="mt-3 max-w-3xl font-display text-3xl sm:text-4xl">
+          Germany first, then across Europe.
+        </h2>
+        <p className="mt-4 max-w-3xl text-muted-foreground">
+          Zoryn is part of the wider LoungeTech ecosystem, where customer apps, participating
+          merchants and business services share one identity, one rewards currency and one payments
+          backbone. We start where our roots are — Germany — and expand market by market on the same
+          European-ready architecture.
+        </p>
+        <div className="mt-8 grid gap-4 md:grid-cols-3">
+          {[
+            {
+              Icon: Landmark,
+              t: "Germany-first positioning",
+              d: "German IBANs, SEPA Instant, local card habits, German-language support and DE-based operations from day one.",
+            },
+            {
+              Icon: Globe2,
+              t: "European expansion",
+              d: "Multi-country IBANs, EEA passporting through partners and a data model built for multi-currency and multi-market growth.",
+            },
+            {
+              Icon: Users,
+              t: "One connected ecosystem",
+              d: "Shared accounts, rewards and merchant network across LoungeTech apps and participating businesses.",
+            },
+          ].map(({ Icon, t, d }) => (
+            <article key={t} className="rounded-2xl border border-border bg-card/60 p-6">
+              <Icon size={20} className="text-primary" />
+              <h3 className="mt-4 font-display text-lg">{t}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{d}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       {/* Security & adapter boundaries */}
       <section id="security" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
         <div className="grid gap-10 lg:grid-cols-[auto_1fr]">
@@ -479,7 +587,7 @@ function PublicHome() {
 
       {/* Footer */}
       <footer className="mx-auto max-w-6xl px-5 py-14 sm:px-8">
-        <div className="grid gap-10 sm:grid-cols-3">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <a href="#top" className="font-display text-xl font-bold">
               Zoryn<span className="text-primary">.</span>
@@ -488,7 +596,7 @@ function PublicHome() {
           </div>
           <div className="flex flex-col gap-2 text-sm text-muted-foreground">
             <b className="text-foreground">Products</b>
-            {navLinks.slice(0, 4).map((l) => (
+            {navLinks.slice(1, 5).map((l) => (
               <a key={l.href} href={l.href} className="hover:text-foreground">
                 {l.label}
               </a>
@@ -496,11 +604,23 @@ function PublicHome() {
           </div>
           <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
             <b className="text-foreground">Company</b>
+            <a href="#about" className="hover:text-foreground">
+              About Zoryn
+            </a>
+            <a href="#ecosystem" className="hover:text-foreground">
+              LoungeTech ecosystem
+            </a>
             <a href="#security" className="hover:text-foreground">
-              Security
+              Security &amp; regulated partners
+            </a>
+          </div>
+          <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
+            <b className="text-foreground">Explore</b>
+            <a href="#top" className="hover:text-foreground">
+              Customer product website
             </a>
             <Link to="/demo" className="hover:text-foreground">
-              Platform &amp; partner demo
+              Live demo &amp; testing platform
             </Link>
             <span>Operated by LoungeTech</span>
           </div>
