@@ -179,8 +179,8 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                   </div>
                   <div className="rounded-xl bg-secondary/60 p-4">
                     <p className="text-xs uppercase tracking-wide text-muted-foreground">{t("Regulated source")}</p>
-                    <p className="mt-2 font-semibold">{t("Swan adapter")}</p>
-                    <p className="text-sm text-muted-foreground">{t("Mock mode until sandbox keys are added")}</p>
+                    <p className="mt-2 font-semibold">{t("Banking by Swan")}</p>
+                    <p className="text-sm text-muted-foreground">{t("KYC/KYB, accounts and cards delegated to Swan")}</p>
                   </div>
                 </div>
                 <div className="mt-4 space-y-2">
