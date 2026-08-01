@@ -10,7 +10,7 @@ Centre, server functions, public API routes, database).
 | S1 | `provider_resources` readable by any signed-in user (`USING (true)`) — exposed customer names/IBAN references across all organisations | High | **Fixed** — authenticated read now scoped to `is_demo = true` |
 | S2 | `onboarding_actions` readable by any signed-in user | Medium | **Fixed** — same scoping |
 | S3 | Money-movement server functions (`moveFunds`, `createSepaTransfer`, `captureTapToPay`, `redeemPoints`, …) are **unauthenticated** and run with the service-role client | High (for real money) | Accepted in demo mode — guarded by `is_demo` row checks, UUID validation and a €5,000 cap. Must gain `requireSupabaseAuth` + ownership checks before real funds |
-| S4 | `PROVIDER_WEBHOOK_SECRET` is a placeholder value | Medium | Open — replace with the real Swan/Adyen secrets at integration time |
+| S4 | `PROVIDER_WEBHOOK_SECRET` is a placeholder value | Medium | **Accepted** — Swan and Adyen issue this shared secret from their dashboards; it must be pasted into Lovable Cloud at integration time and is intentionally a dummy in mock/demo mode |
 | S5 | No rate limiting on `/api/public/*` (webhooks, jobs, provider-api) | Medium | Open |
 | S6 | `SECURITY DEFINER` helpers (`is_org_member`, `can_access_*`) executable by `authenticated` | Info | Intentional — required by RLS policies; already revoked from `anon`/`public` |
 | S7 | `/api/public/provider-jobs` authenticated with the publishable anon key | Low–Medium | Works, but a dedicated `CRON_SECRET` would be stronger |
@@ -23,9 +23,12 @@ Centre, server functions, public API routes, database).
   that bootstraps `profiles` and grants the `personal` role, all portals behind
   the `_authenticated` gate, per-role portal scoping and sign-out. S3 (adding
   `requireSupabaseAuth` + ownership checks to money movement) is now unblocked.
-- **Provider live mode untested.** Swan (GraphQL) and Adyen (Checkout/
-  Management) adapters exist but have only ever run with `PROVIDER_MODE=mock`;
-  no sandbox credentials, so error mapping and pagination are unverified.
+- **Provider live mode delegated to Swan/Adyen.** The Swan (GraphQL) and
+  Adyen (Checkout/Management) adapters are implemented and switch on when
+  `PROVIDER_MODE=sandbox|live` and the corresponding credentials exist. Until
+  those credentials are supplied, mock mode keeps the demo operational. KYC,
+  KYB, AML, sanctions screening and PCI scope are intentionally delegated to
+  the regulated partners; Zoryn maps their outcomes into customer-facing states.
 - **No dual approval / four-eyes flow.** Business "payment awaiting dual
   approval" is a seeded scenario, not an implemented workflow.
 - **Refunds and chargebacks** are display-only on ZorynPay — no mutation path.
