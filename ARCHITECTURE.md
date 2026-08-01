@@ -1,12 +1,12 @@
-# Security baseline
-
-- Provider secrets only in Edge Functions/backend secret storage.
-- Supabase RLS on customer/business records.
-- MFA and step-up authentication for admins and sensitive actions.
-- Mask PII in admin tables and logs.
-- CSP, secure cookies, CSRF controls and rate limits at deployment layer.
-- Append-only audit events for support/admin actions.
-- Signed webhook validation, replay protection and idempotency.
-- Dependency and secret scanning in CI.
-- Penetration test before production.
-- GDPR retention, export and deletion procedures.
+# Go-live checklist
+- [ ] Provider contracts and approved customer wording
+- [ ] Production credentials isolated from frontend
+- [ ] KYC/KYB and complaints operating procedures
+- [ ] RLS and RBAC penetration tested
+- [ ] Webhook idempotency, replay and out-of-order tests
+- [ ] Reconciliation and settlement controls
+- [ ] GDPR records, retention and deletion workflows
+- [ ] Accessibility and German localisation review
+- [ ] Backup restore and incident exercise
+- [ ] Monitoring, alerts and operational ownership
+- [ ] Card artwork, wallet provisioning and SCA journeys approved
