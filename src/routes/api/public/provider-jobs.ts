@@ -8,17 +8,16 @@ import { createFileRoute } from "@tanstack/react-router";
  *   otherwise the rows are marked `skipped` and rewards continue to work using
  *   Zoryn's own points ledger.
  *
- * Authenticated with the project's anon key in the `apikey` header.
+ * Authenticated with a dedicated ZORYN_JOBS_SECRET in the
+ * `x-zoryn-jobs-secret` header (falls back to the project's anon key in
+ * `apikey` when no dedicated secret is configured).
  */
 export const Route = createFileRoute("/api/public/provider-jobs")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const expected = process.env["SUPABASE_ANON_KEY"] ?? process.env["SUPABASE_PUBLISHABLE_KEY"];
-        const provided = request.headers.get("apikey");
-        if (!expected || provided !== expected) {
-          return new Response("Unauthorized", { status: 401 });
-        }
+        const { checkJobsSecret } = await import("@/lib/demo-reset.server");
+        if (!checkJobsSecret(request)) return new Response("Unauthorized", { status: 401 });
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { processDueEvents } = await import("@/features/provider-ready/lib/webhook-process.server");
