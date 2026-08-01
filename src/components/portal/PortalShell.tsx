@@ -215,7 +215,7 @@ export function PortalShell({ role }: { role: Role }) {
             </span>
             <h2 className="mt-2 font-display text-2xl">{moduleTitles[page]}</h2>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              This module is wired to the shared Zoryn data model and ready for final Swan or Adyen
+              This module is wired to the shared Zoryn data model and ready for final provider
               sandbox mapping. It runs in mock mode — no provider credentials are used.
             </p>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">

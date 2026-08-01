@@ -15,7 +15,7 @@ export const Route = createFileRoute("/")({
       {
         property: "og:description",
         content:
-          "A provider-independent financial experience layer with Swan banking and Adyen acquiring adapters, running in demo mode.",
+          "A provider-independent financial experience layer with pluggable banking and acquiring adapters, running in demo mode.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -43,7 +43,7 @@ function Landing() {
         </h1>
         <p className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
           Money, payments and rewards in one connected financial experience. Provider-independent by
-          design — Swan for banking, Adyen for acquiring, both behind a single Zoryn data model.
+          design — pluggable banking and acquiring adapters, both behind a single Zoryn data model.
         </p>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
@@ -82,7 +82,7 @@ function Landing() {
         </div>
 
         <p className="mt-10 text-xs text-muted-foreground">
-          Demo mode only. No Swan or Adyen credentials are used in the browser; provider calls run
+          Demo mode only. No provider credentials are used in the browser; provider calls run
           server-side once sandbox onboarding is approved.
         </p>
       </div>

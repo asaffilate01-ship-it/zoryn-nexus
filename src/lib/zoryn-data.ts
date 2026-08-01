@@ -80,7 +80,7 @@ export const portalConfigs: Record<Role, PortalConfig> = {
     user: "Cafe 1 Demo",
     balance: 3180.4,
     primaryLabel: "Next settlement",
-    primarySubtitle: "Arrives Monday · Adyen acquiring adapter",
+    primarySubtitle: "Arrives Monday · acquiring adapter",
     primaryAction: "Take payment",
     primaryActionResult: "Tap to Pay session started (mock)",
     stats: [
@@ -96,7 +96,7 @@ export const portalConfigs: Record<Role, PortalConfig> = {
     user: "Operations Team",
     balance: 0,
     primaryLabel: "Provider operations",
-    primarySubtitle: "Swan and Adyen adapters operational",
+    primarySubtitle: "Provider adapters operational",
     primaryAction: "Review queue",
     primaryActionResult: "Opened KYC review queue (mock)",
     stats: [
@@ -163,8 +163,8 @@ export const recentActivity = [
 ];
 
 export const providerReadiness = [
-  { label: "Swan banking adapter", state: "Ready" },
-  { label: "Adyen acquiring adapter", state: "Ready" },
+  { label: "Banking adapter", state: "Ready" },
+  { label: "Acquiring adapter", state: "Ready" },
   { label: "Provider proxy (server)", state: "Mock mode" },
   { label: "Row Level Security", state: "Configured" },
 ];
