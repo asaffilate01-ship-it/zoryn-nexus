@@ -96,8 +96,8 @@
   --sidebar-accent-foreground: oklch(0.97 0.008 250);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.82 0.17 165);
-  --font-display: "Syne", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "DM Sans", ui-sans-serif, system-ui, sans-serif;
 
   /* Elevation + surface treatments */
   --shadow-soft: 0 1px 0 0 oklch(1 0 0 / 0.05) inset, 0 8px 24px -12px oklch(0 0 0 / 0.55);
