@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useT } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { AuthLink } from "@/components/AuthLink";
 
 export const Route = createFileRoute("/")({
   head: () => ({
