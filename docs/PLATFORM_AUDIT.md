@@ -11,7 +11,7 @@ Centre, server functions, public API routes, database).
 | S2 | `onboarding_actions` readable by any signed-in user | Medium | **Fixed** — same scoping |
 | S3 | Money-movement server functions (`moveFunds`, `createSepaTransfer`, `captureTapToPay`, `redeemPoints`, …) are **unauthenticated** and run with the service-role client | High (for real money) | Accepted in demo mode — guarded by `is_demo` row checks, UUID validation and a €5,000 cap. Must gain `requireSupabaseAuth` + ownership checks before real funds |
 | S4 | `PROVIDER_WEBHOOK_SECRET` is a placeholder value | Medium | **Accepted** — Swan and Adyen issue this shared secret from their dashboards; it must be pasted into Lovable Cloud at integration time and is intentionally a dummy in mock/demo mode |
-| S5 | No rate limiting on `/api/public/*` (webhooks, jobs, provider-api) | Medium | Open |
+| S5 | No rate limiting on `/api/public/*` (webhooks, jobs, provider-api) | Medium | **Fixed** — durable per-IP limiter (`public.check_rate_limit` + `api_rate_limits`, service-role only) on all four public routes: webhooks 600/min, provider-api 120/min, jobs 60/min, demo-reset 10/hour. Fails open so provider retries are never dropped by limiter outages |
 | S6 | `SECURITY DEFINER` helpers (`is_org_member`, `can_access_*`) executable by `authenticated` | Info | Intentional — required by RLS policies; already revoked from `anon`/`public` |
 | S7 | `/api/public/provider-jobs` authenticated with the publishable anon key | Low–Medium | Works, but a dedicated `CRON_SECRET` would be stronger |
 | S8 | Anon `SELECT` grants on 15 tables | Info | Intentional — every policy filters on `is_demo` |

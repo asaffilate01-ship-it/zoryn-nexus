@@ -13,7 +13,11 @@ import type { Database } from "@/integrations/supabase/types";
 export const Route = createFileRoute("/api/public/provider-api")({
   server: {
     handlers: {
-      GET: async () => {
+      GET: async ({ request }) => {
+        const { enforceRateLimit } = await import("@/lib/rate-limit.server");
+        const limited = await enforceRateLimit(request, "provider-api", 120, 60);
+        if (limited) return limited;
+
         const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
         const supabase = createClient<Database>(process.env["SUPABASE_URL"]!, key, {
           auth: { persistSession: false, autoRefreshToken: false },
