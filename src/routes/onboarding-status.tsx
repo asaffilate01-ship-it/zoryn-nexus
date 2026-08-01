@@ -3,6 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowLeft, BadgeEuro, FileCheck2, ShieldAlert, UserCheck } from "lucide-react";
 import { StatePanel } from "@/features/provider-ready/components/StatePanel";
 import { providerSnapshotQueryOptions } from "@/features/provider-ready/lib/snapshot-query";
+import { useT } from "@/lib/i18n";
 
 const actionIcons: Record<string, React.ReactNode> = {
   verify: <UserCheck className="h-5 w-5" />,
@@ -48,19 +49,21 @@ export const Route = createFileRoute("/onboarding-status")({
 });
 
 function OnboardingStatus() {
+  const t = useT();
   const { data } = useSuspenseQuery(providerSnapshotQueryOptions);
   return (
     <main className="min-h-screen bg-background p-6 text-foreground">
       <div className="mx-auto max-w-4xl space-y-6">
         <Link to="/provider-ready" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4" /> Provider-ready centre
+          <ArrowLeft className="h-4 w-4" /> {t("Provider-ready centre")}
         </Link>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">Zoryn onboarding</p>
-          <h1 className="mt-2 font-display text-3xl">Complete account-state experience</h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">{t("Zoryn onboarding")}</p>
+          <h1 className="mt-2 font-display text-3xl">{t("Complete account-state experience")}</h1>
           <p className="mt-2 text-muted-foreground">
-            Provider-independent states that map regulated onboarding and compliance outcomes into clear customer
-            actions.
+            {t(
+              "Provider-independent states that map regulated onboarding and compliance outcomes into clear customer actions.",
+            )}
           </p>
         </div>
         {data.onboardingActions.map((a) => {
@@ -69,17 +72,20 @@ function OnboardingStatus() {
             <StatePanel
               key={a.id}
               icon={actionIcons[a.action] ?? <ShieldAlert className="h-5 w-5" />}
-              title={a.title}
+              title={t(a.title)}
               description={
                 a.dueAt
-                  ? `${a.description} Due by ${new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" }).format(new Date(a.dueAt))}.`
-                  : a.description
+                  ? t("{description} Due by {date}.", {
+                      description: t(a.description),
+                      date: new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" }).format(new Date(a.dueAt)),
+                    })
+                  : t(a.description)
               }
               {...(label
                 ? {
                     action: (
                       <button className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground">
-                        {label}
+                        {t(label)}
                       </button>
                     ),
                   }

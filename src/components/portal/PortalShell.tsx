@@ -7,6 +7,8 @@ import { BusinessModules } from "./BusinessModules";
 import { MerchantModules } from "./MerchantModules";
 import { AdminModules } from "./AdminModules";
 import { useDemo } from "@/lib/zoryn-store";
+import { useT } from "@/lib/i18n";
+import { LanguageToggle } from "@/components/LanguageToggle";
 import {
   moduleTitles,
   portalConfigs,
@@ -18,6 +20,7 @@ import {
 } from "@/lib/zoryn-data";
 
 export function PortalShell({ role }: { role: Role }) {
+  const t = useT();
   const config = portalConfigs[role];
   const items = portalNav[role];
   const { notice } = useDemo();
@@ -36,7 +39,7 @@ export function PortalShell({ role }: { role: Role }) {
           <Link to="/" className="font-display text-2xl font-bold text-sidebar-foreground">
             Zoryn<span className="text-primary">.</span>
           </Link>
-          <p className="mt-1 text-xs text-muted-foreground">Money. Payments. Rewards.</p>
+          <p className="mt-1 text-xs text-muted-foreground">{t("Money. Payments. Rewards.")}</p>
 
           <nav className="mt-8 space-y-1">
             {items.map(({ key, label, icon: Icon }) => (
@@ -54,7 +57,7 @@ export function PortalShell({ role }: { role: Role }) {
                 )}
               >
                 <Icon size={18} />
-                {label}
+                {t(label)}
               </button>
             ))}
           </nav>
@@ -62,7 +65,7 @@ export function PortalShell({ role }: { role: Role }) {
 
         <div className="space-y-2">
           <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-            Switch portal
+            {t("Switch portal")}
           </p>
           <div className="grid grid-cols-2 gap-2">
             {roleOrder.map((r) => (
@@ -76,7 +79,7 @@ export function PortalShell({ role }: { role: Role }) {
                     : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 )}
               >
-                {portalConfigs[r].name}
+                {t(portalConfigs[r].name)}
               </Link>
             ))}
           </div>
@@ -85,7 +88,7 @@ export function PortalShell({ role }: { role: Role }) {
 
       {menuOpen && (
         <button
-          aria-label="Close menu"
+          aria-label={t("Close menu")}
           onClick={() => setMenuOpen(false)}
           className="fixed inset-0 z-30 bg-background/70 backdrop-blur-sm lg:hidden"
         />
@@ -97,22 +100,25 @@ export function PortalShell({ role }: { role: Role }) {
             <button
               className="rounded-lg border border-border p-2 lg:hidden"
               onClick={() => setMenuOpen((v) => !v)}
-              aria-label="Toggle navigation"
+              aria-label={t("Toggle navigation")}
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
             <div>
               <span className="text-[11px] font-semibold uppercase tracking-widest text-primary">
-                {config.name} portal
+                {t(config.name)} {t("portal")}
               </span>
-              <h1 className="text-2xl font-semibold sm:text-3xl">{moduleTitles[page]}</h1>
+              <h1 className="text-2xl font-semibold sm:text-3xl">{t(moduleTitles[page])}</h1>
             </div>
           </div>
-          <div className="flex items-center gap-3 rounded-full border border-border bg-card/70 px-4 py-2">
-            <span className="text-sm font-medium">{config.user}</span>
-            <Link to="/demo" aria-label="Exit portal" className="text-muted-foreground hover:text-foreground">
-              <LogOut size={16} />
-            </Link>
+          <div className="flex items-center gap-3">
+            <LanguageToggle />
+            <div className="flex items-center gap-3 rounded-full border border-border bg-card/70 px-4 py-2">
+              <span className="text-sm font-medium">{config.user}</span>
+              <Link to="/demo" aria-label={t("Exit portal")} className="text-muted-foreground hover:text-foreground">
+                <LogOut size={16} />
+              </Link>
+            </div>
           </div>
         </header>
 
