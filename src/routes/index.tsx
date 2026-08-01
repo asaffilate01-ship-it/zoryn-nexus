@@ -45,10 +45,12 @@ export const Route = createFileRoute("/")({
 });
 
 const navLinks = [
+  { href: "#about", label: "About" },
   { href: "#personal", label: "Personal" },
   { href: "#business", label: "Business" },
   { href: "#pay", label: "ZorynPay" },
   { href: "#rewards", label: "Rewards" },
+  { href: "#ecosystem", label: "Ecosystem" },
   { href: "#security", label: "Security" },
 ];
 
