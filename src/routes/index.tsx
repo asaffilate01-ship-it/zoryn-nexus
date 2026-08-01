@@ -596,7 +596,7 @@ function PublicHome() {
           </div>
           <div className="flex flex-col gap-2 text-sm text-muted-foreground">
             <b className="text-foreground">Products</b>
-            {navLinks.slice(0, 4).map((l) => (
+            {navLinks.slice(1, 5).map((l) => (
               <a key={l.href} href={l.href} className="hover:text-foreground">
                 {l.label}
               </a>
@@ -604,11 +604,23 @@ function PublicHome() {
           </div>
           <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
             <b className="text-foreground">Company</b>
+            <a href="#about" className="hover:text-foreground">
+              About Zoryn
+            </a>
+            <a href="#ecosystem" className="hover:text-foreground">
+              LoungeTech ecosystem
+            </a>
             <a href="#security" className="hover:text-foreground">
-              Security
+              Security &amp; regulated partners
+            </a>
+          </div>
+          <div className="flex flex-col items-start gap-2 text-sm text-muted-foreground">
+            <b className="text-foreground">Explore</b>
+            <a href="#top" className="hover:text-foreground">
+              Customer product website
             </a>
             <Link to="/demo" className="hover:text-foreground">
-              Platform &amp; partner demo
+              Live demo &amp; testing platform
             </Link>
             <span>Operated by LoungeTech</span>
           </div>
