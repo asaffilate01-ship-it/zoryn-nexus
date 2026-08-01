@@ -87,7 +87,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Zoryn — Money, payments and rewards" },
       {
         property: "og:description",
-        content: "A provider-independent financial experience layer built on Swan and Adyen adapters.",
+        content: "A provider-independent financial experience layer built on pluggable provider adapters.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
