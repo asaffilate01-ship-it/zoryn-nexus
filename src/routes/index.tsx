@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Building2, ShieldCheck, Smartphone, WalletCards } from "lucide-react";
-import { portalConfigs, providerReadiness, rolePaths, roleOrder } from "@/lib/zoryn-data";
+import { portalConfigs, providerReadinessByRole, rolePaths, roleOrder } from "@/lib/zoryn-data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -73,7 +73,7 @@ function Landing() {
         </div>
 
         <div className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {providerReadiness.map((p) => (
+          {providerReadinessByRole.admin.map((p) => (
             <div key={p.label} className="rounded-xl border border-border bg-card/50 px-4 py-3">
               <span className="block text-xs text-muted-foreground">{p.label}</span>
               <strong className="mt-1 block font-display text-sm text-primary">{p.state}</strong>

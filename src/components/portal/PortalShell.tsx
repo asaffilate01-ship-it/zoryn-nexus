@@ -3,12 +3,13 @@ import { Link } from "@tanstack/react-router";
 import { LogOut, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
+  getModuleContent,
   moduleTitles,
   money,
   portalConfigs,
   portalNav,
-  providerReadiness,
-  recentActivity,
+  providerReadinessByRole,
+  recentActivityByRole,
   roleOrder,
   rolePaths,
   type PageKey,
@@ -24,7 +25,10 @@ function formatStat(stat: Stat) {
 export function PortalShell({ role }: { role: Role }) {
   const config = portalConfigs[role];
   const items = portalNav[role];
+  const recentActivity = recentActivityByRole[role];
+  const providerReadiness = providerReadinessByRole[role];
   const [page, setPage] = useState<PageKey>("overview");
+  const moduleData = getModuleContent(role, page);
   const [notice, setNotice] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -200,8 +204,7 @@ export function PortalShell({ role }: { role: Role }) {
                         t.amount > 0 ? "text-primary" : "text-foreground",
                       )}
                     >
-                      {t.amount > 0 ? "+" : ""}
-                      {money(t.amount)}
+                      {t.amount === 0 ? "—" : `${t.amount > 0 ? "+" : ""}${money(t.amount)}`}
                     </span>
                   </div>
                 ))}
@@ -213,17 +216,10 @@ export function PortalShell({ role }: { role: Role }) {
             <span className="text-[11px] font-semibold uppercase tracking-widest text-primary">
               {config.name} workspace
             </span>
-            <h2 className="mt-2 font-display text-2xl">{moduleTitles[page]}</h2>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              This module is wired to the shared Zoryn data model and ready for final provider
-              sandbox mapping. It runs in mock mode — no provider credentials are used.
-            </p>
+            <h2 className="mt-2 font-display text-2xl">{moduleData.title}</h2>
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">{moduleData.description}</p>
             <div className="mt-6 grid gap-4 sm:grid-cols-3">
-              {[
-                ["Status", "Ready"],
-                ["Open items", role === "admin" ? "28" : "3"],
-                ["Last sync", "Just now"],
-              ].map(([k, v]) => (
+              {moduleData.metrics.map(([k, v]) => (
                 <div key={k} className="rounded-xl border border-border bg-background/40 p-4">
                   <b className="text-xs font-medium text-muted-foreground">{k}</b>
                   <strong className="mt-1 block font-display text-xl">{v}</strong>
@@ -231,10 +227,10 @@ export function PortalShell({ role }: { role: Role }) {
               ))}
             </div>
             <button
-              onClick={() => act("Demo workflow completed")}
+              onClick={() => act(moduleData.actionResult)}
               className="mt-6 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
             >
-              Run demo action
+              {moduleData.actionLabel}
             </button>
           </section>
         )}
