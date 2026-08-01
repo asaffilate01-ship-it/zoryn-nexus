@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Badge, Button, Empty, ErrorText, Field, Panel, Progress, StatCard, inputClass } from "./ui";
 import { SupportPanel } from "./SupportPanel";
+import { UnifiedWalletCard } from "./UnifiedWalletCard";
 import { money, useDemo } from "@/lib/zoryn-store";
 import type { PageKey } from "@/lib/zoryn-data";
 
@@ -220,15 +221,29 @@ function Team() {
 }
 
 function Rewards() {
-  const { state, notify } = useDemo();
+  const { state, notify, redeemBusinessPoints } = useDemo();
   const b = state.business;
+  const [points, setPoints] = useState("500");
+  const [error, setError] = useState<string | null>(null);
   return (
     <div className="space-y-4">
+      <UnifiedWalletCard role="business" />
       <div className="grid gap-4 sm:grid-cols-3">
         <StatCard label="Business points" value={b.points.toLocaleString("de-DE")} />
-        <StatCard label="Tier" value="Gold" hint="1.5% cashback on card spend" />
+        <StatCard label="Tier" value={b.tier} hint="1.5% cashback on card spend" />
         <StatCard label="Cashback value" value={money(Math.floor(b.points / 500) * 5)} hint="500 points = €5" />
       </div>
+      <Panel title="Convert points to cash" subtitle="500 points converts into €5, credited to your chosen cashback destination">
+        <div className="flex flex-wrap items-end gap-3">
+          <Field label="Points to convert">
+            <input className={`${inputClass} w-40`} type="number" min="500" step="500" value={points} onChange={(e) => setPoints(e.target.value)} />
+          </Field>
+          <Button onClick={() => setError(redeemBusinessPoints(Number(points)))}>
+            Convert for {money((Math.floor(Number(points) / 500) || 0) * 5)}
+          </Button>
+        </div>
+        <ErrorText>{error}</ErrorText>
+      </Panel>
       <Panel title="Rewards campaigns" subtitle="Team spend automatically earns Zoryn Points">
         <div className="grid gap-3 sm:grid-cols-2">
           {[
