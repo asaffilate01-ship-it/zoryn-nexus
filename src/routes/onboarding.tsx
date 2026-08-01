@@ -4,6 +4,7 @@ import { providerSnapshotQueryOptions } from "@/features/provider-ready/lib/snap
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://project--b574cab4-af47-4e08-8b19-3df7a6638b9f.lovable.app/onboarding-status" }],
     meta: [
       { title: "Onboarding — Zoryn personal and business account states" },
       { name: "description", content: "Personal and business onboarding with KYC and KYB required actions, document uploads and regulated-partner reviews." },

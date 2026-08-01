@@ -4,6 +4,7 @@ import { providerSnapshotQueryOptions } from "@/features/provider-ready/lib/snap
 
 export const Route = createFileRoute("/production-ready")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://project--b574cab4-af47-4e08-8b19-3df7a6638b9f.lovable.app/provider-ready" }],
     meta: [
       { title: "Production-Ready Platform — Zoryn Nexus" },
       { name: "description", content: "Live production-state platform view: lifecycle statuses, onboarding, banking, acquiring, rewards and operations across the Zoryn adapters." },

@@ -1,57 +1,38 @@
 /**
  * Money-movement server functions.
  *
- * Every portal action that changes money now persists: pot moves, SEPA
- * transfers, card freeze/unfreeze, Tap to Pay captures, payment links and
- * points redemption. Each call goes through the provider adapter (mock until
- * sandbox credentials exist), writes the resulting rows and records an
- * audit_logs entry.
+ * Every portal action that changes money persists: pot moves, SEPA transfers,
+ * card freeze/unfreeze, Tap to Pay captures, payment links and points
+ * redemption. Each call goes through the provider adapter (mock until sandbox
+ * credentials exist), writes the resulting rows and records an audit entry
+ * against the signed-in actor.
  *
- * Demo guardrails: these functions are unauthenticated while the platform runs
- * in demo mode, so they only ever touch rows flagged `is_demo` and reject
- * amounts outside a sane range.
+ * Security: every function requires an authenticated session. Shared demo rows
+ * (`is_demo`) may be driven by any signed-in user; real rows are checked
+ * against account/merchant/loyalty ownership. Amounts are bounded.
  */
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import {
+  MAX_CENTS,
+  audit,
+  ctx,
+  money,
+  requireAccount,
+  requireCard,
+  requireLoyalty,
+  requireMerchant,
+  requirePot,
+} from "./zoryn-mutations.server";
 
-const MAX_CENTS = 5_000_00;
 const amount = z.number().int().min(1).max(MAX_CENTS);
 const uuid = z.string().uuid();
-
-const money = (cents: number) => Number((cents / 100).toFixed(2));
-
-async function ctx() {
-  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const { getBankingAdapter, getAcquiringAdapter } = await import(
-    "@/features/provider-ready/lib/providers.server"
-  );
-  return { admin: supabaseAdmin, banking: getBankingAdapter(), acquiring: getAcquiringAdapter() };
-}
-
-async function audit(admin: any, action: string, resourceId: string, metadata: Record<string, unknown>) {
-  await admin.from("audit_logs").insert({
-    action,
-    resource_type: action.split(".")[0],
-    resource_id: resourceId,
-    metadata,
-    is_demo: true,
-  });
-}
-
-async function demoAccount(admin: any, accountId: string) {
-  const { data, error } = await admin
-    .from("financial_accounts")
-    .select("id, balance, available_balance, is_demo, currency")
-    .eq("id", accountId)
-    .maybeSingle();
-  if (error) throw new Error(error.message);
-  if (!data || !data.is_demo) throw new Error("Account not available in demo mode");
-  return data;
-}
 
 /* ------------------------------------------------------------ pot transfers */
 
 export const moveFunds = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
     z
       .object({
@@ -64,19 +45,14 @@ export const moveFunds = createServerFn({ method: "POST" })
       .refine((v) => v.fromPotId !== v.toPotId, "Source and destination must differ")
       .parse(input),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { admin } = await ctx();
-    const account = await demoAccount(admin, data.accountId);
+    const userId = context.userId;
+    const account = await requireAccount(admin, data.accountId, userId);
     const value = money(data.amountCents);
 
-    const loadPot = async (potId: string) => {
-      const { data: pot } = await admin.from("pots").select("id, name, balance, is_demo, account_id").eq("id", potId).maybeSingle();
-      if (!pot || !pot.is_demo || pot.account_id !== data.accountId) throw new Error("Pot not available in demo mode");
-      return pot;
-    };
-
-    const from = data.fromPotId ? await loadPot(data.fromPotId) : null;
-    const to = data.toPotId ? await loadPot(data.toPotId) : null;
+    const from = data.fromPotId ? await requirePot(admin, data.fromPotId, account.id, userId) : null;
+    const to = data.toPotId ? await requirePot(admin, data.toPotId, account.id, userId) : null;
 
     // Balance validation before anything is written.
     if (from && Number(from.balance) < value) throw new Error(`Not enough in ${from.name}`);
@@ -103,7 +79,7 @@ export const moveFunds = createServerFn({ method: "POST" })
       .select("id")
       .maybeSingle();
 
-    await audit(admin, "transfer.internal", transfer?.id ?? account.id, {
+    await audit(admin, userId, "transfer.internal", transfer?.id ?? account.id, {
       amount_cents: data.amountCents,
       from: from?.name ?? "Main balance",
       to: to?.name ?? "Main balance",
@@ -115,6 +91,7 @@ export const moveFunds = createServerFn({ method: "POST" })
 /* ------------------------------------------------------------ SEPA transfer */
 
 export const createSepaTransfer = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
     z
       .object({
@@ -126,9 +103,9 @@ export const createSepaTransfer = createServerFn({ method: "POST" })
       })
       .parse(input),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { admin, banking } = await ctx();
-    const account = await demoAccount(admin, data.accountId);
+    const account = await requireAccount(admin, data.accountId, context.userId);
     const value = money(data.amountCents);
     if (Number(account.available_balance) < value) throw new Error("Not enough available balance");
 
@@ -163,7 +140,7 @@ export const createSepaTransfer = createServerFn({ method: "POST" })
       .select("id, status")
       .maybeSingle();
 
-    await audit(admin, "transfer.sepa", tx?.id ?? account.id, {
+    await audit(admin, context.userId, "transfer.sepa", tx?.id ?? account.id, {
       amount_cents: data.amountCents,
       counterparty: data.counterparty,
       provider: banking.provider,
@@ -176,50 +153,47 @@ export const createSepaTransfer = createServerFn({ method: "POST" })
 /* --------------------------------------------------------------- card state */
 
 export const setCardFrozen = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) => z.object({ cardId: uuid, frozen: z.boolean() }).parse(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { admin, banking } = await ctx();
-    const { data: card } = await admin
-      .from("cards")
-      .select("id, provider_reference, status, is_demo")
-      .eq("id", data.cardId)
-      .maybeSingle();
-    if (!card || !card.is_demo) throw new Error("Card not available in demo mode");
+    const card = await requireCard(admin, data.cardId, context.userId);
 
     const reference = card.provider_reference ?? card.id;
     const result = data.frozen ? await banking.freezeCard(reference) : await banking.unfreezeCard(reference);
     await admin.from("cards").update({ status: result.status }).eq("id", card.id);
-    await audit(admin, "card.status_changed", card.id, { status: result.status, provider: banking.provider });
+    await audit(admin, context.userId, "card.status_changed", card.id, {
+      status: result.status,
+      provider: banking.provider,
+    });
     return { ok: true, status: result.status };
   });
 
 export const setCardLimit = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
     z.object({ cardId: uuid, monthlyLimitCents: z.number().int().min(0).max(2_000_000) }).parse(input),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { admin } = await ctx();
-    const { data: card } = await admin.from("cards").select("id, is_demo").eq("id", data.cardId).maybeSingle();
-    if (!card || !card.is_demo) throw new Error("Card not available in demo mode");
+    const card = await requireCard(admin, data.cardId, context.userId);
     await admin.from("cards").update({ monthly_limit: money(data.monthlyLimitCents) }).eq("id", card.id);
-    await audit(admin, "card.limit_changed", card.id, { monthly_limit_cents: data.monthlyLimitCents });
+    await audit(admin, context.userId, "card.limit_changed", card.id, {
+      monthly_limit_cents: data.monthlyLimitCents,
+    });
     return { ok: true };
   });
 
 /* ------------------------------------------------------------- ZorynPay tap */
 
 export const captureTapToPay = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
     z.object({ merchantId: uuid, amountCents: amount, terminalId: uuid.optional() }).parse(input),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { admin, acquiring } = await ctx();
-    const { data: merchant } = await admin
-      .from("merchants")
-      .select("id, organisation_id, pending_settlement, is_demo")
-      .eq("id", data.merchantId)
-      .maybeSingle();
-    if (!merchant || !merchant.is_demo) throw new Error("Merchant not available in demo mode");
+    const merchant = await requireMerchant(admin, data.merchantId, context.userId);
 
     const value = money(data.amountCents);
     const reference = `tap_${Date.now().toString(36)}`;
@@ -272,7 +246,7 @@ export const captureTapToPay = createServerFn({ method: "POST" })
       description: "Points earned on a ZorynPay sale",
     });
 
-    await audit(admin, "payment.captured", tx?.id ?? merchant.id, {
+    await audit(admin, context.userId, "payment.captured", tx?.id ?? merchant.id, {
       amount_cents: data.amountCents,
       provider: acquiring.provider,
       provider_reference: reference,
@@ -283,13 +257,13 @@ export const captureTapToPay = createServerFn({ method: "POST" })
   });
 
 export const createMerchantPaymentLink = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
     z.object({ merchantId: uuid, label: z.string().min(2).max(80), amountCents: amount }).parse(input),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { admin, acquiring } = await ctx();
-    const { data: merchant } = await admin.from("merchants").select("id, is_demo").eq("id", data.merchantId).maybeSingle();
-    if (!merchant || !merchant.is_demo) throw new Error("Merchant not available in demo mode");
+    const merchant = await requireMerchant(admin, data.merchantId, context.userId);
 
     const link = await acquiring.createPaymentLink({
       amount: { value: data.amountCents, currency: "EUR" },
@@ -311,13 +285,17 @@ export const createMerchantPaymentLink = createServerFn({ method: "POST" })
       .select("id, url")
       .maybeSingle();
 
-    await audit(admin, "payment_link.created", row?.id ?? merchant.id, { amount_cents: data.amountCents, label: data.label });
+    await audit(admin, context.userId, "payment_link.created", row?.id ?? merchant.id, {
+      amount_cents: data.amountCents,
+      label: data.label,
+    });
     return { ok: true, id: row?.id ?? null, url: row?.url ?? link.url };
   });
 
 /* -------------------------------------------------------------- redemptions */
 
 export const redeemPoints = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
     z
       .object({
@@ -331,14 +309,10 @@ export const redeemPoints = createServerFn({ method: "POST" })
       .refine((v) => v.destination !== "pot" || Boolean(v.potId), "Choose a pot")
       .parse(input),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { admin } = await ctx();
-    const { data: loyalty } = await admin
-      .from("loyalty_accounts")
-      .select("id, points, is_demo")
-      .eq("id", data.loyaltyAccountId)
-      .maybeSingle();
-    if (!loyalty || !loyalty.is_demo) throw new Error("Rewards account not available in demo mode");
+    const userId = context.userId;
+    const loyalty = await requireLoyalty(admin, data.loyaltyAccountId, userId);
     if (Number(loyalty.points) < data.points) throw new Error("Not enough points");
 
     // 500 points = EUR 5.00
@@ -356,12 +330,12 @@ export const redeemPoints = createServerFn({ method: "POST" })
     });
     await admin.from("loyalty_accounts").update({ points: Number(loyalty.points) - data.points }).eq("id", loyalty.id);
 
-    if (data.destination === "pot" && data.potId) {
-      const { data: pot } = await admin.from("pots").select("id, balance, is_demo").eq("id", data.potId).maybeSingle();
-      if (!pot || !pot.is_demo) throw new Error("Pot not available in demo mode");
+    if (data.destination === "pot" && data.potId && data.accountId) {
+      const account = await requireAccount(admin, data.accountId, userId);
+      const pot = await requirePot(admin, data.potId, account.id, userId);
       await admin.from("pots").update({ balance: Number(pot.balance) + value }).eq("id", pot.id);
     } else if (data.accountId) {
-      const account = await demoAccount(admin, data.accountId);
+      const account = await requireAccount(admin, data.accountId, userId);
       await admin
         .from("financial_accounts")
         .update({ balance: Number(account.balance) + value, available_balance: Number(account.available_balance) + value })
@@ -379,17 +353,22 @@ export const redeemPoints = createServerFn({ method: "POST" })
         status: process.env["REWARDS_HUB_URL"] && process.env["REWARDS_INGEST_SECRET"] ? "pending" : "skipped",
         payload: { destination: data.destination, pot_id: data.potId ?? null, account_id: data.accountId ?? null },
         is_demo: true,
-      },
+      } as never,
       { onConflict: "provider,provider_reference,event_type", ignoreDuplicates: true },
     );
 
-    await audit(admin, "reward.redeemed", loyalty.id, { points: data.points, value_cents: valueCents, destination: data.destination });
+    await audit(admin, userId, "reward.redeemed", loyalty.id, {
+      points: data.points,
+      value_cents: valueCents,
+      destination: data.destination,
+    });
     return { ok: true, valueCents, remainingPoints: Number(loyalty.points) - data.points };
   });
 
 /* ------------------------------------------------------------ support cases */
 
 export const createSupportCase = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
     z
       .object({
@@ -399,7 +378,7 @@ export const createSupportCase = createServerFn({ method: "POST" })
       })
       .parse(input),
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { admin } = await ctx();
     const reference = `ZC-${Math.floor(Math.random() * 90000 + 10000)}`;
     const { data: row } = await admin
@@ -409,11 +388,15 @@ export const createSupportCase = createServerFn({ method: "POST" })
         subject: data.subject,
         status: "open",
         priority: data.priority,
+        owner_user_id: context.userId,
         organisation_id: data.organisationId ?? null,
         is_demo: true,
       })
       .select("id, reference")
       .maybeSingle();
-    await audit(admin, "support_case.created", row?.id ?? reference, { subject: data.subject, priority: data.priority });
+    await audit(admin, context.userId, "support_case.created", row?.id ?? reference, {
+      subject: data.subject,
+      priority: data.priority,
+    });
     return { ok: true, id: row?.id ?? null, reference: row?.reference ?? reference };
   });

@@ -3,6 +3,7 @@ import { PortalShell } from "@/components/portal/PortalShell";
 
 export const Route = createFileRoute("/_authenticated/personal-workspace")({
   head: () => ({
+    links: [{ rel: "canonical", href: "https://project--b574cab4-af47-4e08-8b19-3df7a6638b9f.lovable.app/personal" }],
     meta: [
       { title: "Personal workspace — Zoryn balances, pots and rewards" },
       { name: "description", content: "German IBAN, balances, savings pots with targets, chosen-amount transfers, cards and rewards with booked, pending and returned states." },
