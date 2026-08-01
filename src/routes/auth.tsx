@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable";
 import { useSession } from "@/lib/auth";
 import { useT } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -74,11 +75,10 @@ function AuthPage() {
   async function google() {
     setError(null);
     try {
-      const { error: oauthError } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: { redirectTo: window.location.origin },
+      const result = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
       });
-      if (oauthError) throw oauthError;
+      if (result?.error) throw result.error;
     } catch (err) {
       setError(err instanceof Error ? err.message : String(err));
     }
