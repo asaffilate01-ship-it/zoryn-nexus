@@ -1,0 +1,50 @@
+# Lovable Master Prompt — Zoryn v1.1
+
+Continue building this repository as a premium, customer-ready European fintech website and interactive application suite.
+
+## Preserve the new information architecture
+
+1. The default homepage is a public customer/corporate website, not a provider pitch.
+2. Keep clear product sections for Zoryn Personal, Zoryn Business, ZorynPay, Zoryn Rewards and Security.
+3. Keep the technical and provider-facing material inside the Interactive Product Centre and Platform & Operations workspace.
+4. Every public call-to-action should open a useful product experience rather than a dead page.
+
+## UI/UX standard
+
+- Premium, calm and trustworthy fintech presentation
+- Strong typography, generous spacing and accessible contrast
+- Fully responsive mobile, tablet and desktop layouts
+- Clear interactive states, validation, loading feedback and empty states
+- Consistent Zoryn dark teal, mint and soft neutral design system
+- Avoid generic template sections and unnecessary visual clutter
+
+## Functional demo requirements
+
+Preserve and improve all working mock flows:
+
+- Move a user-selected amount between main balance and pots
+- Move money between pots
+- Validate insufficient balances
+- Send mock SEPA transfers
+- Issue, freeze and unfreeze cards
+- Create business payment links and staff cards
+- Simulate ZorynPay Tap to Pay payments
+- Update settlement and transaction records
+- Redeem loyalty points
+- Create support cases
+- Explore customer, compliance, payments and provider operations
+
+All mock actions must continue to persist locally until Supabase is connected.
+
+## Data layer
+
+Use the included Supabase schema and seed files. When connecting Supabase, preserve Row Level Security and organisation-role separation. Keep regulated provider secrets server-side only.
+
+## Provider adapters
+
+Treat Swan and Adyen as replaceable backend adapters:
+
+- Swan: customer/business onboarding, IBANs, accounts, balances, cards and SEPA
+- Adyen: merchant onboarding, acquiring, Tap to Pay, terminals, refunds and settlements
+
+Do not call provider secrets directly from React. Use Edge Functions or a secure backend.

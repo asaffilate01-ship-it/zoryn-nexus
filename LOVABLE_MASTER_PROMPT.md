@@ -1,66 +1,26 @@
-# Zoryn master prompt for Lovable
-
-Build and refine the supplied Zoryn project as a production-quality responsive fintech platform for Germany. Preserve the existing dark navy/mint visual identity and the product line: “Money. Payments. Rewards.”
-
-## Brand and legal positioning
-- Product brand: Zoryn.
-- Parent: LoungeTech Digitallösungen GmbH.
-- Initial market: Germany, with later EU expansion.
-- Do not describe LoungeTech or Zoryn as a licensed bank.
-- Use wording such as “financial technology platform” and keep provider/legal disclosures configurable.
-- Products: Zoryn Money, Zoryn Cards, ZorynPay, Zoryn Rewards, Zoryn Business and Zoryn Connect.
-
-## Required applications
-Create one responsive application with role-based workspaces and navigation for:
-1. Personal customer.
-2. Business customer.
-3. ZorynPay merchant.
-4. LoungeTech administrator.
-
-## Personal features
-Dashboard, German IBAN account, balances, transaction feed, beneficiaries, SEPA transfers, cards, freeze/unfreeze, limits, virtual/physical card views, statements, rewards, notifications, profile, trusted devices, support and complaints.
-
-## Business features
-Business onboarding, account and IBAN, team roles, employee cards, budgets, approval workflows, invoices, payment links, incoming payments, expense management, receipts, settlements, reports, rewards campaigns and support.
-
-## ZorynPay features
-Merchant onboarding, Tap to Pay UI, online checkout, payment links, QR payments, product catalogue, tips, refunds, digital receipts, transactions, settlements, chargebacks, terminals, staff shifts and analytics.
-
-## Admin features
-Customers, organisations, onboarding/KYC/KYB status, provider status, accounts, cards, merchants, payments, settlements, chargebacks, compliance queues, risk alerts, support, complaints, pricing, revenue, loyalty liability, audit log, webhooks and system health.
-
-## Data and security
-- Use Supabase Auth, PostgreSQL, Storage and Row Level Security.
-- Use organisation membership and role-based permissions.
-- Never store full card PAN or CVV.
-- Never call Swan or Adyen directly from the browser.
-- All provider calls go through Supabase Edge Functions or the supplied Python orchestration API.
-- Store only provider IDs, normalised statuses and safe cached display data.
-- Add immutable audit events and idempotent webhook event storage.
-- Use demo/mock mode until real sandbox credentials are supplied.
-
-## Provider architecture
-- Swan is the intended source of truth for accounts, IBANs, balances, SEPA, cards, banking onboarding and regulated banking decisions.
-- Adyen is the intended source of truth for merchant acquiring, online/in-person payments, Tap to Pay, terminals, refunds, chargebacks and settlements.
-- Keep adapters provider-independent. Use normalised statuses: DRAFT, IN_REVIEW, ACTION_REQUIRED, APPROVED, RESTRICTED, SUSPENDED and CLOSED.
-- Do not invent actual provider endpoints or credentials. Clearly mark integration functions as placeholders until official sandbox specifications are supplied.
-
-## UX requirements
-- Polished German-first fintech interface with English locale support.
-- Desktop, tablet and mobile responsive.
-- Accessible contrast, keyboard navigation, loading, empty, error and success states.
-- Use realistic demo data and fully clickable workflows.
-- Create reusable cards, tables, dialogs, forms, status badges, charts and activity timelines.
-- Include onboarding progress and action-required banners.
-
-## Build order
-1. Preserve and improve the current landing/login demo selector.
-2. Complete all role dashboards.
-3. Create Supabase Auth and organisation membership.
-4. Wire the supplied SQL migration.
-5. Create mock provider service and realistic demo seed data.
-6. Implement forms and workflows using mock mode.
-7. Add Edge Function placeholders for Swan and Adyen.
-8. Add admin audit and webhook monitoring.
-9. Add German/English localisation.
-10. Ensure `npm run build` passes without TypeScript errors.
+-- Zoryn demo schema. Safe starter structure for Lovable/Supabase.
+create extension if not exists pgcrypto;
+create type public.zoryn_role as enum ('personal','business','merchant','admin','staff');
+create type public.resource_status as enum ('draft','in_review','action_required','approved','restricted','suspended','closed');
+create table if not exists public.profiles(id uuid primary key references auth.users(id) on delete cascade,full_name text not null,email text,role zoryn_role not null default 'personal',created_at timestamptz not null default now());
+create table if not exists public.organisations(id uuid primary key default gen_random_uuid(),name text not null,legal_name text,kind text not null check(kind in ('business','merchant','platform')),country char(2) not null default 'DE',status resource_status not null default 'approved',created_at timestamptz not null default now());
+create table if not exists public.organisation_members(id uuid primary key default gen_random_uuid(),organisation_id uuid not null references public.organisations(id) on delete cascade,user_id uuid references auth.users(id) on delete cascade,display_name text not null,role text not null,monthly_limit numeric(14,2) default 0,spent numeric(14,2) default 0,created_at timestamptz default now());
+create table if not exists public.financial_accounts(id uuid primary key default gen_random_uuid(),owner_user_id uuid references auth.users(id),organisation_id uuid references public.organisations(id),provider text not null default 'mock_swan',provider_reference text unique,account_name text not null,currency char(3) not null default 'EUR',iban text,balance numeric(14,2) not null default 0,available_balance numeric(14,2) not null default 0,status resource_status not null default 'approved',created_at timestamptz default now(),check(owner_user_id is not null or organisation_id is not null));
+create table if not exists public.pots(id uuid primary key default gen_random_uuid(),account_id uuid not null references public.financial_accounts(id) on delete cascade,name text not null,emoji text default '💰',balance numeric(14,2) not null default 0,target numeric(14,2),created_at timestamptz default now());
+create table if not exists public.cards(id uuid primary key default gen_random_uuid(),account_id uuid not null references public.financial_accounts(id) on delete cascade,provider text not null default 'mock_swan',provider_reference text unique,name text not null,last_four char(4) not null,card_type text not null check(card_type in ('physical','virtual')),status text not null default 'active',monthly_limit numeric(14,2) default 0,spent numeric(14,2) default 0,created_at timestamptz default now());
+create table if not exists public.transactions(id uuid primary key default gen_random_uuid(),account_id uuid references public.financial_accounts(id),provider text not null default 'mock',provider_reference text unique,title text not null,subtitle text,kind text not null,amount numeric(14,2) not null,currency char(3) default 'EUR',status text not null default 'completed',occurred_at timestamptz not null default now(),metadata jsonb not null default '{}'::jsonb);
+create table if not exists public.internal_transfers(id uuid primary key default gen_random_uuid(),account_id uuid not null references public.financial_accounts(id),from_pot_id uuid references public.pots(id),to_pot_id uuid references public.pots(id),amount numeric(14,2) not null check(amount>0),created_at timestamptz default now(),check(from_pot_id is distinct from to_pot_id));
+create table if not exists public.merchants(id uuid primary key default gen_random_uuid(),organisation_id uuid not null references public.organisations(id),provider text not null default 'mock_adyen',provider_reference text unique,status resource_status not null default 'approved',pending_settlement numeric(14,2) default 0,created_at timestamptz default now());
+create table if not exists public.payment_links(id uuid primary key default gen_random_uuid(),merchant_id uuid not null references public.merchants(id),provider_reference text unique,label text not null,amount numeric(14,2) not null,currency char(3) default 'EUR',status text not null default 'open',url text,created_at timestamptz default now());
+create table if not exists public.terminals(id uuid primary key default gen_random_uuid(),merchant_id uuid not null references public.merchants(id),provider text not null default 'mock_adyen',provider_reference text unique,name text not null,status text not null default 'online',battery integer default 100,last_seen_at timestamptz default now());
+create table if not exists public.loyalty_accounts(id uuid primary key default gen_random_uuid(),owner_user_id uuid references auth.users(id),organisation_id uuid references public.organisations(id),points bigint not null default 0,tier text default 'silver');
+create table if not exists public.loyalty_entries(id uuid primary key default gen_random_uuid(),loyalty_account_id uuid not null references public.loyalty_accounts(id),points bigint not null,description text not null,created_at timestamptz default now());
+create table if not exists public.support_cases(id uuid primary key default gen_random_uuid(),owner_user_id uuid references auth.users(id),organisation_id uuid references public.organisations(id),reference text unique not null,subject text not null,status text not null default 'open',priority text default 'normal',created_at timestamptz default now());
+create table if not exists public.provider_events(id uuid primary key default gen_random_uuid(),provider text not null,event_id text not null,event_type text not null,payload jsonb not null default '{}'::jsonb,processed_at timestamptz,created_at timestamptz default now(),unique(provider,event_id));
+create table if not exists public.audit_logs(id uuid primary key default gen_random_uuid(),actor_id uuid references auth.users(id),action text not null,resource_type text,resource_id text,metadata jsonb not null default '{}'::jsonb,created_at timestamptz default now());
+alter table public.profiles enable row level security;alter table public.organisations enable row level security;alter table public.organisation_members enable row level security;alter table public.financial_accounts enable row level security;alter table public.pots enable row level security;alter table public.cards enable row level security;alter table public.transactions enable row level security;alter table public.payment_links enable row level security;alter table public.support_cases enable row level security;
+create policy "profile_self" on public.profiles for all using(auth.uid()=id) with check(auth.uid()=id);
+create policy "own_accounts" on public.financial_accounts for select using(owner_user_id=auth.uid() or exists(select 1 from public.organisation_members m where m.organisation_id=financial_accounts.organisation_id and m.user_id=auth.uid()));
+create policy "own_pots" on public.pots for all using(exists(select 1 from public.financial_accounts a where a.id=pots.account_id and (a.owner_user_id=auth.uid() or exists(select 1 from public.organisation_members m where m.organisation_id=a.organisation_id and m.user_id=auth.uid()))));
+create policy "own_cards" on public.cards for select using(exists(select 1 from public.financial_accounts a where a.id=cards.account_id and (a.owner_user_id=auth.uid() or exists(select 1 from public.organisation_members m where m.organisation_id=a.organisation_id and m.user_id=auth.uid()))));
+create policy "own_transactions" on public.transactions for select using(exists(select 1 from public.financial_accounts a where a.id=transactions.account_id and (a.owner_user_id=auth.uid() or exists(select 1 from public.organisation_members m where m.organisation_id=a.organisation_id and m.user_id=auth.uid()))));
