@@ -108,7 +108,7 @@ function PublicHome() {
             className="text-foreground md:hidden"
             onClick={() => setMenu((v) => !v)}
           >
-            {menu ? <Menu size={22} /> : <Menu size={22} />}
+            {menu ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
         {menu && (

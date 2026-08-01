@@ -110,7 +110,7 @@ export function PortalShell({ role }: { role: Role }) {
           </div>
           <div className="flex items-center gap-3 rounded-full border border-border bg-card/70 px-4 py-2">
             <span className="text-sm font-medium">{config.user}</span>
-            <Link to="/" aria-label="Exit portal" className="text-muted-foreground hover:text-foreground">
+            <Link to="/demo" aria-label="Exit portal" className="text-muted-foreground hover:text-foreground">
               <LogOut size={16} />
             </Link>
           </div>
