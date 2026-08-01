@@ -1,6 +1,9 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { LogOut, Menu, X } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { Lock, LogOut, Menu, X } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAccount } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { PersonalModules } from "./PersonalModules";
 import { BusinessModules } from "./BusinessModules";
@@ -21,11 +24,22 @@ import {
 
 export function PortalShell({ role }: { role: Role }) {
   const t = useT();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { profile, roles, loading: accountLoading } = useAccount();
   const config = portalConfigs[role];
   const items = portalNav[role];
   const { notice } = useDemo();
   const [page, setPage] = useState<PageKey>("overview");
   const [menuOpen, setMenuOpen] = useState(false);
+  const allowed = accountLoading || roles.includes(role) || roles.includes("admin");
+
+  async function signOut() {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    await supabase.auth.signOut();
+    navigate({ to: "/auth", replace: true });
+  }
 
   return (
     <div className="min-h-screen lg:flex">
@@ -124,14 +138,17 @@ export function PortalShell({ role }: { role: Role }) {
           <div className="flex shrink-0 items-center gap-3">
             <LanguageToggle />
             <div className="flex items-center gap-3 rounded-full border border-border bg-card/70 py-2 pl-4 pr-3 backdrop-blur">
-              <span className="hidden text-sm font-medium sm:inline">{config.user}</span>
-              <Link
-                to="/demo"
-                aria-label={t("Exit portal")}
+              <span className="hidden max-w-[16ch] truncate text-sm font-medium sm:inline">
+                {profile?.full_name ?? config.user}
+              </span>
+              <button
+                type="button"
+                onClick={signOut}
+                aria-label={t("Sign out")}
                 className="text-muted-foreground transition-colors hover:text-foreground"
               >
                 <LogOut size={16} />
-              </Link>
+              </button>
             </div>
           </div>
         </header>
@@ -146,10 +163,30 @@ export function PortalShell({ role }: { role: Role }) {
         )}
 
         <div className="mt-6">
-          {role === "personal" && <PersonalModules page={page} />}
-          {role === "business" && <BusinessModules page={page} />}
-          {role === "merchant" && <MerchantModules page={page} />}
-          {role === "admin" && <AdminModules page={page} />}
+          {!allowed ? (
+            <div className="surface-card mx-auto mt-10 max-w-lg rounded-3xl border border-border/70 p-8 text-center">
+              <Lock size={22} className="mx-auto text-primary" />
+              <h2 className="mt-4 font-display text-xl">{t("Access not granted yet")}</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {t(
+                  "Your account does not have access to this portal. LoungeTech grants business, ZorynPay and admin roles.",
+                )}
+              </p>
+              <Link
+                to="/personal"
+                className="mt-6 inline-flex rounded-2xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                {t("Go to your personal portal")}
+              </Link>
+            </div>
+          ) : (
+            <>
+              {role === "personal" && <PersonalModules page={page} />}
+              {role === "business" && <BusinessModules page={page} />}
+              {role === "merchant" && <MerchantModules page={page} />}
+              {role === "admin" && <AdminModules page={page} />}
+            </>
+          )}
         </div>
       </main>
     </div>

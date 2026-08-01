@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PortalShell } from "@/components/portal/PortalShell";
 
-export const Route = createFileRoute("/business-workspace")({
+export const Route = createFileRoute("/_authenticated/business-workspace")({
   head: () => ({
     meta: [
       { title: "Business workspace — Zoryn balances, settlements and staff cards" },

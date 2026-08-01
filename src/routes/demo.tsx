@@ -3,6 +3,7 @@ import { ArrowLeft, ArrowRight, Building2, ShieldCheck, Smartphone, WalletCards 
 import { portalConfigs, providerReadinessByRole, rolePaths, roleOrder } from "@/lib/zoryn-data";
 import { useT } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { AuthLink } from "@/components/AuthLink";
 
 export const Route = createFileRoute("/demo")({
   head: () => ({
@@ -52,7 +53,10 @@ function DemoHub() {
           >
             <ArrowLeft size={16} /> {t("Back to zoryn.com")}
           </Link>
-          <LanguageToggle />
+          <div className="flex items-center gap-4">
+            <AuthLink />
+            <LanguageToggle />
+          </div>
         </div>
         <span className="mt-8 block text-[11px] font-semibold uppercase tracking-[0.25em] text-primary">
           {t("Interactive Product Centre")}
