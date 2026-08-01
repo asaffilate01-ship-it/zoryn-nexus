@@ -20,6 +20,7 @@ export type Database = {
           actor_id: string | null
           created_at: string
           id: string
+          is_demo: boolean
           metadata: Json
           resource_id: string | null
           resource_type: string | null
@@ -30,6 +31,7 @@ export type Database = {
           actor_id?: string | null
           created_at?: string
           id?: string
+          is_demo?: boolean
           metadata?: Json
           resource_id?: string | null
           resource_type?: string | null
@@ -40,6 +42,7 @@ export type Database = {
           actor_id?: string | null
           created_at?: string
           id?: string
+          is_demo?: boolean
           metadata?: Json
           resource_id?: string | null
           resource_type?: string | null
@@ -53,6 +56,7 @@ export type Database = {
           card_type: string
           created_at: string
           id: string
+          is_demo: boolean
           last_four: string
           monthly_limit: number
           name: string
@@ -67,6 +71,7 @@ export type Database = {
           card_type: string
           created_at?: string
           id?: string
+          is_demo?: boolean
           last_four: string
           monthly_limit?: number
           name: string
@@ -81,6 +86,7 @@ export type Database = {
           card_type?: string
           created_at?: string
           id?: string
+          is_demo?: boolean
           last_four?: string
           monthly_limit?: number
           name?: string
@@ -109,6 +115,7 @@ export type Database = {
           currency: string
           iban: string | null
           id: string
+          is_demo: boolean
           organisation_id: string | null
           owner_user_id: string | null
           provider: string
@@ -124,6 +131,7 @@ export type Database = {
           currency?: string
           iban?: string | null
           id?: string
+          is_demo?: boolean
           organisation_id?: string | null
           owner_user_id?: string | null
           provider?: string
@@ -139,6 +147,7 @@ export type Database = {
           currency?: string
           iban?: string | null
           id?: string
+          is_demo?: boolean
           organisation_id?: string | null
           owner_user_id?: string | null
           provider?: string
@@ -212,6 +221,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_demo: boolean
           organisation_id: string | null
           owner_user_id: string | null
           points: number
@@ -221,6 +231,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_demo?: boolean
           organisation_id?: string | null
           owner_user_id?: string | null
           points?: number
@@ -230,6 +241,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_demo?: boolean
           organisation_id?: string | null
           owner_user_id?: string | null
           points?: number
@@ -251,6 +263,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          is_demo: boolean
           loyalty_account_id: string
           points: number
           updated_at: string
@@ -259,6 +272,7 @@ export type Database = {
           created_at?: string
           description: string
           id?: string
+          is_demo?: boolean
           loyalty_account_id: string
           points: number
           updated_at?: string
@@ -267,6 +281,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          is_demo?: boolean
           loyalty_account_id?: string
           points?: number
           updated_at?: string
@@ -285,6 +300,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_demo: boolean
           organisation_id: string
           pending_settlement: number
           provider: string
@@ -295,6 +311,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_demo?: boolean
           organisation_id: string
           pending_settlement?: number
           provider?: string
@@ -305,6 +322,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_demo?: boolean
           organisation_id?: string
           pending_settlement?: number
           provider?: string
@@ -327,6 +345,7 @@ export type Database = {
           created_at: string
           display_name: string
           id: string
+          is_demo: boolean
           monthly_limit: number
           organisation_id: string
           role: string
@@ -338,6 +357,7 @@ export type Database = {
           created_at?: string
           display_name: string
           id?: string
+          is_demo?: boolean
           monthly_limit?: number
           organisation_id: string
           role: string
@@ -349,6 +369,7 @@ export type Database = {
           created_at?: string
           display_name?: string
           id?: string
+          is_demo?: boolean
           monthly_limit?: number
           organisation_id?: string
           role?: string
@@ -371,6 +392,7 @@ export type Database = {
           country: string
           created_at: string
           id: string
+          is_demo: boolean
           kind: string
           legal_name: string | null
           name: string
@@ -381,6 +403,7 @@ export type Database = {
           country?: string
           created_at?: string
           id?: string
+          is_demo?: boolean
           kind: string
           legal_name?: string | null
           name: string
@@ -391,6 +414,7 @@ export type Database = {
           country?: string
           created_at?: string
           id?: string
+          is_demo?: boolean
           kind?: string
           legal_name?: string | null
           name?: string
@@ -405,6 +429,7 @@ export type Database = {
           created_at: string
           currency: string
           id: string
+          is_demo: boolean
           label: string
           merchant_id: string
           provider_reference: string | null
@@ -417,6 +442,7 @@ export type Database = {
           created_at?: string
           currency?: string
           id?: string
+          is_demo?: boolean
           label: string
           merchant_id: string
           provider_reference?: string | null
@@ -429,6 +455,7 @@ export type Database = {
           created_at?: string
           currency?: string
           id?: string
+          is_demo?: boolean
           label?: string
           merchant_id?: string
           provider_reference?: string | null
@@ -453,6 +480,7 @@ export type Database = {
           created_at: string
           emoji: string | null
           id: string
+          is_demo: boolean
           name: string
           target: number | null
           updated_at: string
@@ -463,6 +491,7 @@ export type Database = {
           created_at?: string
           emoji?: string | null
           id?: string
+          is_demo?: boolean
           name: string
           target?: number | null
           updated_at?: string
@@ -473,6 +502,7 @@ export type Database = {
           created_at?: string
           emoji?: string | null
           id?: string
+          is_demo?: boolean
           name?: string
           target?: number | null
           updated_at?: string
@@ -520,6 +550,7 @@ export type Database = {
           event_id: string
           event_type: string
           id: string
+          is_demo: boolean
           payload: Json
           processed_at: string | null
           provider: string
@@ -530,6 +561,7 @@ export type Database = {
           event_id: string
           event_type: string
           id?: string
+          is_demo?: boolean
           payload?: Json
           processed_at?: string | null
           provider: string
@@ -540,6 +572,7 @@ export type Database = {
           event_id?: string
           event_type?: string
           id?: string
+          is_demo?: boolean
           payload?: Json
           processed_at?: string | null
           provider?: string
@@ -551,6 +584,7 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_demo: boolean
           organisation_id: string | null
           owner_user_id: string | null
           priority: string
@@ -562,6 +596,7 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          is_demo?: boolean
           organisation_id?: string | null
           owner_user_id?: string | null
           priority?: string
@@ -573,6 +608,7 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          is_demo?: boolean
           organisation_id?: string | null
           owner_user_id?: string | null
           priority?: string
@@ -596,6 +632,7 @@ export type Database = {
           battery: number
           created_at: string
           id: string
+          is_demo: boolean
           last_seen_at: string
           merchant_id: string
           name: string
@@ -608,6 +645,7 @@ export type Database = {
           battery?: number
           created_at?: string
           id?: string
+          is_demo?: boolean
           last_seen_at?: string
           merchant_id: string
           name: string
@@ -620,6 +658,7 @@ export type Database = {
           battery?: number
           created_at?: string
           id?: string
+          is_demo?: boolean
           last_seen_at?: string
           merchant_id?: string
           name?: string
@@ -645,6 +684,7 @@ export type Database = {
           created_at: string
           currency: string
           id: string
+          is_demo: boolean
           kind: string
           metadata: Json
           occurred_at: string
@@ -661,6 +701,7 @@ export type Database = {
           created_at?: string
           currency?: string
           id?: string
+          is_demo?: boolean
           kind: string
           metadata?: Json
           occurred_at?: string
@@ -677,6 +718,7 @@ export type Database = {
           created_at?: string
           currency?: string
           id?: string
+          is_demo?: boolean
           kind?: string
           metadata?: Json
           occurred_at?: string
