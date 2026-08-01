@@ -138,4 +138,10 @@ export const deProvider: Record<string, string> = {
   "Skipped": "Übersprungen",
   "Processing": "Wird verarbeitet",
   "Onboarding": "Onboarding",
+  "Awaiting Dual Approval": "Wartet auf Zweitfreigabe",
+  "SLA At Risk": "SLA gefährdet",
+  "Address Required": "Adressnachweis erforderlich",
+  "UBO Required": "UBO-Angaben erforderlich",
+  "Chargeback Opened": "Rückbelastung eröffnet",
+  "Urgent": "Dringend",
 };
