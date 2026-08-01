@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export const money = (v: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(v);
@@ -313,6 +313,27 @@ const DemoContext = createContext<Ctx | null>(null);
 export function DemoProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<State>(initialState);
   const [notice, setNotice] = useState("");
+  const [hydrated, setHydrated] = useState(false);
+
+  // Load the seeded demo dataset from the database; the built-in constants
+  // remain the fallback so the portals render even if the read fails.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const { loadDemoState } = await import("./zoryn-db");
+        const next = await loadDemoState();
+        if (!cancelled) setState(next);
+      } catch {
+        /* keep fallback data */
+      } finally {
+        if (!cancelled) setHydrated(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const notify = useCallback((m: string) => {
     setNotice(m);
