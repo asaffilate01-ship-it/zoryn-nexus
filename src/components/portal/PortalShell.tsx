@@ -31,17 +31,22 @@ export function PortalShell({ role }: { role: Role }) {
     <div className="min-h-screen lg:flex">
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-40 flex w-72 flex-col justify-between border-r border-sidebar-border bg-sidebar/95 p-6 backdrop-blur transition-transform lg:static lg:translate-x-0",
+          "fixed inset-y-0 left-0 z-40 flex w-72 flex-col justify-between border-r border-sidebar-border bg-sidebar/95 p-6 backdrop-blur-xl transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen lg:translate-x-0",
           menuOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div>
-          <Link to="/" className="font-display text-2xl font-bold text-sidebar-foreground">
+          <Link
+            to="/"
+            className="font-display text-2xl font-bold tracking-tight text-sidebar-foreground transition-opacity hover:opacity-80"
+          >
             Zoryn<span className="text-primary">.</span>
           </Link>
-          <p className="mt-1 text-xs text-muted-foreground">{t("Money. Payments. Rewards.")}</p>
+          <p className="mt-1 text-xs tracking-wide text-muted-foreground">
+            {t("Money. Payments. Rewards.")}
+          </p>
 
-          <nav className="mt-8 space-y-1">
+          <nav className="mt-8 space-y-1.5">
             {items.map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
@@ -50,13 +55,13 @@ export function PortalShell({ role }: { role: Role }) {
                   setMenuOpen(false);
                 }}
                 className={cn(
-                  "flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                  "group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200",
                   page === key
-                    ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                    : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                    ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-[0_10px_26px_-16px_oklch(0.82_0.17_165/0.95)]"
+                    : "text-muted-foreground hover:translate-x-0.5 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                 )}
               >
-                <Icon size={18} />
+                <Icon size={18} className="shrink-0" />
                 {t(label)}
               </button>
             ))}
@@ -73,7 +78,7 @@ export function PortalShell({ role }: { role: Role }) {
                 key={r}
                 to={rolePaths[r]}
                 className={cn(
-                  "rounded-lg border border-sidebar-border px-2 py-2 text-center text-xs font-medium transition-colors",
+                  "rounded-xl border border-sidebar-border px-2 py-2 text-center text-xs font-medium transition-colors",
                   r === role
                     ? "border-primary/60 bg-primary/10 text-primary"
                     : "text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
@@ -94,28 +99,32 @@ export function PortalShell({ role }: { role: Role }) {
         />
       )}
 
-      <main className="flex-1 px-5 py-6 sm:px-8 lg:px-10">
-        <header className="flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
+      <main className="min-w-0 flex-1 px-5 pb-10 sm:px-8 lg:px-10">
+        <header className="sticky top-0 z-20 -mx-5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 border-b border-border/60 bg-background/80 px-5 py-4 backdrop-blur-xl sm:-mx-8 sm:px-8 lg:-mx-10 lg:px-10">
+          <div className="flex min-w-0 items-center gap-3">
             <button
-              className="rounded-lg border border-border p-2 lg:hidden"
+              className="shrink-0 rounded-xl border border-border p-2 transition-colors hover:bg-secondary lg:hidden"
               onClick={() => setMenuOpen((v) => !v)}
               aria-label={t("Toggle navigation")}
             >
               {menuOpen ? <X size={18} /> : <Menu size={18} />}
             </button>
-            <div>
+            <div className="min-w-0">
               <span className="text-[11px] font-semibold uppercase tracking-widest text-primary">
                 {t(config.name)} {t("portal")}
               </span>
-              <h1 className="text-2xl font-semibold sm:text-3xl">{t(moduleTitles[page])}</h1>
+              <h1 className="truncate text-xl font-semibold sm:text-2xl">{t(moduleTitles[page])}</h1>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex shrink-0 items-center gap-3">
             <LanguageToggle />
-            <div className="flex items-center gap-3 rounded-full border border-border bg-card/70 px-4 py-2">
-              <span className="text-sm font-medium">{config.user}</span>
-              <Link to="/demo" aria-label={t("Exit portal")} className="text-muted-foreground hover:text-foreground">
+            <div className="flex items-center gap-3 rounded-full border border-border bg-card/70 py-2 pl-4 pr-3 backdrop-blur">
+              <span className="hidden text-sm font-medium sm:inline">{config.user}</span>
+              <Link
+                to="/demo"
+                aria-label={t("Exit portal")}
+                className="text-muted-foreground transition-colors hover:text-foreground"
+              >
                 <LogOut size={16} />
               </Link>
             </div>
@@ -125,7 +134,7 @@ export function PortalShell({ role }: { role: Role }) {
         {notice && (
           <div
             role="status"
-            className="mt-5 rounded-xl border border-primary/40 bg-primary/10 px-4 py-3 text-sm text-primary"
+            className="mt-5 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-3 text-sm text-primary shadow-[0_18px_40px_-26px_oklch(0.82_0.17_165/0.8)]"
           >
             {notice}
           </div>
