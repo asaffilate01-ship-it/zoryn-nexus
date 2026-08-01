@@ -380,11 +380,37 @@ export function ProviderReadyCentre({ initialTab = "overview" }: { initialTab?: 
                 <h2 className="font-display text-xl">Tap to Pay readiness</h2>
                 <div className="mt-5 rounded-2xl border border-border bg-background p-6">
                   <p className="text-sm text-muted-foreground">ZorynPay · {demoMerchant.name}</p>
-                  <p className="mt-8 text-center font-display text-5xl">€24.90</p>
+                  <label className="mt-6 block text-sm font-semibold">
+                    Amount to charge
+                    <input
+                      value={tapAmount}
+                      onChange={(e) => setTapAmount(e.target.value)}
+                      inputMode="decimal"
+                      className="mt-2 w-full rounded-xl border border-border bg-card px-3 py-3 text-center font-display text-3xl"
+                    />
+                  </label>
                   <div className="mx-auto mt-8 flex h-32 w-32 items-center justify-center rounded-full border-4 border-primary/40 bg-primary/10">
                     <Activity className="h-14 w-14 text-primary" />
                   </div>
-                  <p className="mt-5 text-center font-semibold">Ready for customer tap</p>
+                  <button
+                    onClick={() => {
+                      const c = Math.round(Number(tapAmount.replace(",", ".")) * 100);
+                      if (!Number.isFinite(c) || c <= 0) return setTapResult("Enter an amount");
+                      setTapResult(null);
+                      tap.mutate({
+                        data: {
+                          merchantId: demoMerchant.id,
+                          amountCents: c,
+                          ...(terminals[0］?.id ? { terminalId: terminals[0].id } : {}),
+                        },
+                      });
+                    }}
+                    disabled={tap.isPending}
+                    className="mt-6 w-full rounded-xl bg-primary px-4 py-3 text-sm font-bold text-primary-foreground disabled:opacity-60"
+                  >
+                    {tap.isPending ? "Reading card…" : "Simulate customer tap"}
+                  </button>
+                  <p className="mt-4 text-center font-semibold">{tapResult ?? "Ready for customer tap"}</p>
                   <p className="mt-1 text-center text-xs text-muted-foreground">
                     The acquiring provider's Mobile SDK replaces this simulation.
                   </p>
