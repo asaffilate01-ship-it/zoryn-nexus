@@ -3,8 +3,6 @@ import { AlertOctagon, Clock, ListChecks, Webhook } from "lucide-react";
 import { getRuntimeSnapshot } from "./runtimeRepository";
 import type { RuntimeLogStatus } from "./types";
 
-const TERMINAL_BAD = ["dead_letter", "failed"];
-
 function toneFor(status: string) {
   if (status === "dead_letter") return "border-destructive/60 text-destructive";
   if (status === "failed" || status === "retrying") return "border-amber-500/60 text-amber-400";
@@ -205,5 +203,3 @@ function Metric({
     </article>
   );
 }
-
-export const RUNTIME_BAD_STATES = TERMINAL_BAD;

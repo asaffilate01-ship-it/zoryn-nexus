@@ -28,7 +28,9 @@ export const Route = createFileRoute("/api/public/provider-health")({
           supabaseAdmin.from("platform_provider_alerts").select("id").eq("status", "open"),
           supabaseAdmin
             .from("platform_provider_runtime_logs")
-            .select("provider, direction, operation, status, correlation_id, duration_ms, created_at")
+            .select(
+              "provider, direction, operation, status, correlation_id, duration_ms, created_at",
+            )
             .order("created_at", { ascending: false })
             .limit(20),
         ]);
