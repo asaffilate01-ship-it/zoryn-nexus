@@ -27,9 +27,8 @@ export const Route = createFileRoute("/api/public/provider-launch-score")({
           return Response.json({ error: "unsupported_provider" }, { status: 400 });
         }
 
-        const environment = (body.environment ??
-          process.env["PROVIDER_MODE"] ??
-          "mock") as "mock" | "sandbox" | "live";
+        const environment = (body.environment ?? process.env["PROVIDER_MODE"] ?? "mock") as
+          "mock" | "sandbox" | "live";
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
