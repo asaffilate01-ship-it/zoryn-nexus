@@ -39,6 +39,7 @@ const extraLinks = [
   { to: "/provider-integration", label: "Provider integration readiness" },
   { to: "/onboarding-status", label: "Onboarding states" },
   { to: "/operations-centre", label: "Operations centre" },
+  { to: "/control-room", label: "Operations control room" },
   { to: "/scenario-lab", label: "Scenario lab" },
 ];
 
