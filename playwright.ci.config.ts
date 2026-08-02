@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const baseURL =
-  process.env.E2E_BASE_URL ?? process.env.PLAYWRIGHT_BASE_URL ?? "http://127.0.0.1:4173";
+  process.env.E2E_BASE_URL ?? process.env.PLAYWRIGHT_BASE_URL ?? "http://localhost:8080";
 
 export default defineConfig({
   testDir: "./e2e-ci",
@@ -18,9 +18,9 @@ export default defineConfig({
   webServer: process.env.E2E_BASE_URL
     ? undefined
     : {
-        command: "bun run build && bun run preview -- --host 127.0.0.1 --port 4173",
+        command: "bun run dev",
         url: baseURL,
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: true,
         timeout: 180_000,
       },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
