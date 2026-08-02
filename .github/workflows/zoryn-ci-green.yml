@@ -1,0 +1,88 @@
+name: Zoryn CI Green
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: zoryn-ci-green-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  application:
+    name: Application
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      PROVIDER_MODE: mock
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: application-diagnostics
+          path: |
+            coverage
+            dist
+            .output
+          if-no-files-found: ignore
+
+  browser:
+    name: Browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bunx playwright install --with-deps chromium
+      - run: bun run test:e2e:ci
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-diagnostics
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+
+  database:
+    name: Database
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start
+      - run: supabase db reset
+      - run: supabase test db
+      - if: always()
+        run: supabase stop
+
+  release-gate:
+    name: Release Gate
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [application, browser, database]
+    steps:
+      - name: Enforce green release
+        run: |
+          if [[ "${{ needs.application.result }}" != "success" ||
+                "${{ needs.browser.result }}" != "success" ||
+                "${{ needs.database.result }}" != "success" ]]; then
+            echo "One or more CI jobs failed."
+            exit 1
+          fi
+          echo "All CI jobs passed."
