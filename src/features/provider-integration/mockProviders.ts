@@ -11,11 +11,11 @@ const sleep = (ms = 250) => new Promise((resolve) => setTimeout(resolve, ms));
 const id = (prefix: string) => `${prefix}_${crypto.randomUUID()}`;
 
 export class MockSwanProvider implements BankingProvider {
-  async startIndividualOnboarding() {
+  async startIndividualOnboarding(_input: Record<string, unknown> = {}) {
     await sleep();
     return { externalId: id("swan_individual"), redirectUrl: "/onboarding?provider=mock-swan" };
   }
-  async startCompanyOnboarding() {
+  async startCompanyOnboarding(_input: Record<string, unknown> = {}) {
     await sleep();
     return { externalId: id("swan_company"), redirectUrl: "/onboarding?provider=mock-swan" };
   }
@@ -35,40 +35,40 @@ export class MockSwanProvider implements BankingProvider {
       status: "active",
     }];
   }
-  async createTransfer() {
+  async createTransfer(_input: Record<string, unknown> = {}) {
     await sleep();
     const status: TransferStatus = "submitted";
     return { externalId: id("swan_transfer"), status };
   }
-  async issueCard() {
+  async issueCard(_input: Record<string, unknown> = {}) {
     await sleep();
     const status: CardStatus = "ordered";
     return { externalId: id("swan_card"), status };
   }
-  async updateCardStatus() {
+  async updateCardStatus(_cardExternalId?: string, _action?: "freeze" | "unfreeze" | "cancel") {
     await sleep();
   }
 }
 
 export class MockAdyenProvider implements AcquiringProvider {
-  async startMerchantOnboarding() {
+  async startMerchantOnboarding(_input: Record<string, unknown> = {}) {
     await sleep();
     return { externalId: id("adyen_account_holder"), redirectUrl: "/merchant/onboarding?provider=mock-adyen" };
   }
-  async getMerchantStatus() {
+  async getMerchantStatus(_externalId?: string) {
     await sleep();
     return { status: "active", requiredActions: [] };
   }
-  async createPaymentLink(input: Record<string, unknown>) {
+  async createPaymentLink(input: Record<string, unknown> = {}) {
     await sleep();
     const externalId = id("adyen_link");
-    return { externalId, url: `https://pay.example.test/${externalId}?amount=${input.amountMinor ?? 0}` };
+    return { externalId, url: `https://pay.example.test/${externalId}?amount=${input["amountMinor"] ?? 0}` };
   }
-  async createPaymentSession() {
+  async createPaymentSession(_input: Record<string, unknown> = {}) {
     await sleep();
     return { externalId: id("adyen_session"), clientToken: "mock_client_token" };
   }
-  async refundPayment() {
+  async refundPayment(_externalId?: string, _amountMinor?: number) {
     await sleep();
     const status: PaymentStatus = "refunded";
     return { externalId: id("adyen_refund"), status };

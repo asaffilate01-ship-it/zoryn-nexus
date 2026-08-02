@@ -29,6 +29,6 @@ describe("provider contracts", () => {
     expect(refund.status).toBe("refunded");
 
     const settlements = await provider.listSettlements(merchant.externalId);
-    expect(settlements[0].status).toBe("paid");
+    expect(settlements[0]?.["status"]).toBe("paid");
   });
 });
