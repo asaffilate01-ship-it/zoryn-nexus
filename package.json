@@ -13,7 +13,11 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "typecheck": "tsc --noEmit"
+    "test:sql": "supabase test db",
+    "typecheck": "tsc --noEmit",
+    "audit:provider-safety": "node scripts/audit-provider-safety.mjs",
+    "check": "bun run typecheck && bun run lint && bun run audit:provider-safety && bun run test:coverage && bun run build",
+    "ci": "bun run check && bun run test:e2e"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
