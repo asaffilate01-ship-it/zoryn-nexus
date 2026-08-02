@@ -1,0 +1,79 @@
+name: Provider Go-Live Final
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider_mode:
+        description: Validation mode
+        required: true
+        default: mock
+        type: choice
+        options: [mock, sandbox]
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  application:
+    name: Application
+    runs-on: ubuntu-latest
+    env:
+      PROVIDER_MODE: mock
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+
+  provider:
+    name: Provider Go-Live
+    runs-on: ubuntu-latest
+    env:
+      PROVIDER_MODE: ${{ inputs.provider_mode || 'mock' }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      PROVIDER_WORKER_SECRET: ${{ secrets.PROVIDER_WORKER_SECRET }}
+      SWAN_API_URL: ${{ secrets.SWAN_API_URL }}
+      SWAN_CLIENT_ID: ${{ secrets.SWAN_CLIENT_ID }}
+      SWAN_CLIENT_SECRET: ${{ secrets.SWAN_CLIENT_SECRET }}
+      SWAN_PROGRAMME_ID: ${{ secrets.SWAN_PROGRAMME_ID }}
+      SWAN_WEBHOOK_SECRET: ${{ secrets.SWAN_WEBHOOK_SECRET }}
+      ADYEN_API_URL: ${{ secrets.ADYEN_API_URL }}
+      ADYEN_API_KEY: ${{ secrets.ADYEN_API_KEY }}
+      ADYEN_HMAC_KEY: ${{ secrets.ADYEN_HMAC_KEY }}
+      ADYEN_MERCHANT_ACCOUNT: ${{ secrets.ADYEN_MERCHANT_ACCOUNT }}
+      ADYEN_BALANCE_PLATFORM_ID: ${{ secrets.ADYEN_BALANCE_PLATFORM_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run provider:go-live:validate
+
+  database:
+    name: Database
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+      - run: supabase start
+      - run: supabase db reset
+      - run: supabase test db
+      - if: always()
+        run: supabase stop
+
+  release-gate:
+    name: Go-Live Gate
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [application, provider, database]
+    steps:
+      - run: |
+          if [[ "${{ needs.application.result }}" != "success" ||
+                "${{ needs.provider.result }}" != "success" ||
+                "${{ needs.database.result }}" != "success" ]]; then
+            exit 1
+          fi
+          echo "Provider go-live gates passed."
