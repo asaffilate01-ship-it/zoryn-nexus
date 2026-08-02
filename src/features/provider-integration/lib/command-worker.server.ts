@@ -64,6 +64,26 @@ export async function dispatchCommand(command: ProviderCommand): Promise<Dispatc
 
   const idem = { "Idempotency-Key": command.idempotency_key };
 
+  // Stage 11 — prefer database-driven, provider-approved operation mappings.
+  try {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { dispatchActivatedProviderCommand } = await import(
+      "@/features/providers/server/activatedProviderDispatcher"
+    );
+    return (await dispatchActivatedProviderCommand(supabaseAdmin, {
+      provider: command.provider as "swan" | "adyen" | "rewards",
+      command_type: command.command_type,
+      payload: command.payload,
+      idempotency_key: command.idempotency_key,
+    })) as DispatchResult;
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    const fallbackable =
+      message.startsWith("provider_mapping_missing") ||
+      message.startsWith("unsupported_operation");
+    if (!fallbackable) throw error;
+  }
+
   if (command.provider === "swan") {
     const { SwanCommandSchemas } = await import("@/features/swan/commands");
     if (command.command_type in SwanCommandSchemas) {
