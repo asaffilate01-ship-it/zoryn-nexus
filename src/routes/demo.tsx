@@ -36,6 +36,7 @@ const icons = {
 
 const extraLinks = [
   { to: "/provider-ready", label: "Provider-ready centre" },
+  { to: "/provider-integration", label: "Provider integration readiness" },
   { to: "/onboarding-status", label: "Onboarding states" },
   { to: "/operations-centre", label: "Operations centre" },
   { to: "/scenario-lab", label: "Scenario lab" },

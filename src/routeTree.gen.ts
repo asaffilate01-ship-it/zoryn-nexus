@@ -27,8 +27,10 @@ import { Route as AuthenticatedBusinessWorkspaceRouteImport } from './routes/_au
 import { Route as AuthenticatedMerchantRouteImport } from './routes/_authenticated/merchant'
 import { Route as AuthenticatedPersonalRouteImport } from './routes/_authenticated/personal'
 import { Route as AuthenticatedPersonalWorkspaceRouteImport } from './routes/_authenticated/personal-workspace'
+import { Route as AuthenticatedProviderIntegrationRouteImport } from './routes/_authenticated/provider-integration'
 import { Route as AuthenticatedZorynpayWorkspaceRouteImport } from './routes/_authenticated/zorynpay-workspace'
 import { Route as ApiPublicDemoResetRouteImport } from './routes/api/public/demo-reset'
+import { Route as ApiPublicPlatformProviderWebhooksRouteImport } from './routes/api/public/platform-provider-webhooks'
 import { Route as ApiPublicProviderApiRouteImport } from './routes/api/public/provider-api'
 import { Route as ApiPublicProviderJobsRouteImport } from './routes/api/public/provider-jobs'
 import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/public/provider-webhooks'
@@ -124,6 +126,12 @@ const AuthenticatedPersonalWorkspaceRoute =
     path: '/personal-workspace',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedProviderIntegrationRoute =
+  AuthenticatedProviderIntegrationRouteImport.update({
+    id: '/provider-integration',
+    path: '/provider-integration',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedZorynpayWorkspaceRoute =
   AuthenticatedZorynpayWorkspaceRouteImport.update({
     id: '/zorynpay-workspace',
@@ -135,6 +143,12 @@ const ApiPublicDemoResetRoute = ApiPublicDemoResetRouteImport.update({
   path: '/api/public/demo-reset',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPlatformProviderWebhooksRoute =
+  ApiPublicPlatformProviderWebhooksRouteImport.update({
+    id: '/api/public/platform-provider-webhooks',
+    path: '/api/public/platform-provider-webhooks',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicProviderApiRoute = ApiPublicProviderApiRouteImport.update({
   id: '/api/public/provider-api',
   path: '/api/public/provider-api',
@@ -170,8 +184,10 @@ export interface FileRoutesByFullPath {
   '/merchant': typeof AuthenticatedMerchantRoute
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
+  '/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
   '/api/public/demo-reset': typeof ApiPublicDemoResetRoute
+  '/api/public/platform-provider-webhooks': typeof ApiPublicPlatformProviderWebhooksRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -194,8 +210,10 @@ export interface FileRoutesByTo {
   '/merchant': typeof AuthenticatedMerchantRoute
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
+  '/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
   '/api/public/demo-reset': typeof ApiPublicDemoResetRoute
+  '/api/public/platform-provider-webhooks': typeof ApiPublicPlatformProviderWebhooksRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -220,8 +238,10 @@ export interface FileRoutesById {
   '/_authenticated/merchant': typeof AuthenticatedMerchantRoute
   '/_authenticated/personal': typeof AuthenticatedPersonalRoute
   '/_authenticated/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
+  '/_authenticated/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/_authenticated/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
   '/api/public/demo-reset': typeof ApiPublicDemoResetRoute
+  '/api/public/platform-provider-webhooks': typeof ApiPublicPlatformProviderWebhooksRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -246,8 +266,10 @@ export interface FileRouteTypes {
     | '/merchant'
     | '/personal'
     | '/personal-workspace'
+    | '/provider-integration'
     | '/zorynpay-workspace'
     | '/api/public/demo-reset'
+    | '/api/public/platform-provider-webhooks'
     | '/api/public/provider-api'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
@@ -270,8 +292,10 @@ export interface FileRouteTypes {
     | '/merchant'
     | '/personal'
     | '/personal-workspace'
+    | '/provider-integration'
     | '/zorynpay-workspace'
     | '/api/public/demo-reset'
+    | '/api/public/platform-provider-webhooks'
     | '/api/public/provider-api'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
@@ -295,8 +319,10 @@ export interface FileRouteTypes {
     | '/_authenticated/merchant'
     | '/_authenticated/personal'
     | '/_authenticated/personal-workspace'
+    | '/_authenticated/provider-integration'
     | '/_authenticated/zorynpay-workspace'
     | '/api/public/demo-reset'
+    | '/api/public/platform-provider-webhooks'
     | '/api/public/provider-api'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
@@ -316,6 +342,7 @@ export interface RootRouteChildren {
   ProviderReadyRoute: typeof ProviderReadyRoute
   ScenarioLabRoute: typeof ScenarioLabRoute
   ApiPublicDemoResetRoute: typeof ApiPublicDemoResetRoute
+  ApiPublicPlatformProviderWebhooksRoute: typeof ApiPublicPlatformProviderWebhooksRoute
   ApiPublicProviderApiRoute: typeof ApiPublicProviderApiRoute
   ApiPublicProviderJobsRoute: typeof ApiPublicProviderJobsRoute
   ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
@@ -449,6 +476,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPersonalWorkspaceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/provider-integration': {
+      id: '/_authenticated/provider-integration'
+      path: '/provider-integration'
+      fullPath: '/provider-integration'
+      preLoaderRoute: typeof AuthenticatedProviderIntegrationRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/zorynpay-workspace': {
       id: '/_authenticated/zorynpay-workspace'
       path: '/zorynpay-workspace'
@@ -461,6 +495,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/demo-reset'
       fullPath: '/api/public/demo-reset'
       preLoaderRoute: typeof ApiPublicDemoResetRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/platform-provider-webhooks': {
+      id: '/api/public/platform-provider-webhooks'
+      path: '/api/public/platform-provider-webhooks'
+      fullPath: '/api/public/platform-provider-webhooks'
+      preLoaderRoute: typeof ApiPublicPlatformProviderWebhooksRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/provider-api': {
@@ -494,6 +535,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMerchantRoute: typeof AuthenticatedMerchantRoute
   AuthenticatedPersonalRoute: typeof AuthenticatedPersonalRoute
   AuthenticatedPersonalWorkspaceRoute: typeof AuthenticatedPersonalWorkspaceRoute
+  AuthenticatedProviderIntegrationRoute: typeof AuthenticatedProviderIntegrationRoute
   AuthenticatedZorynpayWorkspaceRoute: typeof AuthenticatedZorynpayWorkspaceRoute
 }
 
@@ -504,6 +546,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMerchantRoute: AuthenticatedMerchantRoute,
   AuthenticatedPersonalRoute: AuthenticatedPersonalRoute,
   AuthenticatedPersonalWorkspaceRoute: AuthenticatedPersonalWorkspaceRoute,
+  AuthenticatedProviderIntegrationRoute: AuthenticatedProviderIntegrationRoute,
   AuthenticatedZorynpayWorkspaceRoute: AuthenticatedZorynpayWorkspaceRoute,
 }
 
@@ -524,6 +567,8 @@ const rootRouteChildren: RootRouteChildren = {
   ProviderReadyRoute: ProviderReadyRoute,
   ScenarioLabRoute: ScenarioLabRoute,
   ApiPublicDemoResetRoute: ApiPublicDemoResetRoute,
+  ApiPublicPlatformProviderWebhooksRoute:
+    ApiPublicPlatformProviderWebhooksRoute,
   ApiPublicProviderApiRoute: ApiPublicProviderApiRoute,
   ApiPublicProviderJobsRoute: ApiPublicProviderJobsRoute,
   ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
@@ -531,13 +576,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
