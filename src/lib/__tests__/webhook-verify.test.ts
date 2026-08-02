@@ -1,6 +1,9 @@
 import { createHmac } from "crypto";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { adyenSigningString, verifyWebhook } from "@/features/provider-ready/lib/webhook-verify.server";
+import {
+  adyenSigningString,
+  verifyWebhook,
+} from "@/features/provider-ready/lib/webhook-verify.server";
 
 const SECRET = "test-secret";
 
@@ -17,7 +20,8 @@ afterEach(() => {
   delete process.env["ADYEN_HMAC_KEY"];
 });
 
-const sign = (secret: string, body: string) => createHmac("sha256", secret).update(body).digest("hex");
+const sign = (secret: string, body: string) =>
+  createHmac("sha256", secret).update(body).digest("hex");
 
 describe("verifyWebhook", () => {
   it("rejects when no secret is configured", () => {
@@ -36,7 +40,10 @@ describe("verifyWebhook", () => {
     process.env["PROVIDER_WEBHOOK_SECRET"] = SECRET;
     const body = JSON.stringify({ provider: "mock", id: "evt_1" });
     const headers = new Headers({ "x-zoryn-signature": sign(SECRET, body) });
-    expect(verifyWebhook(headers, body + " ", JSON.parse(body))).toMatchObject({ ok: false, status: 401 });
+    expect(verifyWebhook(headers, body + " ", JSON.parse(body))).toMatchObject({
+      ok: false,
+      status: 401,
+    });
   });
 
   it("verifies Swan signatures with the Swan secret", () => {
@@ -77,6 +84,9 @@ describe("verifyWebhook", () => {
       .digest("base64");
     item["additionalData"] = { hmacSignature: signature };
     const payload = { notificationItems: [{ NotificationRequestItem: item }] };
-    expect(verifyWebhook(new Headers(), JSON.stringify(payload), payload)).toEqual({ ok: true, provider: "adyen" });
+    expect(verifyWebhook(new Headers(), JSON.stringify(payload), payload)).toEqual({
+      ok: true,
+      provider: "adyen",
+    });
   });
 });

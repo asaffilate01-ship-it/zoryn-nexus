@@ -16,7 +16,11 @@ describe("provider event processor", () => {
       id: "e1",
       provider: "swan",
       event_type: "onboarding.updated",
-      payload: { externalId: "swan_ob_1", status: "action_required", requiredActions: ["proof_of_address"] },
+      payload: {
+        externalId: "swan_ob_1",
+        status: "action_required",
+        requiredActions: ["proof_of_address"],
+      },
       attempt_count: 0,
     });
 
@@ -26,14 +30,21 @@ describe("provider event processor", () => {
   });
 
   it("maps resource events onto provider resources", async () => {
-    const upsert = vi.fn(async (_row: Record<string, unknown>, _options?: unknown) => ({ error: null }));
+    const upsert = vi.fn(async (_row: Record<string, unknown>, _options?: unknown) => ({
+      error: null,
+    }));
     const admin = { from: () => ({ upsert }) } as never;
 
     const outcome = await applyEvent(admin, {
       id: "e2",
       provider: "adyen",
       event_type: "payment.captured",
-      payload: { aggregateId: "p1", aggregateType: "payment", externalId: "psp_1", status: "captured" },
+      payload: {
+        aggregateId: "p1",
+        aggregateType: "payment",
+        externalId: "psp_1",
+        status: "captured",
+      },
       attempt_count: 0,
     });
 

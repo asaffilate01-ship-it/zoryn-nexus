@@ -17,9 +17,8 @@ export const Route = createFileRoute("/api/public/notification-worker")({
         }
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { runNotificationWorker } = await import(
-          "@/features/operations/lib/notification-worker.server"
-        );
+        const { runNotificationWorker } =
+          await import("@/features/operations/lib/notification-worker.server");
 
         try {
           const result = await runNotificationWorker(supabaseAdmin as never);

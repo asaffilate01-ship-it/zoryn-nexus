@@ -9,7 +9,10 @@ export function useProfile() {
 }
 
 export function useOrganisations() {
-  return useQuery({ queryKey: ["platform-organisations"], queryFn: platformDataRepository.getOrganisations });
+  return useQuery({
+    queryKey: ["platform-organisations"],
+    queryFn: platformDataRepository.getOrganisations,
+  });
 }
 
 export function useOrganisationMembers(organisationId?: string) {
@@ -33,7 +36,10 @@ export function usePots(accountId?: string) {
 }
 
 export function useBeneficiaries() {
-  return useQuery({ queryKey: ["platform-beneficiaries"], queryFn: platformDataRepository.getBeneficiaries });
+  return useQuery({
+    queryKey: ["platform-beneficiaries"],
+    queryFn: platformDataRepository.getBeneficiaries,
+  });
 }
 
 export function useTransfers(accountId?: string) {
@@ -53,7 +59,10 @@ export function useCards(accountId?: string) {
 }
 
 export function useMerchants() {
-  return useQuery({ queryKey: ["platform-merchants"], queryFn: platformDataRepository.getMerchants });
+  return useQuery({
+    queryKey: ["platform-merchants"],
+    queryFn: platformDataRepository.getMerchants,
+  });
 }
 
 export function usePayments(merchantId?: string) {

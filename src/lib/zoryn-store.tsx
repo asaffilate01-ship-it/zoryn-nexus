@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
 export const money = (v: number) =>
   new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(v);
@@ -96,14 +104,70 @@ export type WebhookEvent = {
 };
 
 const seedTxns: Txn[] = [
-  { id: uid(), date: "2026-07-31", name: "Salary — LoungeTech GmbH", category: "Income", amount: 3420, status: "booked" },
-  { id: uid(), date: "2026-07-30", name: "REWE Markt", category: "Groceries", amount: -62.35, status: "booked" },
-  { id: uid(), date: "2026-07-29", name: "DB Bahn", category: "Travel", amount: -42.9, status: "booked" },
-  { id: uid(), date: "2026-07-28", name: "Cafe 1 Demo", category: "Hospitality", amount: -18.4, status: "booked" },
-  { id: uid(), date: "2026-07-27", name: "Vodafone DE", category: "Utilities", amount: -39.99, status: "booked" },
-  { id: uid(), date: "2026-07-26", name: "Rewards cashback", category: "Zoryn Points", amount: 12.8, status: "booked" },
-  { id: uid(), date: "2026-07-25", name: "Miete August", category: "Housing", amount: -1180, status: "booked" },
-  { id: uid(), date: "2026-07-24", name: "Amazon.de", category: "Shopping", amount: -84.2, status: "booked" },
+  {
+    id: uid(),
+    date: "2026-07-31",
+    name: "Salary — LoungeTech GmbH",
+    category: "Income",
+    amount: 3420,
+    status: "booked",
+  },
+  {
+    id: uid(),
+    date: "2026-07-30",
+    name: "REWE Markt",
+    category: "Groceries",
+    amount: -62.35,
+    status: "booked",
+  },
+  {
+    id: uid(),
+    date: "2026-07-29",
+    name: "DB Bahn",
+    category: "Travel",
+    amount: -42.9,
+    status: "booked",
+  },
+  {
+    id: uid(),
+    date: "2026-07-28",
+    name: "Cafe 1 Demo",
+    category: "Hospitality",
+    amount: -18.4,
+    status: "booked",
+  },
+  {
+    id: uid(),
+    date: "2026-07-27",
+    name: "Vodafone DE",
+    category: "Utilities",
+    amount: -39.99,
+    status: "booked",
+  },
+  {
+    id: uid(),
+    date: "2026-07-26",
+    name: "Rewards cashback",
+    category: "Zoryn Points",
+    amount: 12.8,
+    status: "booked",
+  },
+  {
+    id: uid(),
+    date: "2026-07-25",
+    name: "Miete August",
+    category: "Housing",
+    amount: -1180,
+    status: "booked",
+  },
+  {
+    id: uid(),
+    date: "2026-07-24",
+    name: "Amazon.de",
+    category: "Shopping",
+    amount: -84.2,
+    status: "booked",
+  },
 ];
 
 export type State = {
@@ -148,7 +212,12 @@ export type State = {
     links: PaymentLink[];
     terminals: Terminal[];
     settlements: Settlement[];
-    loyalty: { members: number; stamps: number; redemptions: number; campaigns: { name: string; reward: string; active: boolean; joined: number }[] };
+    loyalty: {
+      members: number;
+      stamps: number;
+      redemptions: number;
+      campaigns: { name: string; reward: string; active: boolean; joined: number }[];
+    };
     cases: SupportCase[];
   };
   admin: {
@@ -160,7 +229,13 @@ export type State = {
     webhooks: WebhookEvent[];
     cases: SupportCase[];
     audit: { id: string; actor: string; action: string; at: string }[];
-    providers: { key: string; name: string; mode: string; status: "operational" | "degraded" | "mock"; latency: string }[];
+    providers: {
+      key: string;
+      name: string;
+      mode: string;
+      status: "operational" | "degraded" | "mock";
+      latency: string;
+    }[];
   };
 };
 
@@ -182,12 +257,47 @@ export const initialState: State = {
     ],
     txns: seedTxns,
     cards: [
-      { id: "card-p1", label: "Zoryn Metal", holder: "AMER SALEEM", type: "physical", last4: "4412", frozen: false, limit: 2000, spent: 1284.2 },
-      { id: "card-p2", label: "Online shopping", holder: "AMER SALEEM", type: "virtual", last4: "8821", frozen: false, limit: 500, spent: 184.6 },
-      { id: "card-p3", label: "Subscriptions", holder: "AMER SALEEM", type: "virtual", last4: "1094", frozen: true, limit: 200, spent: 79.98 },
+      {
+        id: "card-p1",
+        label: "Zoryn Metal",
+        holder: "AMER SALEEM",
+        type: "physical",
+        last4: "4412",
+        frozen: false,
+        limit: 2000,
+        spent: 1284.2,
+      },
+      {
+        id: "card-p2",
+        label: "Online shopping",
+        holder: "AMER SALEEM",
+        type: "virtual",
+        last4: "8821",
+        frozen: false,
+        limit: 500,
+        spent: 184.6,
+      },
+      {
+        id: "card-p3",
+        label: "Subscriptions",
+        holder: "AMER SALEEM",
+        type: "virtual",
+        last4: "1094",
+        frozen: true,
+        limit: 200,
+        spent: 79.98,
+      },
     ],
     cases: [
-      { id: uid(), ref: "SC-1042", subject: "Disputed charge — order #4402", category: "payment", description: "Merchant charged twice.", status: "in_review", createdAt: "2026-07-24T09:12:00Z" },
+      {
+        id: uid(),
+        ref: "SC-1042",
+        subject: "Disputed charge — order #4402",
+        category: "payment",
+        description: "Merchant charged twice.",
+        status: "in_review",
+        createdAt: "2026-07-24T09:12:00Z",
+      },
     ],
     beneficiaries: [
       { name: "Lena Hoffmann", iban: "DE02 1203 0000 0000 2020 51" },
@@ -202,20 +312,95 @@ export const initialState: State = {
     todaySales: 4230.8,
     pendingSettlement: 3180.4,
     txns: [
-      { id: uid(), date: "2026-07-31", name: "ZorynPay settlement", category: "Settlement", amount: 3180.4, status: "booked" },
-      { id: uid(), date: "2026-07-30", name: "Invoice INV-2291 — Kunde AG", category: "Income", amount: 6120, status: "booked" },
-      { id: uid(), date: "2026-07-29", name: "Supplier payout — Nordic Beans", category: "Payout", amount: -2480, status: "booked" },
-      { id: uid(), date: "2026-07-28", name: "Payroll run (12 staff)", category: "Payroll", amount: -18420, status: "booked" },
-      { id: uid(), date: "2026-07-27", name: "Team card — M. Keller", category: "Expenses", amount: -184.2, status: "booked" },
+      {
+        id: uid(),
+        date: "2026-07-31",
+        name: "ZorynPay settlement",
+        category: "Settlement",
+        amount: 3180.4,
+        status: "booked",
+      },
+      {
+        id: uid(),
+        date: "2026-07-30",
+        name: "Invoice INV-2291 — Kunde AG",
+        category: "Income",
+        amount: 6120,
+        status: "booked",
+      },
+      {
+        id: uid(),
+        date: "2026-07-29",
+        name: "Supplier payout — Nordic Beans",
+        category: "Payout",
+        amount: -2480,
+        status: "booked",
+      },
+      {
+        id: uid(),
+        date: "2026-07-28",
+        name: "Payroll run (12 staff)",
+        category: "Payroll",
+        amount: -18420,
+        status: "booked",
+      },
+      {
+        id: uid(),
+        date: "2026-07-27",
+        name: "Team card — M. Keller",
+        category: "Expenses",
+        amount: -184.2,
+        status: "booked",
+      },
     ],
     team: [
-      { id: "tm-1", name: "Amer Saleem", role: "Owner", cardLast4: "2201", limit: 5000, spent: 1840.5, frozen: false },
-      { id: "tm-2", name: "Marta Keller", role: "Finance", cardLast4: "7714", limit: 2500, spent: 1284.2, frozen: false },
-      { id: "tm-3", name: "Jonas Weber", role: "Employee", cardLast4: "5510", limit: 800, spent: 642.8, frozen: false },
-      { id: "tm-4", name: "Sofia Bauer", role: "Employee", cardLast4: "3390", limit: 800, spent: 120.4, frozen: true },
+      {
+        id: "tm-1",
+        name: "Amer Saleem",
+        role: "Owner",
+        cardLast4: "2201",
+        limit: 5000,
+        spent: 1840.5,
+        frozen: false,
+      },
+      {
+        id: "tm-2",
+        name: "Marta Keller",
+        role: "Finance",
+        cardLast4: "7714",
+        limit: 2500,
+        spent: 1284.2,
+        frozen: false,
+      },
+      {
+        id: "tm-3",
+        name: "Jonas Weber",
+        role: "Employee",
+        cardLast4: "5510",
+        limit: 800,
+        spent: 642.8,
+        frozen: false,
+      },
+      {
+        id: "tm-4",
+        name: "Sofia Bauer",
+        role: "Employee",
+        cardLast4: "3390",
+        limit: 800,
+        spent: 120.4,
+        frozen: true,
+      },
     ],
     links: [
-      { id: uid(), reference: "PL-8821", description: "Consulting retainer", amount: 2400, url: "https://pay.zoryn.demo/PL-8821", status: "paid", createdAt: "2026-07-28T10:00:00Z" },
+      {
+        id: uid(),
+        reference: "PL-8821",
+        description: "Consulting retainer",
+        amount: 2400,
+        url: "https://pay.zoryn.demo/PL-8821",
+        status: "paid",
+        createdAt: "2026-07-28T10:00:00Z",
+      },
     ],
     points: 24600,
     tier: "Gold",
@@ -234,23 +419,87 @@ export const initialState: State = {
     balance: 3180.4,
     pendingSettlement: 1284.6,
     payments: [
-      { id: uid(), time: "2026-07-31T10:42:00Z", amount: 24.5, method: "Tap to Pay", status: "captured", scheme: "Visa" },
-      { id: uid(), time: "2026-07-31T10:12:00Z", amount: 86.9, method: "Online", status: "captured", scheme: "Mastercard" },
-      { id: uid(), time: "2026-07-31T09:51:00Z", amount: 12.8, method: "Terminal", status: "captured", scheme: "Girocard" },
-      { id: uid(), time: "2026-07-30T18:22:00Z", amount: 32.4, method: "Terminal", status: "refunded", scheme: "Visa" },
+      {
+        id: uid(),
+        time: "2026-07-31T10:42:00Z",
+        amount: 24.5,
+        method: "Tap to Pay",
+        status: "captured",
+        scheme: "Visa",
+      },
+      {
+        id: uid(),
+        time: "2026-07-31T10:12:00Z",
+        amount: 86.9,
+        method: "Online",
+        status: "captured",
+        scheme: "Mastercard",
+      },
+      {
+        id: uid(),
+        time: "2026-07-31T09:51:00Z",
+        amount: 12.8,
+        method: "Terminal",
+        status: "captured",
+        scheme: "Girocard",
+      },
+      {
+        id: uid(),
+        time: "2026-07-30T18:22:00Z",
+        amount: 32.4,
+        method: "Terminal",
+        status: "refunded",
+        scheme: "Visa",
+      },
     ],
     links: [
-      { id: uid(), reference: "PL-4471", description: "Catering order", amount: 240, url: "https://pay.zoryn.demo/PL-4471", status: "active", createdAt: "2026-07-30T08:00:00Z" },
+      {
+        id: uid(),
+        reference: "PL-4471",
+        description: "Catering order",
+        amount: 240,
+        url: "https://pay.zoryn.demo/PL-4471",
+        status: "active",
+        createdAt: "2026-07-30T08:00:00Z",
+      },
     ],
     terminals: [
-      { id: "t-01", name: "Terminal 01", location: "Counter", status: "online", battery: 82, firmware: "4.8.1" },
-      { id: "t-02", name: "Terminal 02", location: "Terrace", status: "charging", battery: 34, firmware: "4.8.1" },
-      { id: "t-03", name: "Tap to Pay — iPhone", location: "Mobile", status: "online", battery: 61, firmware: "4.9.0" },
+      {
+        id: "t-01",
+        name: "Terminal 01",
+        location: "Counter",
+        status: "online",
+        battery: 82,
+        firmware: "4.8.1",
+      },
+      {
+        id: "t-02",
+        name: "Terminal 02",
+        location: "Terrace",
+        status: "charging",
+        battery: 34,
+        firmware: "4.8.1",
+      },
+      {
+        id: "t-03",
+        name: "Tap to Pay — iPhone",
+        location: "Mobile",
+        status: "online",
+        battery: 61,
+        firmware: "4.9.0",
+      },
     ],
     settlements: [
       { id: uid(), date: "2026-07-30", gross: 1320.4, fees: 18.6, net: 1301.8, status: "paid" },
       { id: uid(), date: "2026-07-29", gross: 980.2, fees: 14.1, net: 966.1, status: "paid" },
-      { id: uid(), date: "2026-07-31", gross: 1284.6, fees: 19.2, net: 1265.4, status: "in_transit" },
+      {
+        id: uid(),
+        date: "2026-07-31",
+        gross: 1284.6,
+        fees: 19.2,
+        net: 1265.4,
+        status: "in_transit",
+      },
     ],
     loyalty: {
       members: 612,
@@ -269,31 +518,138 @@ export const initialState: State = {
     merchants: 412,
     volume: 4280000,
     queue: [
-      { id: "q-1", name: "Cafe 1 Demo", kind: "KYB", submitted: "2026-07-30", risk: "low", status: "IN_REVIEW" },
-      { id: "q-2", name: "Lena Hoffmann", kind: "KYC", submitted: "2026-07-30", risk: "medium", status: "ACTION_REQUIRED" },
-      { id: "q-3", name: "Nordwind Handel UG", kind: "KYB", submitted: "2026-07-29", risk: "high", status: "IN_REVIEW" },
-      { id: "q-4", name: "Jonas Weber", kind: "KYC", submitted: "2026-07-29", risk: "low", status: "IN_REVIEW" },
+      {
+        id: "q-1",
+        name: "Cafe 1 Demo",
+        kind: "KYB",
+        submitted: "2026-07-30",
+        risk: "low",
+        status: "IN_REVIEW",
+      },
+      {
+        id: "q-2",
+        name: "Lena Hoffmann",
+        kind: "KYC",
+        submitted: "2026-07-30",
+        risk: "medium",
+        status: "ACTION_REQUIRED",
+      },
+      {
+        id: "q-3",
+        name: "Nordwind Handel UG",
+        kind: "KYB",
+        submitted: "2026-07-29",
+        risk: "high",
+        status: "IN_REVIEW",
+      },
+      {
+        id: "q-4",
+        name: "Jonas Weber",
+        kind: "KYC",
+        submitted: "2026-07-29",
+        risk: "low",
+        status: "IN_REVIEW",
+      },
     ],
     webhooks: [
-      { id: uid(), source: "Banking adapter", type: "account.updated", receivedAt: "2026-07-31T10:41:00Z", status: "processed" },
-      { id: uid(), source: "Acquiring adapter", type: "payment.captured", receivedAt: "2026-07-31T10:40:00Z", status: "processed" },
-      { id: uid(), source: "Acquiring adapter", type: "settlement.created", receivedAt: "2026-07-31T06:02:00Z", status: "queued" },
-      { id: uid(), source: "Banking adapter", type: "card.status_changed", receivedAt: "2026-07-30T21:14:00Z", status: "failed" },
+      {
+        id: uid(),
+        source: "Banking adapter",
+        type: "account.updated",
+        receivedAt: "2026-07-31T10:41:00Z",
+        status: "processed",
+      },
+      {
+        id: uid(),
+        source: "Acquiring adapter",
+        type: "payment.captured",
+        receivedAt: "2026-07-31T10:40:00Z",
+        status: "processed",
+      },
+      {
+        id: uid(),
+        source: "Acquiring adapter",
+        type: "settlement.created",
+        receivedAt: "2026-07-31T06:02:00Z",
+        status: "queued",
+      },
+      {
+        id: uid(),
+        source: "Banking adapter",
+        type: "card.status_changed",
+        receivedAt: "2026-07-30T21:14:00Z",
+        status: "failed",
+      },
     ],
     cases: [
-      { id: uid(), ref: "SC-1042", subject: "Disputed charge — order #4402", category: "payment", description: "Escalated from personal portal.", status: "in_review", createdAt: "2026-07-24T09:12:00Z" },
-      { id: uid(), ref: "SC-1051", subject: "Terminal 02 offline", category: "other", description: "Merchant reports intermittent connection.", status: "open", createdAt: "2026-07-29T14:02:00Z" },
+      {
+        id: uid(),
+        ref: "SC-1042",
+        subject: "Disputed charge — order #4402",
+        category: "payment",
+        description: "Escalated from personal portal.",
+        status: "in_review",
+        createdAt: "2026-07-24T09:12:00Z",
+      },
+      {
+        id: uid(),
+        ref: "SC-1051",
+        subject: "Terminal 02 offline",
+        category: "other",
+        description: "Merchant reports intermittent connection.",
+        status: "open",
+        createdAt: "2026-07-29T14:02:00Z",
+      },
     ],
     audit: [
-      { id: uid(), actor: "ops@loungetech", action: "KYB approved — Cafe 1 Demo", at: "2026-07-30T12:04:00Z" },
-      { id: uid(), actor: "system", action: "Webhook replay — settlements", at: "2026-07-30T06:10:00Z" },
-      { id: uid(), actor: "ops@loungetech", action: "Card restricted — 3390", at: "2026-07-29T16:44:00Z" },
+      {
+        id: uid(),
+        actor: "ops@loungetech",
+        action: "KYB approved — Cafe 1 Demo",
+        at: "2026-07-30T12:04:00Z",
+      },
+      {
+        id: uid(),
+        actor: "system",
+        action: "Webhook replay — settlements",
+        at: "2026-07-30T06:10:00Z",
+      },
+      {
+        id: uid(),
+        actor: "ops@loungetech",
+        action: "Card restricted — 3390",
+        at: "2026-07-29T16:44:00Z",
+      },
     ],
     providers: [
-      { key: "banking", name: "Banking adapter", mode: "Demo / mock", status: "mock", latency: "82 ms" },
-      { key: "acquiring", name: "Acquiring adapter", mode: "Demo / mock", status: "mock", latency: "104 ms" },
-      { key: "database", name: "Database & auth", mode: "Managed", status: "operational", latency: "31 ms" },
-      { key: "webhooks", name: "Webhook ingestion", mode: "Managed", status: "operational", latency: "12 ms" },
+      {
+        key: "banking",
+        name: "Banking adapter",
+        mode: "Demo / mock",
+        status: "mock",
+        latency: "82 ms",
+      },
+      {
+        key: "acquiring",
+        name: "Acquiring adapter",
+        mode: "Demo / mock",
+        status: "mock",
+        latency: "104 ms",
+      },
+      {
+        key: "database",
+        name: "Database & auth",
+        mode: "Managed",
+        status: "operational",
+        latency: "31 ms",
+      },
+      {
+        key: "webhooks",
+        name: "Webhook ingestion",
+        mode: "Managed",
+        status: "operational",
+        latency: "12 ms",
+      },
     ],
   },
 };
@@ -303,15 +659,28 @@ type Ctx = {
   notice: string;
   notify: (m: string) => void;
   movePersonalFunds: (from: string, to: string, amount: number) => string | null;
-  sepaTransfer: (p: { name: string; iban: string; amount: number; reference: string }) => string | null;
+  sepaTransfer: (p: {
+    name: string;
+    iban: string;
+    amount: number;
+    reference: string;
+  }) => string | null;
   toggleCard: (id: string) => void;
   setCardLimit: (id: string, limit: number) => void;
   redeemPoints: (points: number) => string | null;
   redeemBusinessPoints: (points: number) => string | null;
   setCashbackDestination: (role: "personal" | "business", destination: string) => void;
-  createCase: (role: RoleKey, c: { subject: string; category: string; description: string }) => void;
+  createCase: (
+    role: RoleKey,
+    c: { subject: string; category: string; description: string },
+  ) => void;
   resolveCase: (role: RoleKey, id: string) => void;
-  supplierPayment: (p: { name: string; iban: string; amount: number; reference: string }) => string | null;
+  supplierPayment: (p: {
+    name: string;
+    iban: string;
+    amount: number;
+    reference: string;
+  }) => string | null;
   createLink: (role: "business" | "merchant", p: { description: string; amount: number }) => void;
   setTeamLimit: (id: string, limit: number) => void;
   toggleTeamCard: (id: string) => void;
@@ -356,7 +725,13 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const logAudit = (action: string) =>
     setState((s) => ({
       ...s,
-      admin: { ...s.admin, audit: [{ id: uid(), actor: "demo-user", action, at: nowISO() }, ...s.admin.audit].slice(0, 30) },
+      admin: {
+        ...s.admin,
+        audit: [{ id: uid(), actor: "demo-user", action, at: nowISO() }, ...s.admin.audit].slice(
+          0,
+          30,
+        ),
+      },
     }));
 
   const value = useMemo<Ctx>(() => {
@@ -369,7 +744,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         if (!(amount > 0)) return "Enter an amount greater than €0.";
         if (from === to) return "Choose two different balances.";
         const p = state.personal;
-        const available = from === "main" ? p.balance : (p.pots.find((x) => x.id === from)?.balance ?? 0);
+        const available =
+          from === "main" ? p.balance : (p.pots.find((x) => x.id === from)?.balance ?? 0);
         if (amount > available) return `Not enough funds — available ${money(available)}.`;
         setState((s) => {
           const per = { ...s.personal };
@@ -380,9 +756,17 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           });
           if (from === "main") per.balance = +(per.balance - amount).toFixed(2);
           if (to === "main") per.balance = +(per.balance + amount).toFixed(2);
-          const label = (k: string) => (k === "main" ? "Main balance" : (per.pots.find((x) => x.id === k)?.name ?? "Pot"));
+          const label = (k: string) =>
+            k === "main" ? "Main balance" : (per.pots.find((x) => x.id === k)?.name ?? "Pot");
           per.txns = [
-            { id: uid(), date: nowISO().slice(0, 10), name: `${label(from)} → ${label(to)}`, category: "Internal transfer", amount: 0, status: "booked" },
+            {
+              id: uid(),
+              date: nowISO().slice(0, 10),
+              name: `${label(from)} → ${label(to)}`,
+              category: "Internal transfer",
+              amount: 0,
+              status: "booked",
+            },
             ...per.txns,
           ];
           return { ...s, personal: per };
@@ -392,9 +776,11 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       },
 
       sepaTransfer: ({ name, iban, amount, reference }) => {
-        if (!name.trim() || iban.replace(/\s/g, "").length < 15) return "Enter a payee name and a valid IBAN.";
+        if (!name.trim() || iban.replace(/\s/g, "").length < 15)
+          return "Enter a payee name and a valid IBAN.";
         if (!(amount > 0)) return "Enter an amount greater than €0.";
-        if (amount > state.personal.balance) return `Not enough funds — available ${money(state.personal.balance)}.`;
+        if (amount > state.personal.balance)
+          return `Not enough funds — available ${money(state.personal.balance)}.`;
         setState((s) => ({
           ...s,
           personal: {
@@ -402,7 +788,14 @@ export function DemoProvider({ children }: { children: ReactNode }) {
             balance: +(s.personal.balance - amount).toFixed(2),
             points: s.personal.points + Math.floor(amount / 10),
             txns: [
-              { id: uid(), date: nowISO().slice(0, 10), name: `SEPA — ${name}`, category: reference || "Transfer", amount: -amount, status: "pending" },
+              {
+                id: uid(),
+                date: nowISO().slice(0, 10),
+                name: `SEPA — ${name}`,
+                category: reference || "Transfer",
+                amount: -amount,
+                status: "pending",
+              },
               ...s.personal.txns,
             ],
           },
@@ -415,16 +808,24 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       toggleCard: (id) => {
         setState((s) => ({
           ...s,
-          personal: { ...s.personal, cards: s.personal.cards.map((c) => (c.id === id ? { ...c, frozen: !c.frozen } : c)) },
+          personal: {
+            ...s.personal,
+            cards: s.personal.cards.map((c) => (c.id === id ? { ...c, frozen: !c.frozen } : c)),
+          },
         }));
         const card = state.personal.cards.find((c) => c.id === id);
-        notify(card?.frozen ? `Card •••• ${card.last4} unfrozen.` : `Card •••• ${card?.last4} frozen.`);
+        notify(
+          card?.frozen ? `Card •••• ${card.last4} unfrozen.` : `Card •••• ${card?.last4} frozen.`,
+        );
       },
 
       setCardLimit: (id, limit) => {
         setState((s) => ({
           ...s,
-          personal: { ...s.personal, cards: s.personal.cards.map((c) => (c.id === id ? { ...c, limit } : c)) },
+          personal: {
+            ...s.personal,
+            cards: s.personal.cards.map((c) => (c.id === id ? { ...c, limit } : c)),
+          },
         }));
         notify(`Monthly limit updated to ${money(limit)}.`);
       },
@@ -436,19 +837,39 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         const credit = (points / 500) * 5;
         const destination = state.personal.cashbackDestination;
         const potName = state.personal.pots.find((p) => `pot:${p.id}` === destination)?.name;
-        const target = destination === "main" ? "your main balance" : destination === "wallet" ? "your rewards wallet" : `your ${potName ?? "pot"} pot`;
+        const target =
+          destination === "main"
+            ? "your main balance"
+            : destination === "wallet"
+              ? "your rewards wallet"
+              : `your ${potName ?? "pot"} pot`;
         setState((s) => ({
           ...s,
           personal: {
             ...s.personal,
             points: s.personal.points - points,
-            balance: destination === "main" ? +(s.personal.balance + credit).toFixed(2) : s.personal.balance,
-            rewardsWallet: destination === "wallet" ? +(s.personal.rewardsWallet + credit).toFixed(2) : s.personal.rewardsWallet,
+            balance:
+              destination === "main"
+                ? +(s.personal.balance + credit).toFixed(2)
+                : s.personal.balance,
+            rewardsWallet:
+              destination === "wallet"
+                ? +(s.personal.rewardsWallet + credit).toFixed(2)
+                : s.personal.rewardsWallet,
             pots: s.personal.pots.map((pot) =>
-              `pot:${pot.id}` === destination ? { ...pot, balance: +(pot.balance + credit).toFixed(2) } : pot,
+              `pot:${pot.id}` === destination
+                ? { ...pot, balance: +(pot.balance + credit).toFixed(2) }
+                : pot,
             ),
             txns: [
-              { id: uid(), date: nowISO().slice(0, 10), name: `Zoryn Rewards redemption → ${target}`, category: "Zoryn Points", amount: destination === "main" ? credit : 0, status: "booked" },
+              {
+                id: uid(),
+                date: nowISO().slice(0, 10),
+                name: `Zoryn Rewards redemption → ${target}`,
+                category: "Zoryn Points",
+                amount: destination === "main" ? credit : 0,
+                status: "booked",
+              },
               ...s.personal.txns,
             ],
           },
@@ -460,7 +881,8 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       redeemBusinessPoints: (points) => {
         if (points < 500) return "Minimum redemption is 500 points.";
         if (points % 500 !== 0) return "Redeem in multiples of 500 points.";
-        if (points > state.business.points) return `The organisation only has ${state.business.points} points.`;
+        if (points > state.business.points)
+          return `The organisation only has ${state.business.points} points.`;
         const credit = (points / 500) * 5;
         const destination = state.business.cashbackDestination;
         const target = destination === "main" ? "the business balance" : "the rewards wallet";
@@ -469,10 +891,23 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           business: {
             ...s.business,
             points: s.business.points - points,
-            balance: destination === "main" ? +(s.business.balance + credit).toFixed(2) : s.business.balance,
-            rewardsWallet: destination === "wallet" ? +(s.business.rewardsWallet + credit).toFixed(2) : s.business.rewardsWallet,
+            balance:
+              destination === "main"
+                ? +(s.business.balance + credit).toFixed(2)
+                : s.business.balance,
+            rewardsWallet:
+              destination === "wallet"
+                ? +(s.business.rewardsWallet + credit).toFixed(2)
+                : s.business.rewardsWallet,
             txns: [
-              { id: uid(), date: nowISO().slice(0, 10), name: `Zoryn Rewards redemption → ${target}`, category: "Zoryn Points", amount: destination === "main" ? credit : 0, status: "booked" },
+              {
+                id: uid(),
+                date: nowISO().slice(0, 10),
+                name: `Zoryn Rewards redemption → ${target}`,
+                category: "Zoryn Points",
+                amount: destination === "main" ? credit : 0,
+                status: "booked",
+              },
               ...s.business.txns,
             ],
           },
@@ -499,7 +934,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         setState((s) => ({
           ...s,
           [role]: { ...s[role], cases: [item, ...s[role].cases] },
-          admin: role === "admin" ? { ...s.admin, cases: [item, ...s.admin.cases] } : { ...s.admin, cases: [item, ...s.admin.cases] },
+          admin:
+            role === "admin"
+              ? { ...s.admin, cases: [item, ...s.admin.cases] }
+              : { ...s.admin, cases: [item, ...s.admin.cases] },
         }));
         notify(`Support case ${item.ref} created.`);
       },
@@ -507,22 +945,36 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       resolveCase: (role, id) => {
         setState((s) => ({
           ...s,
-          [role]: { ...s[role], cases: s[role].cases.map((c) => (c.id === id ? { ...c, status: "resolved" as const } : c)) },
+          [role]: {
+            ...s[role],
+            cases: s[role].cases.map((c) =>
+              c.id === id ? { ...c, status: "resolved" as const } : c,
+            ),
+          },
         }));
         notify("Case marked as resolved.");
       },
 
       supplierPayment: ({ name, iban, amount, reference }) => {
-        if (!name.trim() || iban.replace(/\s/g, "").length < 15) return "Select a supplier with a valid IBAN.";
+        if (!name.trim() || iban.replace(/\s/g, "").length < 15)
+          return "Select a supplier with a valid IBAN.";
         if (!(amount > 0)) return "Enter an amount greater than €0.";
-        if (amount > state.business.balance) return `Not enough funds — available ${money(state.business.balance)}.`;
+        if (amount > state.business.balance)
+          return `Not enough funds — available ${money(state.business.balance)}.`;
         setState((s) => ({
           ...s,
           business: {
             ...s.business,
             balance: +(s.business.balance - amount).toFixed(2),
             txns: [
-              { id: uid(), date: nowISO().slice(0, 10), name: `Supplier payout — ${name}`, category: reference || "Payout", amount: -amount, status: "pending" },
+              {
+                id: uid(),
+                date: nowISO().slice(0, 10),
+                name: `Supplier payout — ${name}`,
+                category: reference || "Payout",
+                amount: -amount,
+                status: "pending",
+              },
               ...s.business.txns,
             ],
           },
@@ -549,7 +1001,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       setTeamLimit: (id, limit) => {
         setState((s) => ({
           ...s,
-          business: { ...s.business, team: s.business.team.map((t) => (t.id === id ? { ...t, limit } : t)) },
+          business: {
+            ...s.business,
+            team: s.business.team.map((t) => (t.id === id ? { ...t, limit } : t)),
+          },
         }));
         notify(`Card limit updated to ${money(limit)}.`);
       },
@@ -557,7 +1012,10 @@ export function DemoProvider({ children }: { children: ReactNode }) {
       toggleTeamCard: (id) => {
         setState((s) => ({
           ...s,
-          business: { ...s.business, team: s.business.team.map((t) => (t.id === id ? { ...t, frozen: !t.frozen } : t)) },
+          business: {
+            ...s.business,
+            team: s.business.team.map((t) => (t.id === id ? { ...t, frozen: !t.frozen } : t)),
+          },
         }));
         notify("Staff card status updated.");
       },
@@ -580,10 +1038,23 @@ export function DemoProvider({ children }: { children: ReactNode }) {
             pendingSettlement: +(s.merchant.pendingSettlement + amount).toFixed(2),
             loyalty: { ...s.merchant.loyalty, stamps: s.merchant.loyalty.stamps + 1 },
           },
-          business: { ...s.business, todaySales: +(s.business.todaySales + amount).toFixed(2), pendingSettlement: +(s.business.pendingSettlement + amount).toFixed(2) },
+          business: {
+            ...s.business,
+            todaySales: +(s.business.todaySales + amount).toFixed(2),
+            pendingSettlement: +(s.business.pendingSettlement + amount).toFixed(2),
+          },
           admin: {
             ...s.admin,
-            webhooks: [{ id: uid(), source: "Acquiring adapter", type: "payment.captured", receivedAt: nowISO(), status: "processed" as const }, ...s.admin.webhooks].slice(0, 20),
+            webhooks: [
+              {
+                id: uid(),
+                source: "Acquiring adapter",
+                type: "payment.captured",
+                receivedAt: nowISO(),
+                status: "processed" as const,
+              },
+              ...s.admin.webhooks,
+            ].slice(0, 20),
           },
         }));
       },
@@ -595,7 +1066,9 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           ...s,
           merchant: {
             ...s.merchant,
-            payments: s.merchant.payments.map((x) => (x.id === id ? { ...x, status: "refunded" as const } : x)),
+            payments: s.merchant.payments.map((x) =>
+              x.id === id ? { ...x, status: "refunded" as const } : x,
+            ),
             balance: +(s.merchant.balance - p.amount).toFixed(2),
             pendingSettlement: +(s.merchant.pendingSettlement - p.amount).toFixed(2),
           },
@@ -616,7 +1089,14 @@ export function DemoProvider({ children }: { children: ReactNode }) {
             ...s.merchant,
             pendingSettlement: 0,
             settlements: [
-              { id: uid(), date: nowISO().slice(0, 10), gross: amount, fees, net: +(amount - fees).toFixed(2), status: "paid" as const },
+              {
+                id: uid(),
+                date: nowISO().slice(0, 10),
+                gross: amount,
+                fees,
+                net: +(amount - fees).toFixed(2),
+                status: "paid" as const,
+              },
               ...s.merchant.settlements,
             ],
           },
@@ -625,7 +1105,14 @@ export function DemoProvider({ children }: { children: ReactNode }) {
             balance: +(s.business.balance + (amount - fees)).toFixed(2),
             pendingSettlement: 0,
             txns: [
-              { id: uid(), date: nowISO().slice(0, 10), name: "ZorynPay settlement", category: "Settlement", amount: +(amount - fees).toFixed(2), status: "booked" as const },
+              {
+                id: uid(),
+                date: nowISO().slice(0, 10),
+                name: "ZorynPay settlement",
+                category: "Settlement",
+                amount: +(amount - fees).toFixed(2),
+                status: "booked" as const,
+              },
               ...s.business.txns,
             ],
           },
@@ -639,7 +1126,15 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           admin: {
             ...s.admin,
             queue: s.admin.queue.map((q) => (q.id === id ? { ...q, status } : q)),
-            audit: [{ id: uid(), actor: "ops@loungetech", action: `${status} — ${s.admin.queue.find((q) => q.id === id)?.name}`, at: nowISO() }, ...s.admin.audit],
+            audit: [
+              {
+                id: uid(),
+                actor: "ops@loungetech",
+                action: `${status} — ${s.admin.queue.find((q) => q.id === id)?.name}`,
+                at: nowISO(),
+              },
+              ...s.admin.audit,
+            ],
           },
         }));
         notify(`Case updated to ${status.replace("_", " ").toLowerCase()}.`);
@@ -650,7 +1145,11 @@ export function DemoProvider({ children }: { children: ReactNode }) {
           ...s,
           admin: {
             ...s.admin,
-            webhooks: s.admin.webhooks.map((w) => (w.status === "failed" || w.status === "queued" ? { ...w, status: "processed" as const } : w)),
+            webhooks: s.admin.webhooks.map((w) =>
+              w.status === "failed" || w.status === "queued"
+                ? { ...w, status: "processed" as const }
+                : w,
+            ),
           },
         }));
         notify("Queued and failed webhook events replayed.");

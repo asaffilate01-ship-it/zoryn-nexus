@@ -36,10 +36,11 @@ const toCase = (r: any) => ({
   subject: r.subject as string,
   category: r.priority === "high" ? "payment" : "other",
   description: r.subject as string,
-  status: (r.status === "resolved" ? "resolved" : r.status === "in_review" ? "in_review" : "open") as
-    | "open"
-    | "in_review"
-    | "resolved",
+  status: (r.status === "resolved"
+    ? "resolved"
+    : r.status === "in_review"
+      ? "in_review"
+      : "open") as "open" | "in_review" | "resolved",
   createdAt: r.created_at as string,
 });
 
@@ -49,23 +50,49 @@ const toCase = (r: any) => ({
  * built-in constants so the portals always render.
  */
 export async function loadDemoState(): Promise<State> {
-  const [accounts, pots, cards, txns, orgs, members, merchants, links, terminals, loyalty, loyaltyEntries, cases, events, audit] =
-    await Promise.all([
-      supabase.from("financial_accounts").select("*").eq("is_demo", true),
-      supabase.from("pots").select("*").eq("is_demo", true),
-      supabase.from("cards").select("*").eq("is_demo", true),
-      supabase.from("transactions").select("*").eq("is_demo", true).order("occurred_at", { ascending: false }),
-      supabase.from("organisations").select("*").eq("is_demo", true),
-      supabase.from("organisation_members").select("*").eq("is_demo", true),
-      supabase.from("merchants").select("*").eq("is_demo", true),
-      supabase.from("payment_links").select("*").eq("is_demo", true),
-      supabase.from("terminals").select("*").eq("is_demo", true),
-      supabase.from("loyalty_accounts").select("*").eq("is_demo", true),
-      supabase.from("loyalty_entries").select("*").eq("is_demo", true),
-      supabase.from("support_cases").select("*").eq("is_demo", true),
-      supabase.from("provider_events").select("*").eq("is_demo", true).order("created_at", { ascending: false }),
-      supabase.from("audit_logs").select("*").eq("is_demo", true).order("created_at", { ascending: false }),
-    ]);
+  const [
+    accounts,
+    pots,
+    cards,
+    txns,
+    orgs,
+    members,
+    merchants,
+    links,
+    terminals,
+    loyalty,
+    loyaltyEntries,
+    cases,
+    events,
+    audit,
+  ] = await Promise.all([
+    supabase.from("financial_accounts").select("*").eq("is_demo", true),
+    supabase.from("pots").select("*").eq("is_demo", true),
+    supabase.from("cards").select("*").eq("is_demo", true),
+    supabase
+      .from("transactions")
+      .select("*")
+      .eq("is_demo", true)
+      .order("occurred_at", { ascending: false }),
+    supabase.from("organisations").select("*").eq("is_demo", true),
+    supabase.from("organisation_members").select("*").eq("is_demo", true),
+    supabase.from("merchants").select("*").eq("is_demo", true),
+    supabase.from("payment_links").select("*").eq("is_demo", true),
+    supabase.from("terminals").select("*").eq("is_demo", true),
+    supabase.from("loyalty_accounts").select("*").eq("is_demo", true),
+    supabase.from("loyalty_entries").select("*").eq("is_demo", true),
+    supabase.from("support_cases").select("*").eq("is_demo", true),
+    supabase
+      .from("provider_events")
+      .select("*")
+      .eq("is_demo", true)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from("audit_logs")
+      .select("*")
+      .eq("is_demo", true)
+      .order("created_at", { ascending: false }),
+  ]);
 
   const acc = (accounts.data ?? []) as any[];
   if (acc.length === 0) return initialState;
@@ -83,7 +110,9 @@ export async function loadDemoState(): Promise<State> {
   const allLoyalty = (loyalty.data ?? []) as any[];
   const merchantRow = ((merchants.data ?? []) as any[])[0];
   const loyaltyFor = (orgId: string | null) =>
-    allLoyalty.find((l) => (orgId === null ? l.organisation_id === null : l.organisation_id === orgId));
+    allLoyalty.find((l) =>
+      orgId === null ? l.organisation_id === null : l.organisation_id === orgId,
+    );
 
   const base = initialState;
 
@@ -94,10 +123,17 @@ export async function loadDemoState(): Promise<State> {
     iban: personalAcc?.iban ?? base.personal.iban,
     balance: num(personalAcc?.balance ?? base.personal.balance),
     points: Number(personalLoyalty?.points ?? base.personal.points),
-    tier: personalLoyalty ? String(personalLoyalty.tier).replace(/^./, (c: string) => c.toUpperCase()) : base.personal.tier,
+    tier: personalLoyalty
+      ? String(personalLoyalty.tier).replace(/^./, (c: string) => c.toUpperCase())
+      : base.personal.tier,
     pots: ((pots.data ?? []) as any[])
       .filter((p) => p.account_id === PERSONAL_ACCOUNT)
-      .map((p) => ({ id: p.id as string, name: p.name as string, balance: num(p.balance), target: num(p.target) })),
+      .map((p) => ({
+        id: p.id as string,
+        name: p.name as string,
+        balance: num(p.balance),
+        target: num(p.target),
+      })),
     txns: allTxns.filter((t) => t.account_id === PERSONAL_ACCOUNT).map(toTxn),
     cards: allCards
       .filter((c) => c.account_id === PERSONAL_ACCOUNT)
@@ -159,23 +195,30 @@ export async function loadDemoState(): Promise<State> {
     })),
     links: allLinks.filter((l) => !BUSINESS_LINK_REFS.includes(l.provider_reference)).map(toLink),
     terminals: ((terminals.data ?? []) as any[]).map((t) => {
-      const [name, location] = String(t.name).split("—").map((s) => s.trim());
+      const [name, location] = String(t.name)
+        .split("—")
+        .map((s) => s.trim());
       return {
         id: t.id as string,
         name: name ?? "Terminal",
         location: location ?? "Store",
         status: (["online", "offline", "charging"].includes(t.status) ? t.status : "online") as
-          | "online"
-          | "offline"
-          | "charging",
+          "online" | "offline" | "charging",
         battery: Number(t.battery ?? 0),
         firmware: "4.8.1",
       };
     }),
     loyalty: {
       ...base.merchant.loyalty,
-      members: Number(merchantLoyalty?.points ? Math.round(Number(merchantLoyalty.points) / 14.6) : base.merchant.loyalty.members),
-      stamps: ((loyaltyEntries.data ?? []) as any[]).reduce((sum, e) => sum + Math.max(0, Number(e.points ?? 0)), 0),
+      members: Number(
+        merchantLoyalty?.points
+          ? Math.round(Number(merchantLoyalty.points) / 14.6)
+          : base.merchant.loyalty.members,
+      ),
+      stamps: ((loyaltyEntries.data ?? []) as any[]).reduce(
+        (sum, e) => sum + Math.max(0, Number(e.points ?? 0)),
+        0,
+      ),
     },
     cases: allCases.filter((c) => c.organisation_id === MERCHANT_ORG).map(toCase),
   };

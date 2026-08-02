@@ -160,12 +160,18 @@ function AuthPage() {
             </label>
 
             {error && (
-              <p role="alert" className="rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+              <p
+                role="alert"
+                className="rounded-2xl border border-destructive/40 bg-destructive/10 px-4 py-2 text-sm text-destructive"
+              >
                 {error}
               </p>
             )}
             {info && (
-              <p role="status" className="rounded-2xl border border-primary/40 bg-primary/10 px-4 py-2 text-sm text-primary">
+              <p
+                role="status"
+                className="rounded-2xl border border-primary/40 bg-primary/10 px-4 py-2 text-sm text-primary"
+              >
                 {info}
               </p>
             )}
@@ -189,12 +195,16 @@ function AuthPage() {
             }}
             className="mt-4 w-full text-center text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
-            {mode === "signin" ? t("No account yet? Create one") : t("Already have an account? Sign in")}
+            {mode === "signin"
+              ? t("No account yet? Create one")
+              : t("Already have an account? Sign in")}
           </button>
         </div>
 
         <p className="mt-6 text-center text-xs text-muted-foreground">
-          {t("New accounts start with the personal portal. Business, ZorynPay and admin access is granted by LoungeTech.")}
+          {t(
+            "New accounts start with the personal portal. Business, ZorynPay and admin access is granted by LoungeTech.",
+          )}
         </p>
       </div>
     </div>

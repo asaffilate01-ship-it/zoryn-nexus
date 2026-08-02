@@ -28,7 +28,11 @@ export function ProviderIntegrationCentre() {
       </header>
 
       <section className="grid gap-4 md:grid-cols-4">
-        <Metric icon={CloudCog} label="Configured providers" value={String(data.connections.length)} />
+        <Metric
+          icon={CloudCog}
+          label="Configured providers"
+          value={String(data.connections.length)}
+        />
         <Metric icon={CheckCircle2} label="Healthy providers" value={String(healthy)} />
         <Metric icon={Webhook} label="Recent events" value={String(data.events.length)} />
         <Metric icon={Link2} label="Resource mappings" value={String(data.mappings.length)} />

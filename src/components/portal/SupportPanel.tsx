@@ -16,7 +16,8 @@ export function SupportPanel({ role, title }: { role: RoleKey; title: string }) 
 
   const submit = () => {
     if (subject.trim().length < 3) return setError(t("Subject must be at least 3 characters."));
-    if (description.trim().length < 5) return setError(t("Please describe the issue (min 5 characters)."));
+    if (description.trim().length < 5)
+      return setError(t("Please describe the issue (min 5 characters)."));
     setError(null);
     createCase(role, { subject: subject.trim(), category, description: description.trim() });
     setSubject("");
@@ -28,10 +29,20 @@ export function SupportPanel({ role, title }: { role: RoleKey; title: string }) 
       <Panel title={t("New support case")} subtitle={title}>
         <div className="space-y-3">
           <Field label={t("Subject")}>
-            <input className={inputClass} value={subject} onChange={(e) => setSubject(e.target.value)} maxLength={160} placeholder={t("Card not working")} />
+            <input
+              className={inputClass}
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              maxLength={160}
+              placeholder={t("Card not working")}
+            />
           </Field>
           <Field label={t("Category")}>
-            <select className={inputClass} value={category} onChange={(e) => setCategory(e.target.value)}>
+            <select
+              className={inputClass}
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
               {categories.map((c) => (
                 <option key={c} value={c}>
                   {t(c)}
@@ -40,7 +51,14 @@ export function SupportPanel({ role, title }: { role: RoleKey; title: string }) 
             </select>
           </Field>
           <Field label={t("Description")}>
-            <textarea className={inputClass} rows={4} maxLength={4000} value={description} onChange={(e) => setDescription(e.target.value)} placeholder={t("Tell us what happened")} />
+            <textarea
+              className={inputClass}
+              rows={4}
+              maxLength={4000}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder={t("Tell us what happened")}
+            />
           </Field>
           <ErrorText>{error}</ErrorText>
           <Button onClick={submit}>{t("Create case")}</Button>
@@ -55,17 +73,27 @@ export function SupportPanel({ role, title }: { role: RoleKey; title: string }) 
             {cases.map((c) => (
               <li key={c.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
                 <div className="min-w-0">
-                  <b className="block text-sm">{c.ref} · {c.subject}</b>
+                  <b className="block text-sm">
+                    {c.ref} · {c.subject}
+                  </b>
                   <small className="text-xs text-muted-foreground">
                     {t(c.category)} · {new Date(c.createdAt).toLocaleString("de-DE")}
                   </small>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge tone={c.status === "resolved" ? "good" : c.status === "open" ? "warn" : "neutral"}>
+                  <Badge
+                    tone={
+                      c.status === "resolved" ? "good" : c.status === "open" ? "warn" : "neutral"
+                    }
+                  >
                     {t(c.status.replace("_", " "))}
                   </Badge>
                   {c.status !== "resolved" && (
-                    <Button variant="ghost" className="px-3 py-1.5 text-xs" onClick={() => resolveCase(role, c.id)}>
+                    <Button
+                      variant="ghost"
+                      className="px-3 py-1.5 text-xs"
+                      onClick={() => resolveCase(role, c.id)}
+                    >
                       {t("Resolve")}
                     </Button>
                   )}

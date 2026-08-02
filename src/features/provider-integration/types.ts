@@ -9,7 +9,8 @@ export type OnboardingStatus =
   | "rejected"
   | "restricted";
 
-export type AccountStatus = "opening" | "active" | "restricted" | "suspended" | "closing" | "closed";
+export type AccountStatus =
+  "opening" | "active" | "restricted" | "suspended" | "closing" | "closed";
 export type TransferStatus =
   | "draft"
   | "consent_required"
@@ -51,20 +52,35 @@ export interface ProviderReference {
 }
 
 export interface BankingProvider {
-  startIndividualOnboarding(input: Record<string, unknown>): Promise<{ externalId: string; redirectUrl?: string }>;
-  startCompanyOnboarding(input: Record<string, unknown>): Promise<{ externalId: string; redirectUrl?: string }>;
-  getOnboardingStatus(externalId: string): Promise<{ status: OnboardingStatus; requiredActions: string[] }>;
+  startIndividualOnboarding(
+    input: Record<string, unknown>,
+  ): Promise<{ externalId: string; redirectUrl?: string }>;
+  startCompanyOnboarding(
+    input: Record<string, unknown>,
+  ): Promise<{ externalId: string; redirectUrl?: string }>;
+  getOnboardingStatus(
+    externalId: string,
+  ): Promise<{ status: OnboardingStatus; requiredActions: string[] }>;
   listAccounts(customerExternalId: string): Promise<Array<Record<string, unknown>>>;
-  createTransfer(input: Record<string, unknown>): Promise<{ externalId: string; status: TransferStatus }>;
+  createTransfer(
+    input: Record<string, unknown>,
+  ): Promise<{ externalId: string; status: TransferStatus }>;
   issueCard(input: Record<string, unknown>): Promise<{ externalId: string; status: CardStatus }>;
   updateCardStatus(cardExternalId: string, action: "freeze" | "unfreeze" | "cancel"): Promise<void>;
 }
 
 export interface AcquiringProvider {
-  startMerchantOnboarding(input: Record<string, unknown>): Promise<{ externalId: string; redirectUrl?: string }>;
+  startMerchantOnboarding(
+    input: Record<string, unknown>,
+  ): Promise<{ externalId: string; redirectUrl?: string }>;
   getMerchantStatus(externalId: string): Promise<{ status: string; requiredActions: string[] }>;
   createPaymentLink(input: Record<string, unknown>): Promise<{ externalId: string; url: string }>;
-  createPaymentSession(input: Record<string, unknown>): Promise<{ externalId: string; clientToken?: string }>;
-  refundPayment(externalId: string, amountMinor?: number): Promise<{ externalId: string; status: PaymentStatus }>;
+  createPaymentSession(
+    input: Record<string, unknown>,
+  ): Promise<{ externalId: string; clientToken?: string }>;
+  refundPayment(
+    externalId: string,
+    amountMinor?: number,
+  ): Promise<{ externalId: string; status: PaymentStatus }>;
   listSettlements(merchantExternalId: string): Promise<Array<Record<string, unknown>>>;
 }

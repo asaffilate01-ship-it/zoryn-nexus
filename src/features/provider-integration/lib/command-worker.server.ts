@@ -90,7 +90,11 @@ export async function dispatchCommand(command: ProviderCommand): Promise<Dispatc
   throw new Error("unsupported_provider");
 }
 
-export async function persistCommandResult(admin: Admin, command: ProviderCommand, result: DispatchResult) {
+export async function persistCommandResult(
+  admin: Admin,
+  command: ProviderCommand,
+  result: DispatchResult,
+) {
   if (!result?.externalId) return;
   await admin.from("platform_provider_resources").upsert(
     {

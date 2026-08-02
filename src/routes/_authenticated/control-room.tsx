@@ -13,7 +13,8 @@ export const Route = createFileRoute("/_authenticated/control-room")({
       { property: "og:title", content: "Operations Control Room — Zoryn platform" },
       {
         property: "og:description",
-        content: "Provider command and webhook backlogs, alerts, incidents and reconciliation in one view.",
+        content:
+          "Provider command and webhook backlogs, alerts, incidents and reconciliation in one view.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

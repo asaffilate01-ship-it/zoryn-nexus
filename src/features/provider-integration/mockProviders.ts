@@ -26,14 +26,16 @@ export class MockSwanProvider implements BankingProvider {
   }
   async listAccounts(customerExternalId: string) {
     await sleep();
-    return [{
-      externalId: id("swan_account"),
-      customerExternalId,
-      iban: "DE89 3704 0044 0532 0130 00",
-      availableBalanceMinor: 125430,
-      currency: "EUR",
-      status: "active",
-    }];
+    return [
+      {
+        externalId: id("swan_account"),
+        customerExternalId,
+        iban: "DE89 3704 0044 0532 0130 00",
+        availableBalanceMinor: 125430,
+        currency: "EUR",
+        status: "active",
+      },
+    ];
   }
   async createTransfer(_input: Record<string, unknown> = {}) {
     await sleep();
@@ -53,7 +55,10 @@ export class MockSwanProvider implements BankingProvider {
 export class MockAdyenProvider implements AcquiringProvider {
   async startMerchantOnboarding(_input: Record<string, unknown> = {}) {
     await sleep();
-    return { externalId: id("adyen_account_holder"), redirectUrl: "/merchant/onboarding?provider=mock-adyen" };
+    return {
+      externalId: id("adyen_account_holder"),
+      redirectUrl: "/merchant/onboarding?provider=mock-adyen",
+    };
   }
   async getMerchantStatus(_externalId?: string) {
     await sleep();
@@ -62,7 +67,10 @@ export class MockAdyenProvider implements AcquiringProvider {
   async createPaymentLink(input: Record<string, unknown> = {}) {
     await sleep();
     const externalId = id("adyen_link");
-    return { externalId, url: `https://pay.example.test/${externalId}?amount=${input["amountMinor"] ?? 0}` };
+    return {
+      externalId,
+      url: `https://pay.example.test/${externalId}?amount=${input["amountMinor"] ?? 0}`,
+    };
   }
   async createPaymentSession(_input: Record<string, unknown> = {}) {
     await sleep();
@@ -75,15 +83,17 @@ export class MockAdyenProvider implements AcquiringProvider {
   }
   async listSettlements(merchantExternalId: string) {
     await sleep();
-    return [{
-      externalId: id("adyen_settlement"),
-      merchantExternalId,
-      grossMinor: 245000,
-      feesMinor: 4150,
-      refundsMinor: 12000,
-      netMinor: 228850,
-      status: "paid",
-      currency: "EUR",
-    }];
+    return [
+      {
+        externalId: id("adyen_settlement"),
+        merchantExternalId,
+        grossMinor: 245000,
+        feesMinor: 4150,
+        refundsMinor: 12000,
+        netMinor: 228850,
+        status: "paid",
+        currency: "EUR",
+      },
+    ];
   }
 }

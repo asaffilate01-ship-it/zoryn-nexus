@@ -21,9 +21,8 @@ export async function getAdmin(): Promise<Admin> {
 
 export async function ctx() {
   const admin = await getAdmin();
-  const { getBankingAdapter, getAcquiringAdapter } = await import(
-    "@/features/provider-ready/lib/providers.server"
-  );
+  const { getBankingAdapter, getAcquiringAdapter } =
+    await import("@/features/provider-ready/lib/providers.server");
   return { admin, banking: getBankingAdapter(), acquiring: getAcquiringAdapter() };
 }
 
@@ -52,7 +51,12 @@ export async function audit(
  * be touched by that user or a member of that organisation, which is exactly
  * what the `can_access_*` security-definer functions already enforce for RLS.
  */
-async function canAccess(admin: Admin, fn: "can_access_account" | "can_access_loyalty" | "can_access_merchant", id: string, userId: string) {
+async function canAccess(
+  admin: Admin,
+  fn: "can_access_account" | "can_access_loyalty" | "can_access_merchant",
+  id: string,
+  userId: string,
+) {
   const args =
     fn === "can_access_account"
       ? { _account_id: id, _user_id: userId }

@@ -80,7 +80,10 @@ export function PortalShell({ role }: { role: Role }) {
                     : "text-sidebar-foreground/70 hover:translate-x-0.5 hover:bg-sidebar-accent hover:text-sidebar-foreground",
                 )}
               >
-                <Icon size={18} className="shrink-0 transition-transform duration-200 group-hover:scale-110" />
+                <Icon
+                  size={18}
+                  className="shrink-0 transition-transform duration-200 group-hover:scale-110"
+                />
                 {t(label)}
               </button>
             ))}
@@ -132,7 +135,9 @@ export function PortalShell({ role }: { role: Role }) {
               <span className="text-[11px] font-semibold uppercase tracking-widest text-primary">
                 {t(config.name)} {t("portal")}
               </span>
-              <h1 className="truncate text-xl font-semibold sm:text-2xl">{t(moduleTitles[page])}</h1>
+              <h1 className="truncate text-xl font-semibold sm:text-2xl">
+                {t(moduleTitles[page])}
+              </h1>
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-3">

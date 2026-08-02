@@ -19,9 +19,8 @@ export const Route = createFileRoute("/api/public/provider-command-worker")({
         }
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { runCommandWorker } = await import(
-          "@/features/provider-integration/lib/command-worker.server"
-        );
+        const { runCommandWorker } =
+          await import("@/features/provider-integration/lib/command-worker.server");
 
         try {
           const result = await runCommandWorker(supabaseAdmin as never);

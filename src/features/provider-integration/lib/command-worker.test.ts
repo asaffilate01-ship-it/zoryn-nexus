@@ -1,5 +1,10 @@
 import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { dispatchCommand, persistCommandResult, workerMode, type ProviderCommand } from "./command-worker.server";
+import {
+  dispatchCommand,
+  persistCommandResult,
+  workerMode,
+  type ProviderCommand,
+} from "./command-worker.server";
 
 const command: ProviderCommand = {
   id: "c1",
@@ -31,8 +36,9 @@ describe("provider command worker", () => {
     process.env["PROVIDER_MODE"] = "live";
     process.env["SWAN_API_URL"] = "https://swan.test";
     process.env["SWAN_ACCESS_TOKEN"] = "token";
-    const fetchMock = vi.fn(async (_input: unknown, _init?: RequestInit) =>
-      new Response(JSON.stringify({ externalId: "swan_1" }), { status: 200 }),
+    const fetchMock = vi.fn(
+      async (_input: unknown, _init?: RequestInit) =>
+        new Response(JSON.stringify({ externalId: "swan_1" }), { status: 200 }),
     );
     vi.stubGlobal("fetch", fetchMock);
 
@@ -45,11 +51,15 @@ describe("provider command worker", () => {
   it("fails loudly when live credentials are missing", async () => {
     process.env["PROVIDER_MODE"] = "live";
     delete process.env["ADYEN_API_URL"];
-    await expect(dispatchCommand({ ...command, provider: "adyen" })).rejects.toThrow("missing_env_adyen_api_url");
+    await expect(dispatchCommand({ ...command, provider: "adyen" })).rejects.toThrow(
+      "missing_env_adyen_api_url",
+    );
   });
 
   it("maps the external id onto a provider resource", async () => {
-    const upsert = vi.fn(async (_row: Record<string, unknown>, _options?: unknown) => ({ error: null }));
+    const upsert = vi.fn(async (_row: Record<string, unknown>, _options?: unknown) => ({
+      error: null,
+    }));
     const admin = { from: () => ({ upsert }) } as never;
     await persistCommandResult(admin, command, { externalId: "swan_9", externalStatus: "active" });
     expect(upsert.mock.calls[0]![0]).toMatchObject({

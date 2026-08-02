@@ -34,7 +34,11 @@ export function useAccount() {
     enabled: Boolean(userId),
     queryFn: async () => {
       const [profile, roles] = await Promise.all([
-        supabase.from("profiles").select("id, full_name, email, role").eq("id", userId!).maybeSingle(),
+        supabase
+          .from("profiles")
+          .select("id, full_name, email, role")
+          .eq("id", userId!)
+          .maybeSingle(),
         supabase.from("user_roles").select("role").eq("user_id", userId!),
       ]);
       if (profile.error) throw profile.error;

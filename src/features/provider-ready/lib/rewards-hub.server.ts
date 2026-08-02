@@ -153,7 +153,12 @@ export async function flushRewardsOutbox(admin: Admin, limit = 25) {
       if (!res.ok) throw new Error(`Hub responded ${res.status}: ${await res.text()}`);
       await admin
         .from("rewards_outbox")
-        .update({ status: "delivered", delivered_at: new Date().toISOString(), error: null, attempts: row.attempts + 1 })
+        .update({
+          status: "delivered",
+          delivered_at: new Date().toISOString(),
+          error: null,
+          attempts: row.attempts + 1,
+        })
         .eq("id", row.id);
       delivered += 1;
     } catch (error) {

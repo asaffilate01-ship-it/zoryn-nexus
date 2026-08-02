@@ -18,9 +18,8 @@ export const Route = createFileRoute("/api/public/provider-event-processor")({
         }
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { runEventProcessor } = await import(
-          "@/features/provider-integration/lib/event-processor.server"
-        );
+        const { runEventProcessor } =
+          await import("@/features/provider-integration/lib/event-processor.server");
 
         try {
           const result = await runEventProcessor(supabaseAdmin as never);

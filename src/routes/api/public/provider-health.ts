@@ -18,9 +18,13 @@ export const Route = createFileRoute("/api/public/provider-health")({
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
         const [connections, commands, events, alerts] = await Promise.all([
-          supabaseAdmin.from("platform_provider_connections").select("provider, mode, status, last_checked_at"),
+          supabaseAdmin
+            .from("platform_provider_connections")
+            .select("provider, mode, status, last_checked_at"),
           supabaseAdmin.from("platform_provider_commands").select("status, provider"),
-          supabaseAdmin.from("platform_provider_events").select("processing_status, provider, received_at"),
+          supabaseAdmin
+            .from("platform_provider_events")
+            .select("processing_status, provider, received_at"),
           supabaseAdmin.from("platform_provider_alerts").select("id").eq("status", "open"),
         ]);
 
@@ -28,7 +32,9 @@ export const Route = createFileRoute("/api/public/provider-health")({
           ["queued", "processing", "failed", "dead_letter"].includes(x.status),
         );
         const eventBacklog = (events.data ?? []).filter((x) =>
-          ["received", "processing", "retrying", "failed", "dead_letter"].includes(x.processing_status),
+          ["received", "processing", "retrying", "failed", "dead_letter"].includes(
+            x.processing_status,
+          ),
         );
         const degraded =
           commandBacklog.some((x) => x.status === "dead_letter") ||

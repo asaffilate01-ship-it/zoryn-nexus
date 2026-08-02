@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, Building2, ShieldCheck, Smartphone, WalletCards } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Building2,
+  ShieldCheck,
+  Smartphone,
+  WalletCards,
+} from "lucide-react";
 import { portalConfigs, providerReadinessByRole, rolePaths, roleOrder } from "@/lib/zoryn-data";
 import { useT } from "@/lib/i18n";
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -64,7 +71,8 @@ function DemoHub() {
           {t("Interactive Product Centre")}
         </span>
         <h1 className="mt-4 font-display text-4xl leading-[1.05] sm:text-5xl lg:text-6xl">
-          {t("Pick a Zoryn experience")}<span className="text-primary">.</span>
+          {t("Pick a Zoryn experience")}
+          <span className="text-primary">.</span>
         </h1>
         <p className="mt-5 max-w-xl text-base text-muted-foreground sm:text-lg">
           {t(
@@ -91,7 +99,9 @@ function DemoHub() {
                     className="text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-primary"
                   />
                 </div>
-                <h2 className="mt-5 font-display text-xl">{t("{name} portal", { name: config.name })}</h2>
+                <h2 className="mt-5 font-display text-xl">
+                  {t("{name} portal", { name: config.name })}
+                </h2>
                 <p className="mt-1 text-sm text-muted-foreground">{t(config.tagline)}</p>
               </Link>
             );

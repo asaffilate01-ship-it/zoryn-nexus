@@ -32,7 +32,10 @@ export const platformDataRepository = {
   },
 
   async getAccounts() {
-    const { data, error } = await supabase.from("platform_accounts").select("*").order("created_at");
+    const { data, error } = await supabase
+      .from("platform_accounts")
+      .select("*")
+      .order("created_at");
     if (error) throw error;
     return data ?? [];
   },
@@ -74,7 +77,10 @@ export const platformDataRepository = {
   },
 
   async getMerchants() {
-    const { data, error } = await supabase.from("platform_merchants").select("*").order("display_name");
+    const { data, error } = await supabase
+      .from("platform_merchants")
+      .select("*")
+      .order("display_name");
     if (error) throw error;
     return data ?? [];
   },
@@ -102,7 +108,11 @@ export const platformDataRepository = {
   async createPot(input: { accountId: string; name: string; targetMinor?: number }) {
     const { data, error } = await supabase
       .from("platform_pots")
-      .insert({ account_id: input.accountId, name: input.name, target_minor: input.targetMinor ?? null })
+      .insert({
+        account_id: input.accountId,
+        name: input.name,
+        target_minor: input.targetMinor ?? null,
+      })
       .select()
       .single();
     if (error) throw error;
@@ -150,7 +160,12 @@ export const platformDataRepository = {
     return data;
   },
 
-  async createSupportCase(input: { caseType: string; subject: string; description?: string; priority?: string }) {
+  async createSupportCase(input: {
+    caseType: string;
+    subject: string;
+    description?: string;
+    priority?: string;
+  }) {
     const { data: auth } = await supabase.auth.getUser();
     const { data, error } = await supabase
       .from("platform_support_cases")

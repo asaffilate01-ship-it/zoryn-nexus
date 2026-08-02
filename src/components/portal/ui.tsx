@@ -106,8 +106,10 @@ export function Button({
   const variants = {
     primary:
       "bg-primary text-primary-foreground shadow-[0_10px_28px_-14px_oklch(0.82_0.17_165/0.9)] hover:brightness-110 active:translate-y-px",
-    ghost: "border border-border bg-card/40 hover:border-white/20 hover:bg-secondary active:translate-y-px",
-    danger: "border border-destructive/40 text-destructive hover:bg-destructive/10 active:translate-y-px",
+    ghost:
+      "border border-border bg-card/40 hover:border-white/20 hover:bg-secondary active:translate-y-px",
+    danger:
+      "border border-destructive/40 text-destructive hover:bg-destructive/10 active:translate-y-px",
   } as const;
   return (
     <button
