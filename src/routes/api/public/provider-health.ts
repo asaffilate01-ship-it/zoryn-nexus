@@ -17,7 +17,7 @@ export const Route = createFileRoute("/api/public/provider-health")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        const [connections, commands, events, alerts] = await Promise.all([
+        const [connections, commands, events, alerts, logs] = await Promise.all([
           supabaseAdmin
             .from("platform_provider_connections")
             .select("provider, mode, status, last_checked_at"),
@@ -26,6 +26,11 @@ export const Route = createFileRoute("/api/public/provider-health")({
             .from("platform_provider_events")
             .select("processing_status, provider, received_at"),
           supabaseAdmin.from("platform_provider_alerts").select("id").eq("status", "open"),
+          supabaseAdmin
+            .from("platform_provider_runtime_logs")
+            .select("provider, direction, operation, status, correlation_id, duration_ms, created_at")
+            .order("created_at", { ascending: false })
+            .limit(20),
         ]);
 
         const commandBacklog = (commands.data ?? []).filter((x) =>
@@ -48,6 +53,8 @@ export const Route = createFileRoute("/api/public/provider-health")({
             commandBacklog: commandBacklog.length,
             eventBacklog: eventBacklog.length,
             openAlerts: (alerts.data ?? []).length,
+            // Error text is deliberately omitted: this endpoint is public.
+            recentActivity: logs.data ?? [],
           },
           { status: degraded ? 503 : 200 },
         );
