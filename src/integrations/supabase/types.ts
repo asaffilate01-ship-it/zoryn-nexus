@@ -1312,6 +1312,48 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_provider_runtime_logs: {
+        Row: {
+          correlation_id: string
+          created_at: string
+          direction: string
+          duration_ms: number | null
+          entity_id: string | null
+          error_message: string | null
+          id: string
+          metadata: Json
+          operation: string
+          provider: string
+          status: string
+        }
+        Insert: {
+          correlation_id: string
+          created_at?: string
+          direction: string
+          duration_ms?: number | null
+          entity_id?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json
+          operation: string
+          provider: string
+          status: string
+        }
+        Update: {
+          correlation_id?: string
+          created_at?: string
+          direction?: string
+          duration_ms?: number | null
+          entity_id?: string | null
+          error_message?: string | null
+          id?: string
+          metadata?: Json
+          operation?: string
+          provider?: string
+          status?: string
+        }
+        Relationships: []
+      }
       platform_provider_worker_locks: {
         Row: {
           command_id: string
@@ -2106,6 +2148,29 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "platform_provider_commands"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      platform_claim_provider_events: {
+        Args: { p_limit?: number }
+        Returns: {
+          attempt_count: number
+          event_id: string
+          event_type: string
+          id: string
+          last_error: string | null
+          occurred_at: string | null
+          payload: Json
+          payload_hash: string
+          processed_at: string | null
+          processing_status: string
+          provider: string
+          received_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "platform_provider_events"
           isOneToOne: false
           isSetofReturn: true
         }
