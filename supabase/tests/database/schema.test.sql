@@ -105,4 +105,26 @@ begin
   end if;
 end $$;
 
+-- Stage 1 v6 runtime: logging table, claim routines and worker execute grants.
+do $$
+begin
+  if to_regclass('public.platform_provider_runtime_logs') is null then
+    raise exception 'platform_provider_runtime_logs is missing';
+  end if;
+
+  if not exists (
+    select 1 from pg_proc p join pg_namespace n on n.oid = p.pronamespace
+    where n.nspname = 'public'
+      and p.proname in ('platform_claim_provider_commands','platform_claim_provider_events')
+      and p.prosecdef
+    having count(*) = 2
+  ) then
+    raise exception 'provider claim routines must exist and be security definer';
+  end if;
+
+  if has_function_privilege('authenticated', 'public.platform_claim_provider_events(integer)', 'EXECUTE') then
+    raise exception 'signed-in users must not be able to claim provider events';
+  end if;
+end $$;
+
 select 'schema gates passed' as result;
