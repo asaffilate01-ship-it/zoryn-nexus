@@ -133,7 +133,7 @@ export async function runCommandWorker(admin: Admin, limit = 25) {
   const commands = (data ?? []) as unknown as ProviderCommand[];
   let succeeded = 0;
   let failed = 0;
-  const results: Array<{ id: string; status: string; error?: string }> = [];
+  const results: Array<{ id: string; status: string; error?: string; correlationId: string }> = [];
 
   for (const command of commands) {
     const startedAt = Date.now();
