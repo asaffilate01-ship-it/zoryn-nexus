@@ -135,7 +135,7 @@ begin
   foreach t in array array[
     'platform_customers','platform_transactions','platform_onboarding_actions',
     'platform_stores','platform_payment_links','platform_refunds','platform_chargebacks',
-    'platform_terminals','platform_launch_acceptance'
+    'platform_terminals','platform_launch_acceptance','platform_consents','platform_launch_blockers'
   ]
   loop
     if to_regclass('public.' || t) is null then
