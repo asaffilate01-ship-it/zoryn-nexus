@@ -127,4 +127,33 @@ begin
   end if;
 end $$;
 
+-- Stages 2, 4 and 6: banking, acquiring and hardening tables plus RLS.
+do $$
+declare
+  t text;
+begin
+  foreach t in array array[
+    'platform_customers','platform_transactions','platform_onboarding_actions',
+    'platform_stores','platform_payment_links','platform_refunds','platform_chargebacks',
+    'platform_terminals','platform_launch_acceptance'
+  ]
+  loop
+    if to_regclass('public.' || t) is null then
+      raise exception 'table % is missing', t;
+    end if;
+    if not exists (
+      select 1 from pg_class c join pg_namespace n on n.oid = c.relnamespace
+      where n.nspname = 'public' and c.relname = t and c.relrowsecurity
+    ) then
+      raise exception 'table % must have row level security enabled', t;
+    end if;
+    if not exists (select 1 from pg_policies where schemaname = 'public' and tablename = t) then
+      raise exception 'table % must have at least one policy', t;
+    end if;
+    if has_table_privilege('anon', 'public.' || t, 'SELECT') then
+      raise exception 'table % must not be readable by anonymous callers', t;
+    end if;
+  end loop;
+end $$;
+
 select 'schema gates passed' as result;
