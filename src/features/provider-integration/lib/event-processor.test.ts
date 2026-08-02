@@ -15,6 +15,7 @@ describe("provider event processor", () => {
     const outcome = await applyEvent(admin, {
       id: "e1",
       provider: "swan",
+      event_id: "evt_test",
       event_type: "onboarding.updated",
       payload: {
         externalId: "swan_ob_1",
@@ -38,6 +39,7 @@ describe("provider event processor", () => {
     const outcome = await applyEvent(admin, {
       id: "e2",
       provider: "adyen",
+      event_id: "evt_test",
       event_type: "payment.captured",
       payload: {
         aggregateId: "p1",
@@ -57,6 +59,7 @@ describe("provider event processor", () => {
       applyEvent({ from: () => ({}) } as never, {
         id: "e3",
         provider: "swan",
+        event_id: "evt_test",
         event_type: "something.unknown",
         payload: {},
         attempt_count: 0,
