@@ -873,8 +873,10 @@ export type Database = {
       }
       platform_incidents: {
         Row: {
+          follow_up: string | null
           id: string
           metadata: Json
+          owner_user_id: string | null
           provider: string | null
           resolved_at: string | null
           severity: string
@@ -884,8 +886,10 @@ export type Database = {
           title: string
         }
         Insert: {
+          follow_up?: string | null
           id?: string
           metadata?: Json
+          owner_user_id?: string | null
           provider?: string | null
           resolved_at?: string | null
           severity: string
@@ -895,8 +899,10 @@ export type Database = {
           title: string
         }
         Update: {
+          follow_up?: string | null
           id?: string
           metadata?: Json
+          owner_user_id?: string | null
           provider?: string | null
           resolved_at?: string | null
           severity?: string
@@ -904,6 +910,57 @@ export type Database = {
           status?: string
           summary?: string | null
           title?: string
+        }
+        Relationships: []
+      }
+      platform_launch_acceptance: {
+        Row: {
+          adyen_passed: boolean
+          approved: boolean | null
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          engineering_passed: boolean
+          id: string
+          legal_passed: boolean
+          operations_passed: boolean
+          pilot_passed: boolean
+          release_name: string
+          security_passed: boolean
+          swan_passed: boolean
+          updated_at: string
+        }
+        Insert: {
+          adyen_passed?: boolean
+          approved?: boolean | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          engineering_passed?: boolean
+          id?: string
+          legal_passed?: boolean
+          operations_passed?: boolean
+          pilot_passed?: boolean
+          release_name: string
+          security_passed?: boolean
+          swan_passed?: boolean
+          updated_at?: string
+        }
+        Update: {
+          adyen_passed?: boolean
+          approved?: boolean | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          engineering_passed?: boolean
+          id?: string
+          legal_passed?: boolean
+          operations_passed?: boolean
+          pilot_passed?: boolean
+          release_name?: string
+          security_passed?: boolean
+          swan_passed?: boolean
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1637,6 +1694,7 @@ export type Database = {
           difference_minor: number | null
           expected_minor: number
           id: string
+          provider: string | null
           run_type: string
           started_at: string
           status: string
@@ -1648,6 +1706,7 @@ export type Database = {
           difference_minor?: number | null
           expected_minor?: number
           id?: string
+          provider?: string | null
           run_type: string
           started_at?: string
           status: string
@@ -1659,6 +1718,7 @@ export type Database = {
           difference_minor?: number | null
           expected_minor?: number
           id?: string
+          provider?: string | null
           run_type?: string
           started_at?: string
           status?: string
