@@ -579,6 +579,252 @@ export type Database = {
           },
         ]
       }
+      platform_audit_events: {
+        Row: {
+          action: string
+          actor_user_id: string | null
+          created_at: string
+          entity_id: string
+          entity_type: string
+          id: string
+          metadata: Json
+          organisation_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id: string
+          entity_type: string
+          id?: string
+          metadata?: Json
+          organisation_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_user_id?: string | null
+          created_at?: string
+          entity_id?: string
+          entity_type?: string
+          id?: string
+          metadata?: Json
+          organisation_id?: string | null
+        }
+        Relationships: []
+      }
+      platform_onboarding_cases: {
+        Row: {
+          created_at: string
+          external_id: string | null
+          id: string
+          last_synced_at: string | null
+          onboarding_type: string
+          organisation_id: string | null
+          provider: string
+          required_actions: Json
+          status: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          last_synced_at?: string | null
+          onboarding_type: string
+          organisation_id?: string | null
+          provider: string
+          required_actions?: Json
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          external_id?: string | null
+          id?: string
+          last_synced_at?: string | null
+          onboarding_type?: string
+          organisation_id?: string | null
+          provider?: string
+          required_actions?: Json
+          status?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      platform_provider_commands: {
+        Row: {
+          aggregate_id: string
+          aggregate_type: string
+          attempt_count: number
+          command_type: string
+          created_at: string
+          created_by: string | null
+          id: string
+          idempotency_key: string
+          last_error: string | null
+          next_attempt_at: string | null
+          payload: Json
+          processed_at: string | null
+          provider: string
+          status: string
+        }
+        Insert: {
+          aggregate_id: string
+          aggregate_type: string
+          attempt_count?: number
+          command_type: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          idempotency_key: string
+          last_error?: string | null
+          next_attempt_at?: string | null
+          payload?: Json
+          processed_at?: string | null
+          provider: string
+          status?: string
+        }
+        Update: {
+          aggregate_id?: string
+          aggregate_type?: string
+          attempt_count?: number
+          command_type?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          idempotency_key?: string
+          last_error?: string | null
+          next_attempt_at?: string | null
+          payload?: Json
+          processed_at?: string | null
+          provider?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      platform_provider_connections: {
+        Row: {
+          configuration: Json
+          created_at: string
+          id: string
+          last_checked_at: string
+          mode: string
+          provider: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          configuration?: Json
+          created_at?: string
+          id?: string
+          last_checked_at?: string
+          mode?: string
+          provider: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          configuration?: Json
+          created_at?: string
+          id?: string
+          last_checked_at?: string
+          mode?: string
+          provider?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      platform_provider_events: {
+        Row: {
+          attempt_count: number
+          event_id: string
+          event_type: string
+          id: string
+          last_error: string | null
+          occurred_at: string | null
+          payload: Json
+          payload_hash: string
+          processed_at: string | null
+          processing_status: string
+          provider: string
+          received_at: string
+        }
+        Insert: {
+          attempt_count?: number
+          event_id: string
+          event_type: string
+          id?: string
+          last_error?: string | null
+          occurred_at?: string | null
+          payload: Json
+          payload_hash: string
+          processed_at?: string | null
+          processing_status?: string
+          provider: string
+          received_at?: string
+        }
+        Update: {
+          attempt_count?: number
+          event_id?: string
+          event_type?: string
+          id?: string
+          last_error?: string | null
+          occurred_at?: string | null
+          payload?: Json
+          payload_hash?: string
+          processed_at?: string | null
+          processing_status?: string
+          provider?: string
+          received_at?: string
+        }
+        Relationships: []
+      }
+      platform_provider_resources: {
+        Row: {
+          aggregate_id: string
+          aggregate_type: string
+          created_at: string
+          external_id: string
+          external_status: string | null
+          id: string
+          last_synced_at: string
+          metadata: Json
+          provider: string
+          resource_type: string
+          updated_at: string
+        }
+        Insert: {
+          aggregate_id: string
+          aggregate_type: string
+          created_at?: string
+          external_id: string
+          external_status?: string | null
+          id?: string
+          last_synced_at?: string
+          metadata?: Json
+          provider: string
+          resource_type: string
+          updated_at?: string
+        }
+        Update: {
+          aggregate_id?: string
+          aggregate_type?: string
+          created_at?: string
+          external_id?: string
+          external_status?: string | null
+          id?: string
+          last_synced_at?: string
+          metadata?: Json
+          provider?: string
+          resource_type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       pots: {
         Row: {
           account_id: string
