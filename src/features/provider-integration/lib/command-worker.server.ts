@@ -25,9 +25,9 @@ export type ProviderCommand = {
 };
 
 export type DispatchResult = {
-  externalId?: string;
-  externalStatus?: string;
-  resourceType?: string;
+  externalId?: string | undefined;
+  externalStatus?: string | undefined;
+  resourceType?: string | undefined;
   [key: string]: unknown;
 };
 
