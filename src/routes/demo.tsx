@@ -44,6 +44,7 @@ const icons = {
 const extraLinks = [
   { to: "/provider-ready", label: "Provider-ready centre" },
   { to: "/provider-integration", label: "Provider integration readiness" },
+  { to: "/provider-runtime", label: "Provider runtime operations" },
   { to: "/onboarding-status", label: "Onboarding states" },
   { to: "/operations-centre", label: "Operations centre" },
   { to: "/control-room", label: "Operations control room" },
