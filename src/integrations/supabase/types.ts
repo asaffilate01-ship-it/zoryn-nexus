@@ -838,6 +838,62 @@ export type Database = {
           },
         ]
       }
+      platform_consents: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          operation_id: string
+          operation_type: string
+          organisation_id: string | null
+          provider: string
+          provider_external_id: string | null
+          redirect_url: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          operation_id: string
+          operation_type: string
+          organisation_id?: string | null
+          provider: string
+          provider_external_id?: string | null
+          redirect_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          operation_id?: string
+          operation_type?: string
+          organisation_id?: string | null
+          provider?: string
+          provider_external_id?: string | null
+          redirect_url?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_consents_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "platform_organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_customers: {
         Row: {
           created_at: string
@@ -960,6 +1016,51 @@ export type Database = {
           release_name?: string
           security_passed?: boolean
           swan_passed?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      platform_launch_blockers: {
+        Row: {
+          area: string
+          created_at: string
+          details: string | null
+          due_at: string | null
+          evidence_url: string | null
+          id: string
+          owner: string | null
+          resolved_at: string | null
+          severity: string
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          area: string
+          created_at?: string
+          details?: string | null
+          due_at?: string | null
+          evidence_url?: string | null
+          id?: string
+          owner?: string | null
+          resolved_at?: string | null
+          severity: string
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          area?: string
+          created_at?: string
+          details?: string | null
+          due_at?: string | null
+          evidence_url?: string | null
+          id?: string
+          owner?: string | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title?: string
           updated_at?: string
         }
         Relationships: []
@@ -2708,6 +2809,10 @@ export type Database = {
       platform_owns_account: {
         Args: { _account_id: string; _user_id: string }
         Returns: boolean
+      }
+      platform_replay_dead_letter_command: {
+        Args: { p_command_id: string }
+        Returns: undefined
       }
     }
     Enums: {
