@@ -67,9 +67,8 @@ export async function dispatchCommand(command: ProviderCommand): Promise<Dispatc
   // Stage 11 — prefer database-driven, provider-approved operation mappings.
   try {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { dispatchActivatedProviderCommand } = await import(
-      "@/features/providers/server/activatedProviderDispatcher"
-    );
+    const { dispatchActivatedProviderCommand } =
+      await import("@/features/providers/server/activatedProviderDispatcher");
     return (await dispatchActivatedProviderCommand(supabaseAdmin, {
       provider: command.provider as "swan" | "adyen" | "rewards",
       command_type: command.command_type,
@@ -79,8 +78,7 @@ export async function dispatchCommand(command: ProviderCommand): Promise<Dispatc
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const fallbackable =
-      message.startsWith("provider_mapping_missing") ||
-      message.startsWith("unsupported_operation");
+      message.startsWith("provider_mapping_missing") || message.startsWith("unsupported_operation");
     if (!fallbackable) throw error;
   }
 
