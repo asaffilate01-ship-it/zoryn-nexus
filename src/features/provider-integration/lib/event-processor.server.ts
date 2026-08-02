@@ -40,12 +40,10 @@ export async function applyEvent(admin: Admin, event: ProviderEvent) {
 
   // Stage 9 — explicitly mapped provider events take precedence over the
   // generic onboarding/resource handling below.
-  const { registerDefaultProviderEventHandlers } = await import(
-    "@/features/providers/server/eventHandlers.server"
-  );
-  const { handleProviderEvent, listRegisteredProviderEvents } = await import(
-    "@/features/providers/eventHandlerRegistry"
-  );
+  const { registerDefaultProviderEventHandlers } =
+    await import("@/features/providers/server/eventHandlers.server");
+  const { handleProviderEvent, listRegisteredProviderEvents } =
+    await import("@/features/providers/eventHandlerRegistry");
   registerDefaultProviderEventHandlers(admin);
   if (listRegisteredProviderEvents().includes(`${event.provider}:${event.event_type}`)) {
     await handleProviderEvent({

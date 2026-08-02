@@ -43,8 +43,7 @@ if (missing.length) {
 
 const browserUnsafe = Object.keys(process.env).filter(
   (name) =>
-    /^VITE_(SWAN|ADYEN|SUPABASE_SERVICE_ROLE)/.test(name) ||
-    /^NEXT_PUBLIC_(SWAN|ADYEN)/.test(name),
+    /^VITE_(SWAN|ADYEN|SUPABASE_SERVICE_ROLE)/.test(name) || /^NEXT_PUBLIC_(SWAN|ADYEN)/.test(name),
 );
 
 if (browserUnsafe.length) {
