@@ -583,9 +583,11 @@ export type Database = {
         Row: {
           account_type: string
           available_balance_minor: number
+          bic: string | null
           booked_balance_minor: number
           created_at: string
           currency: string
+          customer_id: string | null
           iban: string | null
           id: string
           organisation_id: string | null
@@ -598,9 +600,11 @@ export type Database = {
         Insert: {
           account_type: string
           available_balance_minor?: number
+          bic?: string | null
           booked_balance_minor?: number
           created_at?: string
           currency?: string
+          customer_id?: string | null
           iban?: string | null
           id?: string
           organisation_id?: string | null
@@ -613,9 +617,11 @@ export type Database = {
         Update: {
           account_type?: string
           available_balance_minor?: number
+          bic?: string | null
           booked_balance_minor?: number
           created_at?: string
           currency?: string
+          customer_id?: string | null
           iban?: string | null
           id?: string
           organisation_id?: string | null
@@ -626,6 +632,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "platform_accounts_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "platform_customers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "platform_accounts_organisation_id_fkey"
             columns: ["organisation_id"]
@@ -672,6 +685,7 @@ export type Database = {
         Row: {
           bic: string | null
           created_at: string
+          customer_id: string | null
           iban: string
           id: string
           name: string
@@ -683,6 +697,7 @@ export type Database = {
         Insert: {
           bic?: string | null
           created_at?: string
+          customer_id?: string | null
           iban: string
           id?: string
           name: string
@@ -694,6 +709,7 @@ export type Database = {
         Update: {
           bic?: string | null
           created_at?: string
+          customer_id?: string | null
           iban?: string
           id?: string
           name?: string
@@ -703,6 +719,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "platform_beneficiaries_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "platform_customers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "platform_beneficiaries_organisation_id_fkey"
             columns: ["organisation_id"]
@@ -715,11 +738,15 @@ export type Database = {
       platform_cards: {
         Row: {
           account_id: string
+          atm_enabled: boolean
           card_type: string
           cardholder_user_id: string | null
+          contactless_enabled: boolean
           created_at: string
           id: string
+          international_enabled: boolean
           last_four: string | null
+          online_enabled: boolean
           provider_external_id: string | null
           spending_limit_minor: number | null
           status: string
@@ -727,11 +754,15 @@ export type Database = {
         }
         Insert: {
           account_id: string
+          atm_enabled?: boolean
           card_type: string
           cardholder_user_id?: string | null
+          contactless_enabled?: boolean
           created_at?: string
           id?: string
+          international_enabled?: boolean
           last_four?: string | null
+          online_enabled?: boolean
           provider_external_id?: string | null
           spending_limit_minor?: number | null
           status?: string
@@ -739,11 +770,15 @@ export type Database = {
         }
         Update: {
           account_id?: string
+          atm_enabled?: boolean
           card_type?: string
           cardholder_user_id?: string | null
+          contactless_enabled?: boolean
           created_at?: string
           id?: string
+          international_enabled?: boolean
           last_four?: string | null
+          online_enabled?: boolean
           provider_external_id?: string | null
           spending_limit_minor?: number | null
           status?: string
@@ -758,6 +793,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      platform_customers: {
+        Row: {
+          created_at: string
+          customer_type: string
+          id: string
+          provider: string | null
+          provider_external_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_type: string
+          id?: string
+          provider?: string | null
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_type?: string
+          id?: string
+          provider?: string | null
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       platform_incidents: {
         Row: {
@@ -886,6 +954,53 @@ export type Database = {
           },
         ]
       }
+      platform_onboarding_actions: {
+        Row: {
+          action_type: string
+          completed_at: string | null
+          created_at: string
+          due_at: string | null
+          id: string
+          onboarding_case_id: string
+          payload: Json
+          status: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          action_type: string
+          completed_at?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          onboarding_case_id: string
+          payload?: Json
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          action_type?: string
+          completed_at?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          onboarding_case_id?: string
+          payload?: Json
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_onboarding_actions_onboarding_case_id_fkey"
+            columns: ["onboarding_case_id"]
+            isOneToOne: false
+            referencedRelation: "platform_onboarding_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_onboarding_cases: {
         Row: {
           created_at: string
@@ -932,6 +1047,7 @@ export type Database = {
         Row: {
           created_at: string
           organisation_id: string
+          payment_limit_minor: number | null
           role: string
           status: string
           updated_at: string
@@ -940,6 +1056,7 @@ export type Database = {
         Insert: {
           created_at?: string
           organisation_id: string
+          payment_limit_minor?: number | null
           role: string
           status?: string
           updated_at?: string
@@ -948,6 +1065,7 @@ export type Database = {
         Update: {
           created_at?: string
           organisation_id?: string
+          payment_limit_minor?: number | null
           role?: string
           status?: string
           updated_at?: string
@@ -970,7 +1088,9 @@ export type Database = {
           legal_form: string | null
           legal_name: string | null
           name: string
+          registration_number: string | null
           status: string
+          trading_name: string | null
           updated_at: string
         }
         Insert: {
@@ -979,7 +1099,9 @@ export type Database = {
           legal_form?: string | null
           legal_name?: string | null
           name: string
+          registration_number?: string | null
           status?: string
+          trading_name?: string | null
           updated_at?: string
         }
         Update: {
@@ -988,7 +1110,9 @@ export type Database = {
           legal_form?: string | null
           legal_name?: string | null
           name?: string
+          registration_number?: string | null
           status?: string
+          trading_name?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -1528,11 +1652,74 @@ export type Database = {
           },
         ]
       }
+      platform_transactions: {
+        Row: {
+          account_id: string
+          amount_minor: number
+          booked_at: string | null
+          counterparty_name: string | null
+          created_at: string
+          currency: string
+          direction: string
+          id: string
+          merchant_name: string | null
+          provider: string | null
+          provider_external_id: string | null
+          reference: string | null
+          status: string
+          transaction_type: string
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          amount_minor: number
+          booked_at?: string | null
+          counterparty_name?: string | null
+          created_at?: string
+          currency?: string
+          direction: string
+          id?: string
+          merchant_name?: string | null
+          provider?: string | null
+          provider_external_id?: string | null
+          reference?: string | null
+          status?: string
+          transaction_type: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          amount_minor?: number
+          booked_at?: string | null
+          counterparty_name?: string | null
+          created_at?: string
+          currency?: string
+          direction?: string
+          id?: string
+          merchant_name?: string | null
+          provider?: string | null
+          provider_external_id?: string | null
+          reference?: string | null
+          status?: string
+          transaction_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "platform_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_transfers: {
         Row: {
           account_id: string
           amount_minor: number
           beneficiary_id: string | null
+          consent_status: string
           created_at: string
           created_by: string | null
           currency: string
@@ -1540,13 +1727,16 @@ export type Database = {
           idempotency_key: string
           provider_external_id: string | null
           reference: string | null
+          scheduled_for: string | null
           status: string
+          transfer_type: string
           updated_at: string
         }
         Insert: {
           account_id: string
           amount_minor: number
           beneficiary_id?: string | null
+          consent_status?: string
           created_at?: string
           created_by?: string | null
           currency?: string
@@ -1554,13 +1744,16 @@ export type Database = {
           idempotency_key: string
           provider_external_id?: string | null
           reference?: string | null
+          scheduled_for?: string | null
           status?: string
+          transfer_type?: string
           updated_at?: string
         }
         Update: {
           account_id?: string
           amount_minor?: number
           beneficiary_id?: string | null
+          consent_status?: string
           created_at?: string
           created_by?: string | null
           currency?: string
@@ -1568,7 +1761,9 @@ export type Database = {
           idempotency_key?: string
           provider_external_id?: string | null
           reference?: string | null
+          scheduled_for?: string | null
           status?: string
+          transfer_type?: string
           updated_at?: string
         }
         Relationships: [
