@@ -82,10 +82,7 @@ export function validateProviderOperation(
   operation: string,
   payload: unknown,
 ) {
-  const providerSchemas = ProviderOperationSchemas[provider] as Record<
-    string,
-    z.ZodTypeAny
-  >;
+  const providerSchemas = ProviderOperationSchemas[provider] as Record<string, z.ZodTypeAny>;
   const schema = providerSchemas[operation];
   if (!schema) throw new Error(`unsupported_operation:${provider}:${operation}`);
   return schema.parse(payload);

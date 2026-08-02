@@ -31,7 +31,8 @@ export async function providerFetch<T>(input: {
     if (!response.ok) {
       const error = new Error(`provider_http_${response.status}`) as ProviderHttpError;
       error.status = response.status;
-      error.retryable = response.status === 408 || response.status === 429 || response.status >= 500;
+      error.retryable =
+        response.status === 408 || response.status === 429 || response.status >= 500;
       error.responseBody = responseBody;
       throw error;
     }

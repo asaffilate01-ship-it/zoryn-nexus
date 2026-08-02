@@ -16,8 +16,8 @@ describe("provider operation registry", () => {
   });
 
   it("rejects an unsupported operation", () => {
-    expect(() =>
-      validateProviderOperation("adyen", "unknown_operation", {}),
-    ).toThrow("unsupported_operation");
+    expect(() => validateProviderOperation("adyen", "unknown_operation", {})).toThrow(
+      "unsupported_operation",
+    );
   });
 });

@@ -33,17 +33,12 @@ export async function verifyGenericHmac(input: {
   if (input.timestamp) {
     const timestamp = Number(input.timestamp);
     const tolerance = input.toleranceSeconds ?? 300;
-    if (
-      !Number.isFinite(timestamp) ||
-      Math.abs(Date.now() / 1000 - timestamp) > tolerance
-    ) {
+    if (!Number.isFinite(timestamp) || Math.abs(Date.now() / 1000 - timestamp) > tolerance) {
       return false;
     }
   }
 
-  const message = input.timestamp
-    ? `${input.timestamp}.${input.rawBody}`
-    : input.rawBody;
+  const message = input.timestamp ? `${input.timestamp}.${input.rawBody}` : input.rawBody;
 
   const expected = await hmacHex(input.secret, message);
   return constantTimeEqual(expected, input.suppliedSignature);

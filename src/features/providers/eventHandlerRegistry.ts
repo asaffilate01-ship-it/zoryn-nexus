@@ -8,9 +8,7 @@ export type NormalizedProviderEvent = {
   payload: Record<string, unknown>;
 };
 
-export type EventHandler = (
-  event: NormalizedProviderEvent,
-) => Promise<void>;
+export type EventHandler = (event: NormalizedProviderEvent) => Promise<void>;
 
 const handlers = new Map<string, EventHandler>();
 
