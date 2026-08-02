@@ -8,6 +8,7 @@
  * integration gap, not something to silently swallow.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { correlationId, writeRuntimeLog } from "./runtime-log.server";
 
 type Admin = SupabaseClient<never>;
 
@@ -28,6 +29,7 @@ export function normalizeOnboarding(status: unknown): string {
 type ProviderEvent = {
   id: string;
   provider: string;
+  event_id: string;
   event_type: string;
   payload: Record<string, any>;
   attempt_count: number;
@@ -72,12 +74,13 @@ export async function applyEvent(admin: Admin, event: ProviderEvent) {
 }
 
 export async function runEventProcessor(admin: Admin, limit = 50) {
-  const { data, error } = await admin
-    .from("platform_provider_events")
-    .select("*")
-    .in("processing_status", ["received", "retrying"])
-    .order("received_at")
-    .limit(limit);
+  // Claiming happens inside Postgres with `for update skip locked`, so two
+  // workers running at the same time never pick up the same event. The routine
+  // also increments attempt_count, so the returned rows already carry the
+  // attempt number for this pass.
+  const { data, error } = await admin.rpc("platform_claim_provider_events", {
+    p_limit: limit,
+  } as never);
   if (error) throw new Error(error.message);
 
   const events = (data ?? []) as unknown as ProviderEvent[];
@@ -85,14 +88,12 @@ export async function runEventProcessor(admin: Admin, limit = 50) {
   let failed = 0;
 
   for (const event of events) {
-    const attempts = event.attempt_count + 1;
-    await admin
-      .from("platform_provider_events")
-      .update({ processing_status: "processing", attempt_count: attempts } as never)
-      .eq("id", event.id);
+    const attempts = event.attempt_count;
+    const correlation = correlationId(event.provider, event.event_id ?? event.id);
+    const startedAt = Date.now();
 
     try {
-      await applyEvent(admin, event);
+      const outcome = await applyEvent(admin, event);
       await admin
         .from("platform_provider_events")
         .update({
@@ -101,6 +102,16 @@ export async function runEventProcessor(admin: Admin, limit = 50) {
           last_error: null,
         } as never)
         .eq("id", event.id);
+      await writeRuntimeLog(admin, {
+        provider: event.provider,
+        direction: "event",
+        entityId: event.id,
+        operation: event.event_type,
+        status: "succeeded",
+        correlationId: correlation,
+        durationMs: Date.now() - startedAt,
+        metadata: { outcome, attempt: attempts },
+      });
       processed++;
     } catch (e) {
       const message = e instanceof Error ? e.message : String(e);
@@ -121,6 +132,17 @@ export async function runEventProcessor(admin: Admin, limit = 50) {
           details: { eventId: event.id, error: message, attempts },
         } as never);
       }
+      await writeRuntimeLog(admin, {
+        provider: event.provider,
+        direction: "event",
+        entityId: event.id,
+        operation: event.event_type,
+        status: deadLetter ? "dead_letter" : "failed",
+        correlationId: correlation,
+        durationMs: Date.now() - startedAt,
+        errorMessage: message,
+        metadata: { attempt: attempts },
+      });
       failed++;
     }
   }
