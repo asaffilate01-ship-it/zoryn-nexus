@@ -124,3 +124,30 @@ institution. Regulated services are delegated as follows:
 
 This model is documented in the marketing site (`/`, `/products`) and in the
 Provider-Ready Centre (`/demo`).
+
+## Audit — 2026-08-02 (post Stage 12)
+
+### Verified green
+- `bun run check`: CI doctor, typecheck, lint, provider safety audit, critical coverage, production build.
+- Critical suite: 71 tests / 12 files. Coverage 87.2% statements, 86.3% lines, 70% branches (thresholds 60/60/50).
+
+### Findings fixed in this pass
+| Severity | Finding | Fix |
+| --- | --- | --- |
+| High | `platform_provider_resources`, `platform_provider_events`, `platform_provider_connections` allowed `USING (true)` reads to every signed-in user (cross-tenant provider identifiers and payloads). | Policies replaced with `has_role(auth.uid(), 'admin')`, matching the rest of the provider tables. |
+| High | `rewards_outbox` demo policy granted SELECT to the `public` role, exposing internal reward payloads with account/transaction ids. | Policy replaced with admin-only read; `anon` SELECT grant revoked. No client code reads this table. |
+| Medium | `platform_can_access_account/merchant`, `platform_is_org_member`, `platform_owns_account`, `platform_replay_dead_letter_command` and `update_updated_at_column` were executable by `anon`. | EXECUTE revoked from `anon` (and from `authenticated` for the trigger function). |
+| Medium | Stage 12 modules (`providerDomainHandlers`, `providerWebhookVerification`, `swanTokenProvider`, `catalogue`) shipped with no tests, breaking the coverage gate. | Added `tests/provider-contracts/provider-domain-handlers.test.ts` and `provider-webhook-verification.test.ts` (33 new cases incl. HMAC tamper/replay). |
+
+### Accepted / documented
+- `has_role`, `is_org_member`, `can_access_*` remain executable by `authenticated` — they are referenced from RLS policies and must be callable by the policy evaluator.
+- `api_rate_limits` and `platform_audit_events` have RLS enabled with no policies: intentional deny-all; only the service role writes them.
+- Demo tables (`cards`, `transactions`, `pots`, `merchants`, `terminals`, `support_cases`, `loyalty_*`, `audit_logs`, `organisation_members`) keep `anon` reads limited to `is_demo = true` synthetic rows so the public demo works without login. No real customer data is in those rows.
+- `pg_net`-style extension in `public` is a managed-platform default.
+
+### Remaining product gaps (not security)
+1. Dual approval UI for high-value business transfers (schema supports it, no reviewer screen).
+2. Refund and chargeback operator actions are read-only in ZorynPay.
+3. Role administration UI (roles are assigned via the database only).
+4. External scheduler still has to call `/api/public/provider-jobs`; no in-platform cron.
+5. Sandbox credentials for Swan and Adyen are still outstanding — `PROVIDER_MODE` stays `mock` until mappings are marked `approved_by_provider`.
