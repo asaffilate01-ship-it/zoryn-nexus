@@ -3,9 +3,9 @@ export type NormalizedSwanEvent = {
   eventId: string;
   eventType: string;
   aggregateType: string;
-  aggregateId?: string;
-  externalId?: string;
-  status?: string;
+  aggregateId?: string | undefined;
+  externalId?: string | undefined;
+  status?: string | undefined;
   requiredActions: string[];
   payload: Record<string, unknown>;
 };
