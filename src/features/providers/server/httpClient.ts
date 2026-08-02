@@ -22,7 +22,7 @@ export async function providerFetch<T>(input: {
         ...(input.body ? { "Content-Type": "application/json" } : {}),
         ...input.headers,
       },
-      body: input.body ? JSON.stringify(input.body) : undefined,
+      ...(input.body ? { body: JSON.stringify(input.body) } : {}),
       signal: controller.signal,
     });
 
