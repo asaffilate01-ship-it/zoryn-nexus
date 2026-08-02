@@ -32,12 +32,16 @@ async function walk(dir) {
     const content = await readFile(path, "utf8");
     for (const pattern of browserSecretPatterns) {
       if (pattern.test(content)) {
-        violations.push(`${relative(root, path)}: browser-exposed provider secret pattern ${pattern}`);
+        violations.push(
+          `${relative(root, path)}: browser-exposed provider secret pattern ${pattern}`,
+        );
       }
     }
     for (const pattern of regulatedLocalStatePatterns) {
       if (pattern.test(content)) {
-        violations.push(`${relative(root, path)}: regulated/payment state stored in browser storage`);
+        violations.push(
+          `${relative(root, path)}: regulated/payment state stored in browser storage`,
+        );
       }
     }
   }

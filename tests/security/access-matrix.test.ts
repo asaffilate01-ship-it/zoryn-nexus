@@ -9,8 +9,7 @@ const matrix: Record<string, string[]> = {
   support: ["customer_profile:read", "support_case:write"],
 };
 
-const can = (role: string, permission: string) =>
-  matrix[role]?.includes(permission) ?? false;
+const can = (role: string, permission: string) => matrix[role]?.includes(permission) ?? false;
 
 describe("access matrix", () => {
   it("prevents support from changing balances", () => {

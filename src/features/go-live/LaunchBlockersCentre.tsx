@@ -6,16 +6,26 @@ export function LaunchBlockersCentre() {
     queryKey: ["launch-blockers"],
     queryFn: async () => {
       const [blockers, reconciliations, commands, events] = await Promise.all([
-        supabase.from("platform_launch_blockers")
-          .select("*").neq("status", "resolved").order("created_at", { ascending: false }),
-        supabase.from("platform_reconciliation_runs")
-          .select("*").order("started_at", { ascending: false }).limit(20),
-        supabase.from("platform_provider_commands")
+        supabase
+          .from("platform_launch_blockers")
+          .select("*")
+          .neq("status", "resolved")
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("platform_reconciliation_runs")
+          .select("*")
+          .order("started_at", { ascending: false })
+          .limit(20),
+        supabase
+          .from("platform_provider_commands")
           .select("id,provider,command_type,status,attempt_count,created_at")
-          .in("status", ["failed", "dead_letter"]).limit(50),
-        supabase.from("platform_provider_events")
+          .in("status", ["failed", "dead_letter"])
+          .limit(50),
+        supabase
+          .from("platform_provider_events")
           .select("id,provider,event_type,processing_status,attempt_count,received_at")
-          .in("processing_status", ["retrying", "failed", "dead_letter"]).limit(50),
+          .in("processing_status", ["retrying", "failed", "dead_letter"])
+          .limit(50),
       ]);
 
       for (const result of [blockers, reconciliations, commands, events]) {
@@ -33,7 +43,8 @@ export function LaunchBlockersCentre() {
   });
 
   if (query.isLoading) return <p className="p-6 text-sm text-muted-foreground">Loading…</p>;
-  if (query.error) return <p className="p-6 text-sm text-destructive">{(query.error as Error).message}</p>;
+  if (query.error)
+    return <p className="p-6 text-sm text-destructive">{(query.error as Error).message}</p>;
 
   const data = query.data!;
   const critical = data.blockers.filter((item) => item.severity === "critical").length;
