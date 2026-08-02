@@ -1671,6 +1671,42 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_provider_configuration_versions: {
+        Row: {
+          approved_at: string | null
+          checksum: string
+          configuration: Json
+          created_at: string
+          environment: string
+          id: string
+          provider: string
+          status: string
+          version: string
+        }
+        Insert: {
+          approved_at?: string | null
+          checksum: string
+          configuration?: Json
+          created_at?: string
+          environment: string
+          id?: string
+          provider: string
+          status?: string
+          version: string
+        }
+        Update: {
+          approved_at?: string | null
+          checksum?: string
+          configuration?: Json
+          created_at?: string
+          environment?: string
+          id?: string
+          provider?: string
+          status?: string
+          version?: string
+        }
+        Relationships: []
+      }
       platform_provider_connections: {
         Row: {
           configuration: Json
@@ -1811,6 +1847,75 @@ export type Database = {
           id?: string
           latency_ms?: number | null
           provider?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      platform_provider_launch_scores: {
+        Row: {
+          blocking_reasons: Json
+          calculated_at: string
+          configuration_score: number
+          environment: string
+          id: string
+          lifecycle_score: number
+          overall_score: number | null
+          provider: string
+          reconciliation_score: number
+          webhooks_score: number
+        }
+        Insert: {
+          blocking_reasons?: Json
+          calculated_at?: string
+          configuration_score?: number
+          environment: string
+          id?: string
+          lifecycle_score?: number
+          overall_score?: number | null
+          provider: string
+          reconciliation_score?: number
+          webhooks_score?: number
+        }
+        Update: {
+          blocking_reasons?: Json
+          calculated_at?: string
+          configuration_score?: number
+          environment?: string
+          id?: string
+          lifecycle_score?: number
+          overall_score?: number | null
+          provider?: string
+          reconciliation_score?: number
+          webhooks_score?: number
+        }
+        Relationships: []
+      }
+      platform_provider_operation_catalogue: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          operation: string
+          provider: string
+          required_for_launch: boolean
+          status: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          operation: string
+          provider: string
+          required_for_launch?: boolean
+          status?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          operation?: string
+          provider?: string
+          required_for_launch?: boolean
           status?: string
         }
         Relationships: []
@@ -2031,6 +2136,45 @@ export type Database = {
           tolerance_seconds?: number
           updated_at?: string
           verification_method?: string
+        }
+        Relationships: []
+      }
+      platform_provider_webhook_receipts: {
+        Row: {
+          environment: string
+          event_type: string
+          id: string
+          payload_hash: string
+          processing_status: string
+          provider: string
+          provider_event_id: string
+          received_at: string
+          replay_valid: boolean
+          signature_valid: boolean
+        }
+        Insert: {
+          environment: string
+          event_type: string
+          id?: string
+          payload_hash: string
+          processing_status?: string
+          provider: string
+          provider_event_id: string
+          received_at?: string
+          replay_valid: boolean
+          signature_valid: boolean
+        }
+        Update: {
+          environment?: string
+          event_type?: string
+          id?: string
+          payload_hash?: string
+          processing_status?: string
+          provider?: string
+          provider_event_id?: string
+          received_at?: string
+          replay_valid?: boolean
+          signature_valid?: boolean
         }
         Relationships: []
       }

@@ -26,7 +26,10 @@
     "test:provider-fixtures": "vitest run tests/provider-fixtures",
     "provider:readiness": "node scripts/provider-readiness.mjs",
     "provider:validate": "bun run provider:readiness && bun run test:provider-contracts && bun run test:provider-fixtures",
-    "final:check": "bun run check && bun run provider:validate && bun run test:e2e"
+    "final:check": "bun run check && bun run provider:validate && bun run test:e2e",
+    "provider:go-live:test": "vitest run tests/provider-go-live",
+    "provider:go-live:validate": "bun run provider:readiness && bun run provider:go-live:test",
+    "go-live:check": "bun run check && bun run provider:go-live:validate && bun run test:e2e:ci"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

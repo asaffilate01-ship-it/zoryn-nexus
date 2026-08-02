@@ -30,6 +30,7 @@ import { Route as AuthenticatedMerchantRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedPersonalRouteImport } from './routes/_authenticated/personal'
 import { Route as AuthenticatedPersonalWorkspaceRouteImport } from './routes/_authenticated/personal-workspace'
 import { Route as AuthenticatedProviderEntryRouteImport } from './routes/_authenticated/provider-entry'
+import { Route as AuthenticatedProviderGoLiveRouteImport } from './routes/_authenticated/provider-go-live'
 import { Route as AuthenticatedProviderIntegrationRouteImport } from './routes/_authenticated/provider-integration'
 import { Route as AuthenticatedProviderRuntimeRouteImport } from './routes/_authenticated/provider-runtime'
 import { Route as AuthenticatedZorynpayWorkspaceRouteImport } from './routes/_authenticated/zorynpay-workspace'
@@ -42,6 +43,7 @@ import { Route as ApiPublicProviderCommandWorkerRouteImport } from './routes/api
 import { Route as ApiPublicProviderEventProcessorRouteImport } from './routes/api/public/provider-event-processor'
 import { Route as ApiPublicProviderHealthRouteImport } from './routes/api/public/provider-health'
 import { Route as ApiPublicProviderJobsRouteImport } from './routes/api/public/provider-jobs'
+import { Route as ApiPublicProviderLaunchScoreRouteImport } from './routes/api/public/provider-launch-score'
 import { Route as ApiPublicProviderReconciliationRouteImport } from './routes/api/public/provider-reconciliation'
 import { Route as ApiPublicProviderSandboxFixturesRouteImport } from './routes/api/public/provider-sandbox-fixtures'
 import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/public/provider-webhooks'
@@ -155,6 +157,12 @@ const AuthenticatedProviderEntryRoute =
     path: '/provider-entry',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedProviderGoLiveRoute =
+  AuthenticatedProviderGoLiveRouteImport.update({
+    id: '/provider-go-live',
+    path: '/provider-go-live',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProviderIntegrationRoute =
   AuthenticatedProviderIntegrationRouteImport.update({
     id: '/provider-integration',
@@ -223,6 +231,12 @@ const ApiPublicProviderJobsRoute = ApiPublicProviderJobsRouteImport.update({
   path: '/api/public/provider-jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicProviderLaunchScoreRoute =
+  ApiPublicProviderLaunchScoreRouteImport.update({
+    id: '/api/public/provider-launch-score',
+    path: '/api/public/provider-launch-score',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicProviderReconciliationRoute =
   ApiPublicProviderReconciliationRouteImport.update({
     id: '/api/public/provider-reconciliation',
@@ -263,6 +277,7 @@ export interface FileRoutesByFullPath {
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
   '/provider-entry': typeof AuthenticatedProviderEntryRoute
+  '/provider-go-live': typeof AuthenticatedProviderGoLiveRoute
   '/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/provider-runtime': typeof AuthenticatedProviderRuntimeRoute
   '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
@@ -275,6 +290,7 @@ export interface FileRoutesByFullPath {
   '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
   '/api/public/provider-health': typeof ApiPublicProviderHealthRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
+  '/api/public/provider-launch-score': typeof ApiPublicProviderLaunchScoreRoute
   '/api/public/provider-reconciliation': typeof ApiPublicProviderReconciliationRoute
   '/api/public/provider-sandbox-fixtures': typeof ApiPublicProviderSandboxFixturesRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -300,6 +316,7 @@ export interface FileRoutesByTo {
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
   '/provider-entry': typeof AuthenticatedProviderEntryRoute
+  '/provider-go-live': typeof AuthenticatedProviderGoLiveRoute
   '/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/provider-runtime': typeof AuthenticatedProviderRuntimeRoute
   '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
@@ -312,6 +329,7 @@ export interface FileRoutesByTo {
   '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
   '/api/public/provider-health': typeof ApiPublicProviderHealthRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
+  '/api/public/provider-launch-score': typeof ApiPublicProviderLaunchScoreRoute
   '/api/public/provider-reconciliation': typeof ApiPublicProviderReconciliationRoute
   '/api/public/provider-sandbox-fixtures': typeof ApiPublicProviderSandboxFixturesRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -339,6 +357,7 @@ export interface FileRoutesById {
   '/_authenticated/personal': typeof AuthenticatedPersonalRoute
   '/_authenticated/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
   '/_authenticated/provider-entry': typeof AuthenticatedProviderEntryRoute
+  '/_authenticated/provider-go-live': typeof AuthenticatedProviderGoLiveRoute
   '/_authenticated/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/_authenticated/provider-runtime': typeof AuthenticatedProviderRuntimeRoute
   '/_authenticated/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
@@ -351,6 +370,7 @@ export interface FileRoutesById {
   '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
   '/api/public/provider-health': typeof ApiPublicProviderHealthRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
+  '/api/public/provider-launch-score': typeof ApiPublicProviderLaunchScoreRoute
   '/api/public/provider-reconciliation': typeof ApiPublicProviderReconciliationRoute
   '/api/public/provider-sandbox-fixtures': typeof ApiPublicProviderSandboxFixturesRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
@@ -378,6 +398,7 @@ export interface FileRouteTypes {
     | '/personal'
     | '/personal-workspace'
     | '/provider-entry'
+    | '/provider-go-live'
     | '/provider-integration'
     | '/provider-runtime'
     | '/zorynpay-workspace'
@@ -390,6 +411,7 @@ export interface FileRouteTypes {
     | '/api/public/provider-event-processor'
     | '/api/public/provider-health'
     | '/api/public/provider-jobs'
+    | '/api/public/provider-launch-score'
     | '/api/public/provider-reconciliation'
     | '/api/public/provider-sandbox-fixtures'
     | '/api/public/provider-webhooks'
@@ -415,6 +437,7 @@ export interface FileRouteTypes {
     | '/personal'
     | '/personal-workspace'
     | '/provider-entry'
+    | '/provider-go-live'
     | '/provider-integration'
     | '/provider-runtime'
     | '/zorynpay-workspace'
@@ -427,6 +450,7 @@ export interface FileRouteTypes {
     | '/api/public/provider-event-processor'
     | '/api/public/provider-health'
     | '/api/public/provider-jobs'
+    | '/api/public/provider-launch-score'
     | '/api/public/provider-reconciliation'
     | '/api/public/provider-sandbox-fixtures'
     | '/api/public/provider-webhooks'
@@ -453,6 +477,7 @@ export interface FileRouteTypes {
     | '/_authenticated/personal'
     | '/_authenticated/personal-workspace'
     | '/_authenticated/provider-entry'
+    | '/_authenticated/provider-go-live'
     | '/_authenticated/provider-integration'
     | '/_authenticated/provider-runtime'
     | '/_authenticated/zorynpay-workspace'
@@ -465,6 +490,7 @@ export interface FileRouteTypes {
     | '/api/public/provider-event-processor'
     | '/api/public/provider-health'
     | '/api/public/provider-jobs'
+    | '/api/public/provider-launch-score'
     | '/api/public/provider-reconciliation'
     | '/api/public/provider-sandbox-fixtures'
     | '/api/public/provider-webhooks'
@@ -492,6 +518,7 @@ export interface RootRouteChildren {
   ApiPublicProviderEventProcessorRoute: typeof ApiPublicProviderEventProcessorRoute
   ApiPublicProviderHealthRoute: typeof ApiPublicProviderHealthRoute
   ApiPublicProviderJobsRoute: typeof ApiPublicProviderJobsRoute
+  ApiPublicProviderLaunchScoreRoute: typeof ApiPublicProviderLaunchScoreRoute
   ApiPublicProviderReconciliationRoute: typeof ApiPublicProviderReconciliationRoute
   ApiPublicProviderSandboxFixturesRoute: typeof ApiPublicProviderSandboxFixturesRoute
   ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
@@ -646,6 +673,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProviderEntryRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/provider-go-live': {
+      id: '/_authenticated/provider-go-live'
+      path: '/provider-go-live'
+      fullPath: '/provider-go-live'
+      preLoaderRoute: typeof AuthenticatedProviderGoLiveRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/provider-integration': {
       id: '/_authenticated/provider-integration'
       path: '/provider-integration'
@@ -730,6 +764,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicProviderJobsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/provider-launch-score': {
+      id: '/api/public/provider-launch-score'
+      path: '/api/public/provider-launch-score'
+      fullPath: '/api/public/provider-launch-score'
+      preLoaderRoute: typeof ApiPublicProviderLaunchScoreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/provider-reconciliation': {
       id: '/api/public/provider-reconciliation'
       path: '/api/public/provider-reconciliation'
@@ -764,6 +805,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedPersonalRoute: typeof AuthenticatedPersonalRoute
   AuthenticatedPersonalWorkspaceRoute: typeof AuthenticatedPersonalWorkspaceRoute
   AuthenticatedProviderEntryRoute: typeof AuthenticatedProviderEntryRoute
+  AuthenticatedProviderGoLiveRoute: typeof AuthenticatedProviderGoLiveRoute
   AuthenticatedProviderIntegrationRoute: typeof AuthenticatedProviderIntegrationRoute
   AuthenticatedProviderRuntimeRoute: typeof AuthenticatedProviderRuntimeRoute
   AuthenticatedZorynpayWorkspaceRoute: typeof AuthenticatedZorynpayWorkspaceRoute
@@ -779,6 +821,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedPersonalRoute: AuthenticatedPersonalRoute,
   AuthenticatedPersonalWorkspaceRoute: AuthenticatedPersonalWorkspaceRoute,
   AuthenticatedProviderEntryRoute: AuthenticatedProviderEntryRoute,
+  AuthenticatedProviderGoLiveRoute: AuthenticatedProviderGoLiveRoute,
   AuthenticatedProviderIntegrationRoute: AuthenticatedProviderIntegrationRoute,
   AuthenticatedProviderRuntimeRoute: AuthenticatedProviderRuntimeRoute,
   AuthenticatedZorynpayWorkspaceRoute: AuthenticatedZorynpayWorkspaceRoute,
@@ -810,6 +853,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicProviderEventProcessorRoute: ApiPublicProviderEventProcessorRoute,
   ApiPublicProviderHealthRoute: ApiPublicProviderHealthRoute,
   ApiPublicProviderJobsRoute: ApiPublicProviderJobsRoute,
+  ApiPublicProviderLaunchScoreRoute: ApiPublicProviderLaunchScoreRoute,
   ApiPublicProviderReconciliationRoute: ApiPublicProviderReconciliationRoute,
   ApiPublicProviderSandboxFixturesRoute: ApiPublicProviderSandboxFixturesRoute,
   ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
@@ -817,13 +861,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
