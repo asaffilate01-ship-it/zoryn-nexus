@@ -38,6 +38,28 @@ type ProviderEvent = {
 export async function applyEvent(admin: Admin, event: ProviderEvent) {
   const payload = event.payload ?? {};
 
+  // Stage 9 — explicitly mapped provider events take precedence over the
+  // generic onboarding/resource handling below.
+  const { registerDefaultProviderEventHandlers } = await import(
+    "@/features/providers/server/eventHandlers.server"
+  );
+  const { handleProviderEvent, listRegisteredProviderEvents } = await import(
+    "@/features/providers/eventHandlerRegistry"
+  );
+  registerDefaultProviderEventHandlers(admin);
+  if (listRegisteredProviderEvents().includes(`${event.provider}:${event.event_type}`)) {
+    await handleProviderEvent({
+      provider: event.provider as "swan" | "adyen" | "rewards",
+      eventId: event.event_id,
+      eventType: event.event_type,
+      externalId: payload["externalId"],
+      aggregateId: payload["aggregateId"],
+      status: payload["status"],
+      payload,
+    });
+    return "handler_applied";
+  }
+
   if (event.event_type.includes("onboarding")) {
     if (!payload["externalId"]) throw new Error("missing_external_id");
     const { error } = await admin

@@ -29,6 +29,7 @@ import { Route as AuthenticatedLaunchBlockersRouteImport } from './routes/_authe
 import { Route as AuthenticatedMerchantRouteImport } from './routes/_authenticated/merchant'
 import { Route as AuthenticatedPersonalRouteImport } from './routes/_authenticated/personal'
 import { Route as AuthenticatedPersonalWorkspaceRouteImport } from './routes/_authenticated/personal-workspace'
+import { Route as AuthenticatedProviderEntryRouteImport } from './routes/_authenticated/provider-entry'
 import { Route as AuthenticatedProviderIntegrationRouteImport } from './routes/_authenticated/provider-integration'
 import { Route as AuthenticatedProviderRuntimeRouteImport } from './routes/_authenticated/provider-runtime'
 import { Route as AuthenticatedZorynpayWorkspaceRouteImport } from './routes/_authenticated/zorynpay-workspace'
@@ -147,6 +148,12 @@ const AuthenticatedPersonalWorkspaceRoute =
     path: '/personal-workspace',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedProviderEntryRoute =
+  AuthenticatedProviderEntryRouteImport.update({
+    id: '/provider-entry',
+    path: '/provider-entry',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedProviderIntegrationRoute =
   AuthenticatedProviderIntegrationRouteImport.update({
     id: '/provider-integration',
@@ -248,6 +255,7 @@ export interface FileRoutesByFullPath {
   '/merchant': typeof AuthenticatedMerchantRoute
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
+  '/provider-entry': typeof AuthenticatedProviderEntryRoute
   '/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/provider-runtime': typeof AuthenticatedProviderRuntimeRoute
   '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
@@ -283,6 +291,7 @@ export interface FileRoutesByTo {
   '/merchant': typeof AuthenticatedMerchantRoute
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
+  '/provider-entry': typeof AuthenticatedProviderEntryRoute
   '/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/provider-runtime': typeof AuthenticatedProviderRuntimeRoute
   '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
@@ -320,6 +329,7 @@ export interface FileRoutesById {
   '/_authenticated/merchant': typeof AuthenticatedMerchantRoute
   '/_authenticated/personal': typeof AuthenticatedPersonalRoute
   '/_authenticated/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
+  '/_authenticated/provider-entry': typeof AuthenticatedProviderEntryRoute
   '/_authenticated/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/_authenticated/provider-runtime': typeof AuthenticatedProviderRuntimeRoute
   '/_authenticated/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
@@ -357,6 +367,7 @@ export interface FileRouteTypes {
     | '/merchant'
     | '/personal'
     | '/personal-workspace'
+    | '/provider-entry'
     | '/provider-integration'
     | '/provider-runtime'
     | '/zorynpay-workspace'
@@ -392,6 +403,7 @@ export interface FileRouteTypes {
     | '/merchant'
     | '/personal'
     | '/personal-workspace'
+    | '/provider-entry'
     | '/provider-integration'
     | '/provider-runtime'
     | '/zorynpay-workspace'
@@ -428,6 +440,7 @@ export interface FileRouteTypes {
     | '/_authenticated/merchant'
     | '/_authenticated/personal'
     | '/_authenticated/personal-workspace'
+    | '/_authenticated/provider-entry'
     | '/_authenticated/provider-integration'
     | '/_authenticated/provider-runtime'
     | '/_authenticated/zorynpay-workspace'
@@ -612,6 +625,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPersonalWorkspaceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/provider-entry': {
+      id: '/_authenticated/provider-entry'
+      path: '/provider-entry'
+      fullPath: '/provider-entry'
+      preLoaderRoute: typeof AuthenticatedProviderEntryRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/provider-integration': {
       id: '/_authenticated/provider-integration'
       path: '/provider-integration'
@@ -722,6 +742,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMerchantRoute: typeof AuthenticatedMerchantRoute
   AuthenticatedPersonalRoute: typeof AuthenticatedPersonalRoute
   AuthenticatedPersonalWorkspaceRoute: typeof AuthenticatedPersonalWorkspaceRoute
+  AuthenticatedProviderEntryRoute: typeof AuthenticatedProviderEntryRoute
   AuthenticatedProviderIntegrationRoute: typeof AuthenticatedProviderIntegrationRoute
   AuthenticatedProviderRuntimeRoute: typeof AuthenticatedProviderRuntimeRoute
   AuthenticatedZorynpayWorkspaceRoute: typeof AuthenticatedZorynpayWorkspaceRoute
@@ -736,6 +757,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMerchantRoute: AuthenticatedMerchantRoute,
   AuthenticatedPersonalRoute: AuthenticatedPersonalRoute,
   AuthenticatedPersonalWorkspaceRoute: AuthenticatedPersonalWorkspaceRoute,
+  AuthenticatedProviderEntryRoute: AuthenticatedProviderEntryRoute,
   AuthenticatedProviderIntegrationRoute: AuthenticatedProviderIntegrationRoute,
   AuthenticatedProviderRuntimeRoute: AuthenticatedProviderRuntimeRoute,
   AuthenticatedZorynpayWorkspaceRoute: AuthenticatedZorynpayWorkspaceRoute,
