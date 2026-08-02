@@ -4,7 +4,13 @@ import { extname, join, relative } from "node:path";
 const root = process.cwd();
 const sourceRoot = join(root, "src");
 const ignoredDirectories = new Set([
-  "node_modules", ".git", "dist", ".output", "coverage", "fixtures", "__fixtures__",
+  "node_modules",
+  ".git",
+  "dist",
+  ".output",
+  "coverage",
+  "fixtures",
+  "__fixtures__",
 ]);
 const ignoredFiles = [
   /routeTree\.gen\.ts$/,
