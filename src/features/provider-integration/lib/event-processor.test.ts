@@ -25,7 +25,8 @@ describe("provider event processor", () => {
       attempt_count: 0,
     });
 
-    expect(outcome).toBe("onboarding_case_updated");
+    // Stage 9 routes this through the explicit swan:onboarding.updated handler.
+    expect(outcome).toBe("handler_applied");
     expect(update.mock.calls[0]![0]).toMatchObject({ status: "action_required" });
     expect(eq).toHaveBeenCalledWith("external_id", "swan_ob_1");
   });
@@ -40,7 +41,7 @@ describe("provider event processor", () => {
       id: "e2",
       provider: "adyen",
       event_id: "evt_test",
-      event_type: "payment.captured",
+      event_type: "card.issued",
       payload: {
         aggregateId: "p1",
         aggregateType: "payment",
