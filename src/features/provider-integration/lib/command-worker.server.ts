@@ -9,6 +9,7 @@
  * command after five attempts.
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { correlationId, writeRuntimeLog } from "./runtime-log.server";
 
 type Admin = SupabaseClient<never>;
 
@@ -135,6 +136,18 @@ export async function runCommandWorker(admin: Admin, limit = 25) {
   const results: Array<{ id: string; status: string; error?: string }> = [];
 
   for (const command of commands) {
+    const startedAt = Date.now();
+    const correlation = correlationId(command.provider, command.id);
+    await writeRuntimeLog(admin, {
+      provider: command.provider,
+      direction: "command",
+      entityId: command.id,
+      operation: command.command_type,
+      status: "started",
+      correlationId: correlation,
+      metadata: { attempt: command.attempt_count, mode: workerMode() },
+    });
+
     try {
       const result = await dispatchCommand(command);
       await persistCommandResult(admin, command, result);
@@ -143,8 +156,18 @@ export async function runCommandWorker(admin: Admin, limit = 25) {
         p_status: "succeeded",
         p_error: null,
       } as never);
+      await writeRuntimeLog(admin, {
+        provider: command.provider,
+        direction: "command",
+        entityId: command.id,
+        operation: command.command_type,
+        status: "succeeded",
+        correlationId: correlation,
+        durationMs: Date.now() - startedAt,
+        metadata: { externalId: result?.externalId ?? null },
+      });
       succeeded++;
-      results.push({ id: command.id, status: "succeeded" });
+      results.push({ id: command.id, status: "succeeded", correlationId: correlation });
     } catch (e) {
       const message = e instanceof Error ? e.message : String(e);
       await admin.rpc("platform_complete_provider_command", {
@@ -154,9 +177,26 @@ export async function runCommandWorker(admin: Admin, limit = 25) {
       } as never);
       // attempt_count was already incremented on claim, so >= 5 means the
       // routine just moved this command to dead_letter.
-      if (command.attempt_count >= 5) await raiseAlert(admin, command, message);
+      const deadLetter = command.attempt_count >= 5;
+      if (deadLetter) await raiseAlert(admin, command, message);
+      await writeRuntimeLog(admin, {
+        provider: command.provider,
+        direction: "command",
+        entityId: command.id,
+        operation: command.command_type,
+        status: deadLetter ? "dead_letter" : "failed",
+        correlationId: correlation,
+        durationMs: Date.now() - startedAt,
+        errorMessage: message,
+        metadata: { attempt: command.attempt_count },
+      });
       failed++;
-      results.push({ id: command.id, status: "failed", error: message });
+      results.push({
+        id: command.id,
+        status: deadLetter ? "dead_letter" : "failed",
+        error: message,
+        correlationId: correlation,
+      });
     }
   }
 
