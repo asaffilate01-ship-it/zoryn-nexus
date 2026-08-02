@@ -40,6 +40,7 @@ import { Route as ApiPublicProviderCommandWorkerRouteImport } from './routes/api
 import { Route as ApiPublicProviderEventProcessorRouteImport } from './routes/api/public/provider-event-processor'
 import { Route as ApiPublicProviderHealthRouteImport } from './routes/api/public/provider-health'
 import { Route as ApiPublicProviderJobsRouteImport } from './routes/api/public/provider-jobs'
+import { Route as ApiPublicProviderSandboxFixturesRouteImport } from './routes/api/public/provider-sandbox-fixtures'
 import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/public/provider-webhooks'
 
 const IndexRoute = IndexRouteImport.update({
@@ -207,6 +208,12 @@ const ApiPublicProviderJobsRoute = ApiPublicProviderJobsRouteImport.update({
   path: '/api/public/provider-jobs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicProviderSandboxFixturesRoute =
+  ApiPublicProviderSandboxFixturesRouteImport.update({
+    id: '/api/public/provider-sandbox-fixtures',
+    path: '/api/public/provider-sandbox-fixtures',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicProviderWebhooksRoute =
   ApiPublicProviderWebhooksRouteImport.update({
     id: '/api/public/provider-webhooks',
@@ -245,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
   '/api/public/provider-health': typeof ApiPublicProviderHealthRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
+  '/api/public/provider-sandbox-fixtures': typeof ApiPublicProviderSandboxFixturesRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRoutesByTo {
@@ -278,6 +286,7 @@ export interface FileRoutesByTo {
   '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
   '/api/public/provider-health': typeof ApiPublicProviderHealthRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
+  '/api/public/provider-sandbox-fixtures': typeof ApiPublicProviderSandboxFixturesRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRoutesById {
@@ -313,6 +322,7 @@ export interface FileRoutesById {
   '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
   '/api/public/provider-health': typeof ApiPublicProviderHealthRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
+  '/api/public/provider-sandbox-fixtures': typeof ApiPublicProviderSandboxFixturesRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
 export interface FileRouteTypes {
@@ -348,6 +358,7 @@ export interface FileRouteTypes {
     | '/api/public/provider-event-processor'
     | '/api/public/provider-health'
     | '/api/public/provider-jobs'
+    | '/api/public/provider-sandbox-fixtures'
     | '/api/public/provider-webhooks'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -381,6 +392,7 @@ export interface FileRouteTypes {
     | '/api/public/provider-event-processor'
     | '/api/public/provider-health'
     | '/api/public/provider-jobs'
+    | '/api/public/provider-sandbox-fixtures'
     | '/api/public/provider-webhooks'
   id:
     | '__root__'
@@ -415,6 +427,7 @@ export interface FileRouteTypes {
     | '/api/public/provider-event-processor'
     | '/api/public/provider-health'
     | '/api/public/provider-jobs'
+    | '/api/public/provider-sandbox-fixtures'
     | '/api/public/provider-webhooks'
   fileRoutesById: FileRoutesById
 }
@@ -439,6 +452,7 @@ export interface RootRouteChildren {
   ApiPublicProviderEventProcessorRoute: typeof ApiPublicProviderEventProcessorRoute
   ApiPublicProviderHealthRoute: typeof ApiPublicProviderHealthRoute
   ApiPublicProviderJobsRoute: typeof ApiPublicProviderJobsRoute
+  ApiPublicProviderSandboxFixturesRoute: typeof ApiPublicProviderSandboxFixturesRoute
   ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
 }
 
@@ -661,6 +675,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicProviderJobsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/provider-sandbox-fixtures': {
+      id: '/api/public/provider-sandbox-fixtures'
+      path: '/api/public/provider-sandbox-fixtures'
+      fullPath: '/api/public/provider-sandbox-fixtures'
+      preLoaderRoute: typeof ApiPublicProviderSandboxFixturesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/provider-webhooks': {
       id: '/api/public/provider-webhooks'
       path: '/api/public/provider-webhooks'
@@ -724,6 +745,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicProviderEventProcessorRoute: ApiPublicProviderEventProcessorRoute,
   ApiPublicProviderHealthRoute: ApiPublicProviderHealthRoute,
   ApiPublicProviderJobsRoute: ApiPublicProviderJobsRoute,
+  ApiPublicProviderSandboxFixturesRoute: ApiPublicProviderSandboxFixturesRoute,
   ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
 }
 export const routeTree = rootRouteImport
