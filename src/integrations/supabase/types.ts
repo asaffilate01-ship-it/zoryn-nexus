@@ -1629,6 +1629,42 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_provider_contract_versions: {
+        Row: {
+          approved_at: string | null
+          contract_name: string
+          created_at: string
+          environment: string
+          id: string
+          provider: string
+          schema_hash: string | null
+          status: string
+          version: string
+        }
+        Insert: {
+          approved_at?: string | null
+          contract_name: string
+          created_at?: string
+          environment: string
+          id?: string
+          provider: string
+          schema_hash?: string | null
+          status?: string
+          version: string
+        }
+        Update: {
+          approved_at?: string | null
+          contract_name?: string
+          created_at?: string
+          environment?: string
+          id?: string
+          provider?: string
+          schema_hash?: string | null
+          status?: string
+          version?: string
+        }
+        Relationships: []
+      }
       platform_provider_events: {
         Row: {
           attempt_count: number
@@ -1671,6 +1707,36 @@ export type Database = {
           processing_status?: string
           provider?: string
           received_at?: string
+        }
+        Relationships: []
+      }
+      platform_provider_health_checks: {
+        Row: {
+          checked_at: string
+          details: Json
+          environment: string
+          id: string
+          latency_ms: number | null
+          provider: string
+          status: string
+        }
+        Insert: {
+          checked_at?: string
+          details?: Json
+          environment: string
+          id?: string
+          latency_ms?: number | null
+          provider: string
+          status: string
+        }
+        Update: {
+          checked_at?: string
+          details?: Json
+          environment?: string
+          id?: string
+          latency_ms?: number | null
+          provider?: string
+          status?: string
         }
         Relationships: []
       }
@@ -1758,6 +1824,42 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_provider_test_evidence: {
+        Row: {
+          environment: string
+          evidence: Json
+          executed_at: string
+          executed_by: string | null
+          external_reference: string | null
+          id: string
+          provider: string
+          scenario: string
+          status: string
+        }
+        Insert: {
+          environment: string
+          evidence?: Json
+          executed_at?: string
+          executed_by?: string | null
+          external_reference?: string | null
+          id?: string
+          provider: string
+          scenario: string
+          status: string
+        }
+        Update: {
+          environment?: string
+          evidence?: Json
+          executed_at?: string
+          executed_by?: string | null
+          external_reference?: string | null
+          id?: string
+          provider?: string
+          scenario?: string
+          status?: string
+        }
+        Relationships: []
+      }
       platform_provider_worker_locks: {
         Row: {
           command_id: string
@@ -1783,6 +1885,53 @@ export type Database = {
             columns: ["command_id"]
             isOneToOne: true
             referencedRelation: "platform_provider_commands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_reconciliation_items: {
+        Row: {
+          actual_minor: number | null
+          created_at: string
+          details: Json
+          expected_minor: number | null
+          id: string
+          internal_reference: string | null
+          provider_reference: string | null
+          reconciliation_run_id: string
+          resource_type: string
+          status: string
+        }
+        Insert: {
+          actual_minor?: number | null
+          created_at?: string
+          details?: Json
+          expected_minor?: number | null
+          id?: string
+          internal_reference?: string | null
+          provider_reference?: string | null
+          reconciliation_run_id: string
+          resource_type: string
+          status: string
+        }
+        Update: {
+          actual_minor?: number | null
+          created_at?: string
+          details?: Json
+          expected_minor?: number | null
+          id?: string
+          internal_reference?: string | null
+          provider_reference?: string | null
+          reconciliation_run_id?: string
+          resource_type?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_reconciliation_items_reconciliation_run_id_fkey"
+            columns: ["reconciliation_run_id"]
+            isOneToOne: false
+            referencedRelation: "platform_reconciliation_runs"
             referencedColumns: ["id"]
           },
         ]

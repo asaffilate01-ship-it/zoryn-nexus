@@ -1,0 +1,108 @@
+name: Final provider-entry gates
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider_mode:
+        description: Provider validation mode
+        required: true
+        default: mock
+        type: choice
+        options:
+          - mock
+          - sandbox
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: final-provider-entry-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  application:
+    name: Application
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      PROVIDER_MODE: mock
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run check
+
+  provider-contracts:
+    name: Provider Contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PROVIDER_MODE: ${{ inputs.provider_mode || 'mock' }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      PROVIDER_WORKER_SECRET: ${{ secrets.PROVIDER_WORKER_SECRET }}
+      SWAN_API_URL: ${{ secrets.SWAN_API_URL }}
+      SWAN_PROGRAMME_ID: ${{ secrets.SWAN_PROGRAMME_ID }}
+      ADYEN_API_URL: ${{ secrets.ADYEN_API_URL }}
+      ADYEN_API_KEY: ${{ secrets.ADYEN_API_KEY }}
+      ADYEN_HMAC_KEY: ${{ secrets.ADYEN_HMAC_KEY }}
+      ADYEN_MERCHANT_ACCOUNT: ${{ secrets.ADYEN_MERCHANT_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run provider:validate
+
+  browser:
+    name: Browser
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bunx playwright install --with-deps chromium
+      - run: bun run test:e2e -- --project=chromium
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: provider-entry-playwright
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+
+  database:
+    name: Database
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start
+      - run: supabase db reset
+      - run: supabase test db
+      - if: always()
+        run: supabase stop --no-backup
+
+  release-gate:
+    name: Release Gate
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [application, provider-contracts, browser, database]
+    steps:
+      - name: Enforce all gates
+        run: |
+          if [[ "${{ needs.application.result }}" != "success" ||
+                "${{ needs.provider-contracts.result }}" != "success" ||
+                "${{ needs.browser.result }}" != "success" ||
+                "${{ needs.database.result }}" != "success" ]]; then
+            echo "One or more provider-entry gates failed."
+            exit 1
+          fi
+          echo "All provider-entry gates passed."

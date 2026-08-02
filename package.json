@@ -17,7 +17,12 @@
     "typecheck": "tsc --noEmit",
     "audit:provider-safety": "node scripts/audit-provider-safety.mjs",
     "check": "bun run typecheck && bun run lint && bun run audit:provider-safety && bun run test:coverage && bun run build",
-    "ci": "bun run check && bun run test:e2e"
+    "ci": "bun run check && bun run test:e2e",
+    "test:provider-contracts": "vitest run tests/provider-contracts",
+    "test:provider-fixtures": "vitest run tests/provider-fixtures",
+    "provider:readiness": "node scripts/provider-readiness.mjs",
+    "provider:validate": "bun run provider:readiness && bun run test:provider-contracts && bun run test:provider-fixtures",
+    "final:check": "bun run check && bun run provider:validate && bun run test:e2e"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
