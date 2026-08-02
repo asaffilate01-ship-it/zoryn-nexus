@@ -1509,6 +1509,39 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_provider_activation_runs: {
+        Row: {
+          checks: Json
+          completed_at: string | null
+          environment: string
+          executed_by: string | null
+          id: string
+          provider: string
+          started_at: string
+          status: string
+        }
+        Insert: {
+          checks?: Json
+          completed_at?: string | null
+          environment: string
+          executed_by?: string | null
+          id?: string
+          provider: string
+          started_at?: string
+          status: string
+        }
+        Update: {
+          checks?: Json
+          completed_at?: string | null
+          environment?: string
+          executed_by?: string | null
+          id?: string
+          provider?: string
+          started_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       platform_provider_alerts: {
         Row: {
           alert_type: string
@@ -1542,6 +1575,48 @@ export type Database = {
           severity?: string
           status?: string
           title?: string
+        }
+        Relationships: []
+      }
+      platform_provider_auth_state: {
+        Row: {
+          auth_type: string
+          created_at: string
+          environment: string
+          expires_at: string | null
+          id: string
+          last_refreshed_at: string | null
+          metadata: Json
+          provider: string
+          status: string
+          token_reference: string | null
+          updated_at: string
+        }
+        Insert: {
+          auth_type: string
+          created_at?: string
+          environment: string
+          expires_at?: string | null
+          id?: string
+          last_refreshed_at?: string | null
+          metadata?: Json
+          provider: string
+          status?: string
+          token_reference?: string | null
+          updated_at?: string
+        }
+        Update: {
+          auth_type?: string
+          created_at?: string
+          environment?: string
+          expires_at?: string | null
+          id?: string
+          last_refreshed_at?: string | null
+          metadata?: Json
+          provider?: string
+          status?: string
+          token_reference?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -1740,6 +1815,60 @@ export type Database = {
         }
         Relationships: []
       }
+      platform_provider_operation_mappings: {
+        Row: {
+          api_family: string | null
+          api_version: string | null
+          approved_by_provider: boolean
+          created_at: string
+          enabled: boolean
+          endpoint_template: string
+          environment: string
+          http_method: string
+          id: string
+          metadata: Json
+          operation: string
+          provider: string
+          request_mapper_version: string
+          response_mapper_version: string
+          updated_at: string
+        }
+        Insert: {
+          api_family?: string | null
+          api_version?: string | null
+          approved_by_provider?: boolean
+          created_at?: string
+          enabled?: boolean
+          endpoint_template: string
+          environment: string
+          http_method?: string
+          id?: string
+          metadata?: Json
+          operation: string
+          provider: string
+          request_mapper_version?: string
+          response_mapper_version?: string
+          updated_at?: string
+        }
+        Update: {
+          api_family?: string | null
+          api_version?: string | null
+          approved_by_provider?: boolean
+          created_at?: string
+          enabled?: boolean
+          endpoint_template?: string
+          environment?: string
+          http_method?: string
+          id?: string
+          metadata?: Json
+          operation?: string
+          provider?: string
+          request_mapper_version?: string
+          response_mapper_version?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       platform_provider_resources: {
         Row: {
           aggregate_id: string
@@ -1857,6 +1986,51 @@ export type Database = {
           provider?: string
           scenario?: string
           status?: string
+        }
+        Relationships: []
+      }
+      platform_provider_webhook_configs: {
+        Row: {
+          approved_by_provider: boolean
+          created_at: string
+          enabled: boolean
+          environment: string
+          id: string
+          metadata: Json
+          provider: string
+          signature_header: string | null
+          timestamp_header: string | null
+          tolerance_seconds: number
+          updated_at: string
+          verification_method: string
+        }
+        Insert: {
+          approved_by_provider?: boolean
+          created_at?: string
+          enabled?: boolean
+          environment: string
+          id?: string
+          metadata?: Json
+          provider: string
+          signature_header?: string | null
+          timestamp_header?: string | null
+          tolerance_seconds?: number
+          updated_at?: string
+          verification_method: string
+        }
+        Update: {
+          approved_by_provider?: boolean
+          created_at?: string
+          enabled?: boolean
+          environment?: string
+          id?: string
+          metadata?: Json
+          provider?: string
+          signature_header?: string | null
+          timestamp_header?: string | null
+          tolerance_seconds?: number
+          updated_at?: string
+          verification_method?: string
         }
         Relationships: []
       }
