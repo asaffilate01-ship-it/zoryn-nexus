@@ -1,0 +1,68 @@
+name: Final Swan Adyen Activation
+
+on:
+  workflow_dispatch:
+    inputs:
+      provider_mode:
+        description: Activation mode
+        required: true
+        default: mock
+        type: choice
+        options: [mock, sandbox]
+
+permissions:
+  contents: read
+
+jobs:
+  contracts:
+    name: Contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PROVIDER_MODE: ${{ inputs.provider_mode || 'mock' }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      PROVIDER_WORKER_SECRET: ${{ secrets.PROVIDER_WORKER_SECRET }}
+      SWAN_API_URL: ${{ secrets.SWAN_API_URL }}
+      SWAN_CLIENT_ID: ${{ secrets.SWAN_CLIENT_ID }}
+      SWAN_CLIENT_SECRET: ${{ secrets.SWAN_CLIENT_SECRET }}
+      SWAN_TOKEN_URL: ${{ secrets.SWAN_TOKEN_URL }}
+      ADYEN_API_URL: ${{ secrets.ADYEN_API_URL }}
+      ADYEN_API_KEY: ${{ secrets.ADYEN_API_KEY }}
+      ADYEN_HMAC_KEY: ${{ secrets.ADYEN_HMAC_KEY }}
+      ADYEN_MERCHANT_ACCOUNT: ${{ secrets.ADYEN_MERCHANT_ACCOUNT }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install --frozen-lockfile
+      - run: bun run provider:validate
+      - run: bun run test:critical
+
+  database:
+    name: Database
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - run: supabase start
+      - run: supabase db reset
+      - run: supabase test db
+      - if: always()
+        run: supabase stop --no-backup
+
+  release-gate:
+    name: Activation Gate
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [contracts, database]
+    steps:
+      - run: |
+          if [[ "${{ needs.contracts.result }}" != "success" ||
+                "${{ needs.database.result }}" != "success" ]]; then
+            echo "Provider activation gates failed."
+            exit 1
+          fi
+          echo "Provider activation gates passed."
