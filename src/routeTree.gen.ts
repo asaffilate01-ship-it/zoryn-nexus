@@ -25,6 +25,7 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedBusinessRouteImport } from './routes/_authenticated/business'
 import { Route as AuthenticatedBusinessWorkspaceRouteImport } from './routes/_authenticated/business-workspace'
 import { Route as AuthenticatedControlRoomRouteImport } from './routes/_authenticated/control-room'
+import { Route as AuthenticatedLaunchBlockersRouteImport } from './routes/_authenticated/launch-blockers'
 import { Route as AuthenticatedMerchantRouteImport } from './routes/_authenticated/merchant'
 import { Route as AuthenticatedPersonalRouteImport } from './routes/_authenticated/personal'
 import { Route as AuthenticatedPersonalWorkspaceRouteImport } from './routes/_authenticated/personal-workspace'
@@ -120,6 +121,12 @@ const AuthenticatedControlRoomRoute =
   AuthenticatedControlRoomRouteImport.update({
     id: '/control-room',
     path: '/control-room',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedLaunchBlockersRoute =
+  AuthenticatedLaunchBlockersRouteImport.update({
+    id: '/launch-blockers',
+    path: '/launch-blockers',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 const AuthenticatedMerchantRoute = AuthenticatedMerchantRouteImport.update({
@@ -223,6 +230,7 @@ export interface FileRoutesByFullPath {
   '/business': typeof AuthenticatedBusinessRoute
   '/business-workspace': typeof AuthenticatedBusinessWorkspaceRoute
   '/control-room': typeof AuthenticatedControlRoomRoute
+  '/launch-blockers': typeof AuthenticatedLaunchBlockersRoute
   '/merchant': typeof AuthenticatedMerchantRoute
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
@@ -255,6 +263,7 @@ export interface FileRoutesByTo {
   '/business': typeof AuthenticatedBusinessRoute
   '/business-workspace': typeof AuthenticatedBusinessWorkspaceRoute
   '/control-room': typeof AuthenticatedControlRoomRoute
+  '/launch-blockers': typeof AuthenticatedLaunchBlockersRoute
   '/merchant': typeof AuthenticatedMerchantRoute
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
@@ -289,6 +298,7 @@ export interface FileRoutesById {
   '/_authenticated/business': typeof AuthenticatedBusinessRoute
   '/_authenticated/business-workspace': typeof AuthenticatedBusinessWorkspaceRoute
   '/_authenticated/control-room': typeof AuthenticatedControlRoomRoute
+  '/_authenticated/launch-blockers': typeof AuthenticatedLaunchBlockersRoute
   '/_authenticated/merchant': typeof AuthenticatedMerchantRoute
   '/_authenticated/personal': typeof AuthenticatedPersonalRoute
   '/_authenticated/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
@@ -323,6 +333,7 @@ export interface FileRouteTypes {
     | '/business'
     | '/business-workspace'
     | '/control-room'
+    | '/launch-blockers'
     | '/merchant'
     | '/personal'
     | '/personal-workspace'
@@ -355,6 +366,7 @@ export interface FileRouteTypes {
     | '/business'
     | '/business-workspace'
     | '/control-room'
+    | '/launch-blockers'
     | '/merchant'
     | '/personal'
     | '/personal-workspace'
@@ -388,6 +400,7 @@ export interface FileRouteTypes {
     | '/_authenticated/business'
     | '/_authenticated/business-workspace'
     | '/_authenticated/control-room'
+    | '/_authenticated/launch-blockers'
     | '/_authenticated/merchant'
     | '/_authenticated/personal'
     | '/_authenticated/personal-workspace'
@@ -543,6 +556,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedControlRoomRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/launch-blockers': {
+      id: '/_authenticated/launch-blockers'
+      path: '/launch-blockers'
+      fullPath: '/launch-blockers'
+      preLoaderRoute: typeof AuthenticatedLaunchBlockersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/merchant': {
       id: '/_authenticated/merchant'
       path: '/merchant'
@@ -656,6 +676,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedBusinessRoute: typeof AuthenticatedBusinessRoute
   AuthenticatedBusinessWorkspaceRoute: typeof AuthenticatedBusinessWorkspaceRoute
   AuthenticatedControlRoomRoute: typeof AuthenticatedControlRoomRoute
+  AuthenticatedLaunchBlockersRoute: typeof AuthenticatedLaunchBlockersRoute
   AuthenticatedMerchantRoute: typeof AuthenticatedMerchantRoute
   AuthenticatedPersonalRoute: typeof AuthenticatedPersonalRoute
   AuthenticatedPersonalWorkspaceRoute: typeof AuthenticatedPersonalWorkspaceRoute
@@ -669,6 +690,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedBusinessRoute: AuthenticatedBusinessRoute,
   AuthenticatedBusinessWorkspaceRoute: AuthenticatedBusinessWorkspaceRoute,
   AuthenticatedControlRoomRoute: AuthenticatedControlRoomRoute,
+  AuthenticatedLaunchBlockersRoute: AuthenticatedLaunchBlockersRoute,
   AuthenticatedMerchantRoute: AuthenticatedMerchantRoute,
   AuthenticatedPersonalRoute: AuthenticatedPersonalRoute,
   AuthenticatedPersonalWorkspaceRoute: AuthenticatedPersonalWorkspaceRoute,

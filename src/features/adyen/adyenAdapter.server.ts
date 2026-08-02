@@ -43,9 +43,7 @@ export async function executeAdyenCommand(command: ProviderCommand) {
 
   return {
     externalId: (body["id"] ?? body["pspReference"] ?? body["externalId"]) as string | undefined,
-    externalStatus: mapAdyenStatus(
-      (body["status"] ?? body["resultCode"]) as string | undefined,
-    ),
+    externalStatus: mapAdyenStatus((body["status"] ?? body["resultCode"]) as string | undefined),
     resourceType: command.command_type,
     payload: body,
   };

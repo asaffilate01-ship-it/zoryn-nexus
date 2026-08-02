@@ -1,12 +1,12 @@
 # Merge checklist
 
-- [ ] Back up the current repository
-- [ ] Copy overlay contents into repository root
-- [ ] Keep existing route files
-- [ ] Do not hand-edit `src/routeTree.gen.ts`
-- [ ] Apply `supabase/migrations/20260801190000_platform_production_upgrade.sql`
-- [ ] Apply `supabase/seed.production-demo.sql` only in demo/development
-- [ ] Deploy `platform-api`, `provider-webhooks`, and `demo-reset`
-- [ ] Configure environment variables from `.env.production-ready.example`
-- [ ] Confirm RLS using personal, business, employee and admin accounts
-- [ ] Run security and accessibility reviews before launch
+1. Copy this stage into the repository root.
+2. Merge `package.json.patch.json` into the live `package.json`.
+3. Keep Bun as the package manager because the repository has a Bun lockfile.
+4. Run `bun install --frozen-lockfile`.
+5. Run `bun run check`.
+6. Run `bun run test:e2e`.
+7. Run `supabase db reset`.
+8. Run `supabase test db`.
+9. Push and confirm `Production readiness gates` is green.
+10. Do not manually edit `src/routeTree.gen.ts`.
