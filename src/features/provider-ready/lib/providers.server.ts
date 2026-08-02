@@ -8,11 +8,12 @@
  *
  * PROVIDER_MODE = "mock" (default) | "sandbox" | "live"
  */
-import type {
-  AcquiringProviderAdapter,
-  BankingProviderAdapter,
+import type { AcquiringProviderAdapter, BankingProviderAdapter } from "./provider-adapters";
+import {
+  mapAdyenPaymentStatus,
+  mapSwanAccountStatus,
+  mapSwanTransactionStatus,
 } from "./provider-adapters";
-import { mapAdyenPaymentStatus, mapSwanAccountStatus, mapSwanTransactionStatus } from "./provider-adapters";
 import type { ProviderHealth } from "../types/domain";
 
 export type ProviderMode = "mock" | "sandbox" | "live";
@@ -92,7 +93,8 @@ async function swanGraphQL<T>(query: string, variables: Record<string, unknown>)
   const body = await res.text();
   if (!res.ok) throw new Error(`Swan request failed [${res.status}]: ${body}`);
   const parsed = JSON.parse(body) as { data?: T; errors?: Array<{ message: string }> };
-  if (parsed.errors?.length) throw new Error(`Swan error: ${parsed.errors.map((e) => e.message).join(", ")}`);
+  if (parsed.errors?.length)
+    throw new Error(`Swan error: ${parsed.errors.map((e) => e.message).join(", ")}`);
   return parsed.data as T;
 }
 
@@ -100,7 +102,9 @@ export const swanBanking: BankingProviderAdapter = {
   provider: "swan",
   async startIndividualOnboarding(input) {
     if (!bankingConfigured()) return swanUnavailable();
-    const data = await swanGraphQL<{ onboardIndividualAccountHolder: { onboarding: { id: string; onboardingUrl: string } } }>(
+    const data = await swanGraphQL<{
+      onboardIndividualAccountHolder: { onboarding: { id: string; onboardingUrl: string } };
+    }>(
       `mutation ($input: OnboardIndividualAccountHolderInput!) {
          onboardIndividualAccountHolder(input: $input) {
            ... on OnboardIndividualAccountHolderSuccessPayload { onboarding { id onboardingUrl } }
@@ -113,7 +117,9 @@ export const swanBanking: BankingProviderAdapter = {
   },
   async startBusinessOnboarding(input) {
     if (!bankingConfigured()) return swanUnavailable();
-    const data = await swanGraphQL<{ onboardCompanyAccountHolder: { onboarding: { id: string; onboardingUrl: string } } }>(
+    const data = await swanGraphQL<{
+      onboardCompanyAccountHolder: { onboarding: { id: string; onboardingUrl: string } };
+    }>(
       `mutation ($input: OnboardCompanyAccountHolderInput!) {
          onboardCompanyAccountHolder(input: $input) {
            ... on OnboardCompanyAccountHolderSuccessPayload { onboarding { id onboardingUrl } }
@@ -126,15 +132,18 @@ export const swanBanking: BankingProviderAdapter = {
   },
   async getAccount(accountId) {
     if (!bankingConfigured()) return swanUnavailable();
-    const data = await swanGraphQL<{ account: { id: string; statusInfo: { status: string }; currency: string } }>(
-      `query ($id: ID!) { account(accountId: $id) { id currency statusInfo { status } } }`,
-      { id: accountId },
-    );
+    const data = await swanGraphQL<{
+      account: { id: string; statusInfo: { status: string }; currency: string };
+    }>(`query ($id: ID!) { account(accountId: $id) { id currency statusInfo { status } } }`, {
+      id: accountId,
+    });
     return { ...data.account, status: mapSwanAccountStatus(data.account.statusInfo.status) };
   },
   async createTransfer(input) {
     if (!bankingConfigured()) return swanUnavailable();
-    const data = await swanGraphQL<{ initiateCreditTransfers: { payment: { id: string; statusInfo: { status: string } } } }>(
+    const data = await swanGraphQL<{
+      initiateCreditTransfers: { payment: { id: string; statusInfo: { status: string } } };
+    }>(
       `mutation ($input: InitiateCreditTransfersInput!) {
          initiateCreditTransfers(input: $input) {
            ... on InitiateCreditTransfersSuccessPayload { payment { id statusInfo { status } } }
@@ -143,16 +152,28 @@ export const swanBanking: BankingProviderAdapter = {
       { input },
     );
     const payment = data.initiateCreditTransfers.payment;
-    return { id: payment.id, status: mapSwanTransactionStatus(payment.statusInfo.status) === "booked" ? "completed" : "submitted" };
+    return {
+      id: payment.id,
+      status:
+        mapSwanTransactionStatus(payment.statusInfo.status) === "booked"
+          ? "completed"
+          : "submitted",
+    };
   },
   async freezeCard(cardId) {
     if (!bankingConfigured()) return swanUnavailable();
-    await swanGraphQL(`mutation ($input: SuspendCardInput!) { suspendCard(input: $input) { __typename } }`, { input: { cardId } });
+    await swanGraphQL(
+      `mutation ($input: SuspendCardInput!) { suspendCard(input: $input) { __typename } }`,
+      { input: { cardId } },
+    );
     return { id: cardId, status: "frozen" };
   },
   async unfreezeCard(cardId) {
     if (!bankingConfigured()) return swanUnavailable();
-    await swanGraphQL(`mutation ($input: ResumeCardInput!) { resumePhysicalCard(input: $input) { __typename } }`, { input: { cardId } });
+    await swanGraphQL(
+      `mutation ($input: ResumeCardInput!) { resumePhysicalCard(input: $input) { __typename } }`,
+      { input: { cardId } },
+    );
     return { id: cardId, status: "active" };
   },
 };
@@ -181,16 +202,24 @@ export const adyenAcquiring: AcquiringProviderAdapter = {
   async createMerchant(input) {
     if (!acquiringConfigured()) return adyenUnavailable();
     const base = process.env["ADYEN_MANAGEMENT_URL"] ?? "https://management-test.adyen.com/v3";
-    const data = await adyenPost<{ id: string; hostedOnboardingUrl?: string }>(base, "/legalEntities", input);
+    const data = await adyenPost<{ id: string; hostedOnboardingUrl?: string }>(
+      base,
+      "/legalEntities",
+      input,
+    );
     return { merchantId: data.id, onboardingUrl: data.hostedOnboardingUrl ?? "/onboarding-status" };
   },
   async createPaymentLink(input) {
     if (!acquiringConfigured()) return adyenUnavailable();
     const base = process.env["ADYEN_CHECKOUT_URL"] ?? "https://checkout-test.adyen.com/v71";
-    const data = await adyenPost<{ id: string; url: string; status: string }>(base, "/paymentLinks", {
-      merchantAccount: process.env["ADYEN_MERCHANT_ACCOUNT"],
-      ...input,
-    });
+    const data = await adyenPost<{ id: string; url: string; status: string }>(
+      base,
+      "/paymentLinks",
+      {
+        merchantAccount: process.env["ADYEN_MERCHANT_ACCOUNT"],
+        ...input,
+      },
+    );
     return { id: data.id, url: data.url, status: mapAdyenPaymentStatus(data.status) };
   },
   async refundPayment(paymentId, amountCents) {
@@ -273,6 +302,11 @@ export function deriveProviderHealth(
         : "Local points ledger active. Rewards Hub not linked — points stay in Zoryn.",
       "",
     ),
-    entry("mock", mode === "mock", "Mock provider serving all demo journeys.", "Mock provider disabled — live adapters in use."),
+    entry(
+      "mock",
+      mode === "mock",
+      "Mock provider serving all demo journeys.",
+      "Mock provider disabled — live adapters in use.",
+    ),
   ];
 }

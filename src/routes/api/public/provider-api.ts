@@ -24,7 +24,8 @@ export const Route = createFileRoute("/api/public/provider-api")({
           global: {
             fetch: (input, init) => {
               const h = new Headers(init?.headers);
-              if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
+              if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`)
+                h.delete("Authorization");
               h.set("apikey", key);
               return fetch(input, { ...init, headers: h });
             },
@@ -43,12 +44,18 @@ export const Route = createFileRoute("/api/public/provider-api")({
           return Response.json({ ok: false, error: error.message }, { status: 500 });
         }
 
-        const { bankingConfigured, acquiringConfigured, rewardsHubConfigured, deriveProviderHealth, providerMode } =
-          await import("@/features/provider-ready/lib/providers.server");
+        const {
+          bankingConfigured,
+          acquiringConfigured,
+          rewardsHubConfigured,
+          deriveProviderHealth,
+          providerMode,
+        } = await import("@/features/provider-ready/lib/providers.server");
         const lastEventAt: Record<string, string | null> = {};
         const failures: Record<string, number> = {};
         for (const e of data ?? []) {
-          if (!lastEventAt[e.provider] || e.created_at > lastEventAt[e.provider]!) lastEventAt[e.provider] = e.created_at;
+          if (!lastEventAt[e.provider] || e.created_at > lastEventAt[e.provider]!)
+            lastEventAt[e.provider] = e.created_at;
         }
         const health = deriveProviderHealth(lastEventAt, failures);
 
@@ -56,9 +63,18 @@ export const Route = createFileRoute("/api/public/provider-api")({
           ok: true,
           mode: providerMode(),
           adapters: {
-            banking: { configured: bankingConfigured(), status: health.find((h) => h.provider === "swan")?.status },
-            acquiring: { configured: acquiringConfigured(), status: health.find((h) => h.provider === "adyen")?.status },
-            rewards: { configured: rewardsHubConfigured(), status: health.find((h) => h.provider === "rewards")?.status },
+            banking: {
+              configured: bankingConfigured(),
+              status: health.find((h) => h.provider === "swan")?.status,
+            },
+            acquiring: {
+              configured: acquiringConfigured(),
+              status: health.find((h) => h.provider === "adyen")?.status,
+            },
+            rewards: {
+              configured: rewardsHubConfigured(),
+              status: health.find((h) => h.provider === "rewards")?.status,
+            },
           },
           health,
           webhookEndpoint: "/api/public/provider-webhooks",

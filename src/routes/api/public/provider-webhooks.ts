@@ -39,15 +39,22 @@ export const Route = createFileRoute("/api/public/provider-webhooks")({
           : [payload];
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { processEvent } = await import("@/features/provider-ready/lib/webhook-process.server");
+        const { processEvent } =
+          await import("@/features/provider-ready/lib/webhook-process.server");
 
         const accepted: string[] = [];
         for (const item of items) {
           const provider = isAdyen ? "adyen" : String(item?.provider ?? verified.provider);
-          const eventId = String(item?.pspReference ?? item?.id ?? item?.eventId ?? crypto.randomUUID());
+          const eventId = String(
+            item?.pspReference ?? item?.id ?? item?.eventId ?? crypto.randomUUID(),
+          );
           const eventType = String(item?.eventCode ?? item?.type ?? "unknown");
           const resourceId =
-            item?.resourceId ?? item?.merchantReference ?? item?.data?.id ?? item?.pspReference ?? null;
+            item?.resourceId ??
+            item?.merchantReference ??
+            item?.data?.id ??
+            item?.pspReference ??
+            null;
 
           const { data: row, error } = await supabaseAdmin
             .from("provider_events")
@@ -81,7 +88,11 @@ export const Route = createFileRoute("/api/public/provider-webhooks")({
         if (isAdyen) {
           return Response.json({ notificationResponse: "[accepted]" });
         }
-        return Response.json({ accepted: true, provider: verified.provider, events: accepted.length });
+        return Response.json({
+          accepted: true,
+          provider: verified.provider,
+          events: accepted.length,
+        });
       },
     },
   },

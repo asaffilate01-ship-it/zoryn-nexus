@@ -173,7 +173,9 @@ function PublicHome() {
     {
       Icon: Users,
       t: t("One connected ecosystem"),
-      d: t("Shared accounts, rewards and merchant network across LoungeTech apps and participating businesses."),
+      d: t(
+        "Shared accounts, rewards and merchant network across LoungeTech apps and participating businesses.",
+      ),
     },
   ];
 
@@ -286,7 +288,9 @@ function PublicHome() {
         <div className="relative mx-auto w-full max-w-[330px]">
           <div className="rounded-[2rem] border border-border bg-card p-5 shadow-2xl">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">{t("Good morning, {name}", { name: "Amer" })}</span>
+              <span className="text-sm text-muted-foreground">
+                {t("Good morning, {name}", { name: "Amer" })}
+              </span>
               <div className="flex size-8 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
                 AS
               </div>
@@ -328,18 +332,19 @@ function PublicHome() {
               ))}
             </div>
           </div>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2"><div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-xl">
-            <Gift size={15} className="text-primary" />
-            <span>
-              <b>1,840</b> {t("Zoryn Points")}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-xl">
-            <CheckCircle2 size={15} className="text-primary" />
-            <span>
-              <b>{t("Payment approved")}</b> €15.90
-            </span>
-          </div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-xl">
+              <Gift size={15} className="text-primary" />
+              <span>
+                <b>1,840</b> {t("Zoryn Points")}
+              </span>
+            </div>
+            <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-3 py-2 text-xs shadow-xl">
+              <CheckCircle2 size={15} className="text-primary" />
+              <span>
+                <b>{t("Payment approved")}</b> €15.90
+              </span>
+            </div>
           </div>
         </div>
       </section>

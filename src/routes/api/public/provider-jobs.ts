@@ -24,8 +24,10 @@ export const Route = createFileRoute("/api/public/provider-jobs")({
         if (!checkJobsSecret(request)) return new Response("Unauthorized", { status: 401 });
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const { processDueEvents } = await import("@/features/provider-ready/lib/webhook-process.server");
-        const { flushRewardsOutbox } = await import("@/features/provider-ready/lib/rewards-hub.server");
+        const { processDueEvents } =
+          await import("@/features/provider-ready/lib/webhook-process.server");
+        const { flushRewardsOutbox } =
+          await import("@/features/provider-ready/lib/rewards-hub.server");
 
         const events = await processDueEvents(supabaseAdmin as never);
         const rewards = await flushRewardsOutbox(supabaseAdmin as never);

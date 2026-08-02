@@ -10,7 +10,8 @@
  */
 import { createHmac, timingSafeEqual } from "crypto";
 
-export type VerifyResult = { ok: true; provider: string } | { ok: false; status: number; error: string };
+export type VerifyResult =
+  { ok: true; provider: string } | { ok: false; status: number; error: string };
 
 const safeEqual = (a: string, b: string) => {
   const x = Buffer.from(a);
@@ -18,10 +19,14 @@ const safeEqual = (a: string, b: string) => {
   return x.length === y.length && timingSafeEqual(x, y);
 };
 
-const hexHmac = (secret: string, body: string) => createHmac("sha256", secret).update(body).digest("hex");
+const hexHmac = (secret: string, body: string) =>
+  createHmac("sha256", secret).update(body).digest("hex");
 
 /** Adyen escapes backslashes and colons before joining the signed fields. */
-const escapeAdyen = (value: unknown) => String(value ?? "").replace(/\\/g, "\\\\").replace(/:/g, "\\:");
+const escapeAdyen = (value: unknown) =>
+  String(value ?? "")
+    .replace(/\\/g, "\\\\")
+    .replace(/:/g, "\\:");
 
 export function adyenSigningString(item: Record<string, any>): string {
   const amount = item["amount"] ?? {};
@@ -71,7 +76,8 @@ export function verifyWebhook(headers: Headers, body: string, payload: any): Ver
   }
 
   const secret = process.env["PROVIDER_WEBHOOK_SECRET"];
-  if (!secret) return { ok: false, status: 503, error: "PROVIDER_WEBHOOK_SECRET is not configured" };
+  if (!secret)
+    return { ok: false, status: 503, error: "PROVIDER_WEBHOOK_SECRET is not configured" };
   const signature = headers.get("x-zoryn-signature") ?? swanSignature ?? "";
   return safeEqual(signature, hexHmac(secret, body))
     ? { ok: true, provider: String(payload?.provider ?? "mock") }

@@ -8,7 +8,11 @@
  */
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { mapAdyenPaymentStatus, mapSwanAccountStatus, mapSwanTransactionStatus } from "./provider-adapters";
+import {
+  mapAdyenPaymentStatus,
+  mapSwanAccountStatus,
+  mapSwanTransactionStatus,
+} from "./provider-adapters";
 import { queueRewardEvent } from "./rewards-hub.server";
 
 type Admin = SupabaseClient<Database>;
@@ -27,7 +31,12 @@ const ACCOUNT_STATUS_TO_DB: Record<string, Database["public"]["Enums"]["resource
   draft: "draft",
 };
 
-async function audit(admin: Admin, action: string, resourceId: string | null, metadata: Record<string, unknown>) {
+async function audit(
+  admin: Admin,
+  action: string,
+  resourceId: string | null,
+  metadata: Record<string, unknown>,
+) {
   await admin.from("audit_logs").insert({
     action,
     resource_type: "provider_event",
@@ -60,7 +69,10 @@ async function mapResource(
 }
 
 /** Applies one event to the domain tables. Throws to trigger a retry. */
-async function applyEvent(admin: Admin, event: { provider: string; event_type: string; resource_id: string | null; payload: any }) {
+async function applyEvent(
+  admin: Admin,
+  event: { provider: string; event_type: string; resource_id: string | null; payload: any },
+) {
   const { provider, event_type: type, payload } = event;
   const resourceId = event.resource_id ?? String(payload?.resourceId ?? payload?.data?.id ?? "");
   const raw = String(payload?.status ?? payload?.data?.status ?? payload?.eventCode ?? "");
@@ -80,7 +92,11 @@ async function applyEvent(admin: Admin, event: { provider: string; event_type: s
   }
 
   if (type.startsWith("card.")) {
-    const status = /suspend|freeze|block/i.test(`${type} ${raw}`) ? "frozen" : /resume|unfreeze|enable/i.test(`${type} ${raw}`) ? "active" : raw || "active";
+    const status = /suspend|freeze|block/i.test(`${type} ${raw}`)
+      ? "frozen"
+      : /resume|unfreeze|enable/i.test(`${type} ${raw}`)
+        ? "active"
+        : raw || "active";
     const { data } = await admin
       .from("cards")
       .update({ status })
@@ -93,7 +109,9 @@ async function applyEvent(admin: Admin, event: { provider: string; event_type: s
 
   if (type.startsWith("transaction.") || type.startsWith("payment.") || provider === "adyen") {
     const status =
-      provider === "adyen" ? mapAdyenPaymentStatus(raw || type.split(".").pop() || "") : mapSwanTransactionStatus(raw);
+      provider === "adyen"
+        ? mapAdyenPaymentStatus(raw || type.split(".").pop() || "")
+        : mapSwanTransactionStatus(raw);
     const dbStatus = provider === "adyen" ? (status === "captured" ? "booked" : status) : status;
     const { data } = await admin
       .from("transactions")
@@ -101,7 +119,9 @@ async function applyEvent(admin: Admin, event: { provider: string; event_type: s
       .eq("provider_reference", resourceId)
       .select("id, account_id, amount, currency")
       .maybeSingle();
-    await mapResource(admin, provider, "transaction", resourceId, data?.id ?? null, { status: dbStatus });
+    await mapResource(admin, provider, "transaction", resourceId, data?.id ?? null, {
+      status: dbStatus,
+    });
 
     // Settled spend earns points. Rewards work with or without a hub link.
     if (data && (dbStatus === "booked" || dbStatus === "captured")) {
@@ -121,7 +141,11 @@ async function applyEvent(admin: Admin, event: { provider: string; event_type: s
 }
 
 export async function processEvent(admin: Admin, eventId: string) {
-  const { data: event } = await admin.from("provider_events").select("*").eq("id", eventId).maybeSingle();
+  const { data: event } = await admin
+    .from("provider_events")
+    .select("*")
+    .eq("id", eventId)
+    .maybeSingle();
   if (!event) return { ok: false, reason: "not_found" as const };
   if (event.status === "processed" || event.status === "dead_letter") {
     return { ok: true, status: event.status };
@@ -141,7 +165,10 @@ export async function processEvent(admin: Admin, eventId: string) {
         next_attempt_at: null,
       })
       .eq("id", eventId);
-    await audit(admin, `provider_event.processed:${event.event_type}`, event.event_id, { provider: event.provider, ...result });
+    await audit(admin, `provider_event.processed:${event.event_type}`, event.event_id, {
+      provider: event.provider,
+      ...result,
+    });
     return { ok: true, status: "processed" as const, ...result };
   } catch (error) {
     const attempts = (event.attempts ?? 0) + 1;
@@ -156,12 +183,21 @@ export async function processEvent(admin: Admin, eventId: string) {
         next_attempt_at: dead ? null : new Date(Date.now() + backoffMs(attempts)).toISOString(),
       })
       .eq("id", eventId);
-    await audit(admin, dead ? "provider_event.dead_letter" : "provider_event.retry", event.event_id, {
-      provider: event.provider,
-      attempts,
+    await audit(
+      admin,
+      dead ? "provider_event.dead_letter" : "provider_event.retry",
+      event.event_id,
+      {
+        provider: event.provider,
+        attempts,
+        error: message,
+      },
+    );
+    return {
+      ok: false,
+      status: dead ? ("dead_letter" as const) : ("retrying" as const),
       error: message,
-    });
-    return { ok: false, status: dead ? ("dead_letter" as const) : ("retrying" as const), error: message };
+    };
   }
 }
 

@@ -51,31 +51,53 @@ export const moveFunds = createServerFn({ method: "POST" })
     const account = await requireAccount(admin, data.accountId, userId);
     const value = money(data.amountCents);
 
-    const from = data.fromPotId ? await requirePot(admin, data.fromPotId, account.id, userId) : null;
+    const from = data.fromPotId
+      ? await requirePot(admin, data.fromPotId, account.id, userId)
+      : null;
     const to = data.toPotId ? await requirePot(admin, data.toPotId, account.id, userId) : null;
 
     // Balance validation before anything is written.
     if (from && Number(from.balance) < value) throw new Error(`Not enough in ${from.name}`);
-    if (!from && Number(account.available_balance) < value) throw new Error("Not enough in your main balance");
+    if (!from && Number(account.available_balance) < value)
+      throw new Error("Not enough in your main balance");
 
-    if (from) await admin.from("pots").update({ balance: Number(from.balance) - value }).eq("id", from.id);
-    if (to) await admin.from("pots").update({ balance: Number(to.balance) + value }).eq("id", to.id);
+    if (from)
+      await admin
+        .from("pots")
+        .update({ balance: Number(from.balance) - value })
+        .eq("id", from.id);
+    if (to)
+      await admin
+        .from("pots")
+        .update({ balance: Number(to.balance) + value })
+        .eq("id", to.id);
     if (!from) {
       await admin
         .from("financial_accounts")
-        .update({ balance: Number(account.balance) - value, available_balance: Number(account.available_balance) - value })
+        .update({
+          balance: Number(account.balance) - value,
+          available_balance: Number(account.available_balance) - value,
+        })
         .eq("id", account.id);
     }
     if (!to) {
       await admin
         .from("financial_accounts")
-        .update({ balance: Number(account.balance) + value, available_balance: Number(account.available_balance) + value })
+        .update({
+          balance: Number(account.balance) + value,
+          available_balance: Number(account.available_balance) + value,
+        })
         .eq("id", account.id);
     }
 
     const { data: transfer } = await admin
       .from("internal_transfers")
-      .insert({ account_id: account.id, from_pot_id: from?.id ?? null, to_pot_id: to?.id ?? null, amount: value })
+      .insert({
+        account_id: account.id,
+        from_pot_id: from?.id ?? null,
+        to_pot_id: to?.id ?? null,
+        amount: value,
+      })
       .select("id")
       .maybeSingle();
 
@@ -147,7 +169,12 @@ export const createSepaTransfer = createServerFn({ method: "POST" })
       provider_reference: result.id,
     });
 
-    return { ok: true, transactionId: tx?.id ?? null, status: tx?.status ?? "pending", providerReference: result.id };
+    return {
+      ok: true,
+      transactionId: tx?.id ?? null,
+      status: tx?.status ?? "pending",
+      providerReference: result.id,
+    };
   });
 
 /* --------------------------------------------------------------- card state */
@@ -160,7 +187,9 @@ export const setCardFrozen = createServerFn({ method: "POST" })
     const card = await requireCard(admin, data.cardId, context.userId);
 
     const reference = card.provider_reference ?? card.id;
-    const result = data.frozen ? await banking.freezeCard(reference) : await banking.unfreezeCard(reference);
+    const result = data.frozen
+      ? await banking.freezeCard(reference)
+      : await banking.unfreezeCard(reference);
     await admin.from("cards").update({ status: result.status }).eq("id", card.id);
     await audit(admin, context.userId, "card.status_changed", card.id, {
       status: result.status,
@@ -172,12 +201,17 @@ export const setCardFrozen = createServerFn({ method: "POST" })
 export const setCardLimit = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({ cardId: uuid, monthlyLimitCents: z.number().int().min(0).max(2_000_000) }).parse(input),
+    z
+      .object({ cardId: uuid, monthlyLimitCents: z.number().int().min(0).max(2_000_000) })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { admin } = await ctx();
     const card = await requireCard(admin, data.cardId, context.userId);
-    await admin.from("cards").update({ monthly_limit: money(data.monthlyLimitCents) }).eq("id", card.id);
+    await admin
+      .from("cards")
+      .update({ monthly_limit: money(data.monthlyLimitCents) })
+      .eq("id", card.id);
     await audit(admin, context.userId, "card.limit_changed", card.id, {
       monthly_limit_cents: data.monthlyLimitCents,
     });
@@ -231,7 +265,10 @@ export const captureTapToPay = createServerFn({ method: "POST" })
       .eq("id", merchant.id);
 
     if (data.terminalId) {
-      await admin.from("terminals").update({ last_seen_at: new Date().toISOString() }).eq("id", data.terminalId);
+      await admin
+        .from("terminals")
+        .update({ last_seen_at: new Date().toISOString() })
+        .eq("id", data.terminalId);
     }
 
     // Rewards are earned locally whether or not the Rewards Hub is linked.
@@ -253,13 +290,20 @@ export const captureTapToPay = createServerFn({ method: "POST" })
       points: reward.points,
     });
 
-    return { ok: true, transactionId: tx?.id ?? null, providerReference: reference, pointsEarned: reward.points };
+    return {
+      ok: true,
+      transactionId: tx?.id ?? null,
+      providerReference: reference,
+      pointsEarned: reward.points,
+    };
   });
 
 export const createMerchantPaymentLink = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((input: unknown) =>
-    z.object({ merchantId: uuid, label: z.string().min(2).max(80), amountCents: amount }).parse(input),
+    z
+      .object({ merchantId: uuid, label: z.string().min(2).max(80), amountCents: amount })
+      .parse(input),
   )
   .handler(async ({ data, context }) => {
     const { admin, acquiring } = await ctx();
@@ -328,17 +372,26 @@ export const redeemPoints = createServerFn({ method: "POST" })
       source: "zoryn",
       is_demo: true,
     });
-    await admin.from("loyalty_accounts").update({ points: Number(loyalty.points) - data.points }).eq("id", loyalty.id);
+    await admin
+      .from("loyalty_accounts")
+      .update({ points: Number(loyalty.points) - data.points })
+      .eq("id", loyalty.id);
 
     if (data.destination === "pot" && data.potId && data.accountId) {
       const account = await requireAccount(admin, data.accountId, userId);
       const pot = await requirePot(admin, data.potId, account.id, userId);
-      await admin.from("pots").update({ balance: Number(pot.balance) + value }).eq("id", pot.id);
+      await admin
+        .from("pots")
+        .update({ balance: Number(pot.balance) + value })
+        .eq("id", pot.id);
     } else if (data.accountId) {
       const account = await requireAccount(admin, data.accountId, userId);
       await admin
         .from("financial_accounts")
-        .update({ balance: Number(account.balance) + value, available_balance: Number(account.available_balance) + value })
+        .update({
+          balance: Number(account.balance) + value,
+          available_balance: Number(account.available_balance) + value,
+        })
         .eq("id", account.id);
     }
 
@@ -350,8 +403,15 @@ export const redeemPoints = createServerFn({ method: "POST" })
         loyalty_account_id: loyalty.id,
         amount_cents: valueCents,
         points: -data.points,
-        status: process.env["REWARDS_HUB_URL"] && process.env["REWARDS_INGEST_SECRET"] ? "pending" : "skipped",
-        payload: { destination: data.destination, pot_id: data.potId ?? null, account_id: data.accountId ?? null },
+        status:
+          process.env["REWARDS_HUB_URL"] && process.env["REWARDS_INGEST_SECRET"]
+            ? "pending"
+            : "skipped",
+        payload: {
+          destination: data.destination,
+          pot_id: data.potId ?? null,
+          account_id: data.accountId ?? null,
+        },
         is_demo: true,
       } as never,
       { onConflict: "provider,provider_reference,event_type", ignoreDuplicates: true },

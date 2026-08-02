@@ -31,13 +31,20 @@ export interface ProviderSnapshot {
   webhookEvents: WebhookEvent[];
   scenarios: Scenario[];
   onboardingActions: RequiredAction[];
-  business: { balanceCents: number; availableCents: number; cardSpendCents: number; pendingApprovalCents: number };
+  business: {
+    balanceCents: number;
+    availableCents: number;
+    cardSpendCents: number;
+    pendingApprovalCents: number;
+  };
   pay: { todaySalesCents: number; pendingSettlementCents: number; refundsCents: number };
 }
 
 const cents = (v: number | string | null) => Math.round(Number(v ?? 0) * 100);
 const asProvider = (v: string): ProviderName =>
-  (["swan", "adyen", "rewards", "mock"] as const).includes(v as ProviderName) ? (v as ProviderName) : "mock";
+  (["swan", "adyen", "rewards", "mock"] as const).includes(v as ProviderName)
+    ? (v as ProviderName)
+    : "mock";
 
 /**
  * Public read-only snapshot of every demo record backing the provider-ready
@@ -52,7 +59,8 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
       global: {
         fetch: (input, init) => {
           const h = new Headers(init?.headers);
-          if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
+          if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`)
+            h.delete("Authorization");
           h.set("apikey", key);
           return fetch(input, { ...init, headers: h });
         },
@@ -77,7 +85,12 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
     ] = await Promise.all([
       supabase.from("financial_accounts").select("*").eq("is_demo", true).order("created_at"),
       supabase.from("pots").select("*").eq("is_demo", true).order("created_at"),
-      supabase.from("transactions").select("*").eq("is_demo", true).order("occurred_at", { ascending: false }).limit(24),
+      supabase
+        .from("transactions")
+        .select("*")
+        .eq("is_demo", true)
+        .order("occurred_at", { ascending: false })
+        .limit(24),
       supabase.from("cards").select("*").eq("is_demo", true).order("created_at"),
       supabase.from("organisation_members").select("*").eq("is_demo", true).order("created_at"),
       supabase.from("merchants").select("*").eq("is_demo", true),
@@ -85,7 +98,12 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
       supabase.from("loyalty_accounts").select("*").eq("is_demo", true),
       supabase.from("provider_resources").select("*").eq("is_demo", true).order("created_at"),
       supabase.from("provider_health").select("*").eq("is_demo", true).order("provider"),
-      supabase.from("provider_events").select("*").eq("is_demo", true).order("occurred_at", { ascending: false }).limit(25),
+      supabase
+        .from("provider_events")
+        .select("*")
+        .eq("is_demo", true)
+        .order("occurred_at", { ascending: false })
+        .limit(25),
       supabase.from("provider_scenarios").select("*").eq("is_demo", true).order("sort_order"),
       supabase.from("onboarding_actions").select("*").eq("is_demo", true).order("sort_order"),
       supabase.from("organisations").select("*"),
@@ -98,7 +116,9 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
     const merchantOrg = (orgsRes.data ?? []).find((o) => o.id === merchantRow?.organisation_id);
     const personalCards = (cardsRes.data ?? []).filter((c) => c.account_id === personal?.id);
     const personalTx = (txRes.data ?? []).filter((t) => t.account_id === personal?.id);
-    const loyaltyPersonal = (loyaltyRes.data ?? []).find((l) => l.organisation_id === personal?.organisation_id);
+    const loyaltyPersonal = (loyaltyRes.data ?? []).find(
+      (l) => l.organisation_id === personal?.organisation_id,
+    );
     const terminals = terminalsRes.data ?? [];
     const paySales = (txRes.data ?? [])
       .filter((t) => t.account_id === merchantRow?.id || t.kind === "settlement")
@@ -186,7 +206,12 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
         status: c.status as Card["status"],
         monthlyLimitCents: cents(c.monthly_limit),
         spentCents: cents(c.spent),
-        controls: { online: true, contactless: c.card_type !== "virtual", atm: c.card_type === "physical", international: c.card_type === "physical" },
+        controls: {
+          online: true,
+          contactless: c.card_type !== "virtual",
+          atm: c.card_type === "physical",
+          international: c.card_type === "physical",
+        },
       })),
       staffCards: (cardsRes.data ?? [])
         .filter((c) => c.account_id === business?.id)
@@ -198,7 +223,12 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
           status: c.status as Card["status"],
           monthlyLimitCents: cents(c.monthly_limit),
           spentCents: cents(c.spent),
-          controls: { online: true, contactless: c.card_type !== "virtual", atm: c.card_type === "physical", international: false },
+          controls: {
+            online: true,
+            contactless: c.card_type !== "virtual",
+            atm: c.card_type === "physical",
+            international: false,
+          },
         })),
       team: (membersRes.data ?? []).map((m) => ({
         id: m.id,
@@ -216,7 +246,12 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
         terminalsOnline: terminals.filter((t) => t.status === "online").length,
         terminalsTotal: terminals.length,
       },
-      terminals: terminals.map((t) => ({ id: t.id, name: t.name, status: t.status, battery: t.battery })),
+      terminals: terminals.map((t) => ({
+        id: t.id,
+        name: t.name,
+        status: t.status,
+        battery: t.battery,
+      })),
       rewards: {
         points: Number(loyaltyPersonal?.points ?? 0),
         tier: loyaltyPersonal?.tier ?? "silver",
@@ -254,7 +289,8 @@ export const getProviderSnapshot = createServerFn({ method: "GET" }).handler(
         cardSpendCents: (cardsRes.data ?? [])
           .filter((c) => c.account_id === business?.id)
           .reduce((sum, c) => sum + cents(c.spent), 0),
-        pendingApprovalCents: cents(business?.balance ?? 0) - cents(business?.available_balance ?? 0),
+        pendingApprovalCents:
+          cents(business?.balance ?? 0) - cents(business?.available_balance ?? 0),
       },
       pay: {
         todaySalesCents: paySales,

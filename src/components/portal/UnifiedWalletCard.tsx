@@ -18,7 +18,11 @@ export function UnifiedWalletCard({ role }: { role: "personal" | "business" }) {
       title={t("Zoryn Rewards wallet")}
       subtitle={t("One universal points balance across Zoryn Personal, Business and ZorynPay")}
       className="bg-gradient-to-br from-primary/12 via-card/70 to-card/70"
-      action={<Badge tone="good">{data.tier} {t("tier")}</Badge>}
+      action={
+        <Badge tone="good">
+          {data.tier} {t("tier")}
+        </Badge>
+      }
     >
       <div className="grid gap-5 lg:grid-cols-[1.1fr_1fr] lg:items-center">
         <div>
@@ -44,7 +48,9 @@ export function UnifiedWalletCard({ role }: { role: "personal" | "business" }) {
             onChange={(e) => setCashbackDestination(role, e.target.value)}
           >
             <option value="wallet">{t("Rewards wallet")}</option>
-            <option value="main">{role === "business" ? t("Business balance") : t("Main balance")}</option>
+            <option value="main">
+              {role === "business" ? t("Business balance") : t("Main balance")}
+            </option>
             {pots.map((p) => (
               <option key={p.id} value={`pot:${p.id}`}>
                 {t("{name} pot", { name: p.name })}

@@ -14,7 +14,10 @@ export function AuthLink({ className }: { className?: string }) {
   ) : (
     <Link
       to="/auth"
-      className={cn("text-sm text-muted-foreground transition-colors hover:text-foreground", className)}
+      className={cn(
+        "text-sm text-muted-foreground transition-colors hover:text-foreground",
+        className,
+      )}
     >
       {t("Sign in")}
     </Link>

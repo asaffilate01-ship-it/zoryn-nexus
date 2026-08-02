@@ -13,7 +13,8 @@ export function checkJobsSecret(request: Request): boolean {
     process.env["SUPABASE_ANON_KEY"] ??
     process.env["SUPABASE_PUBLISHABLE_KEY"];
   if (!expected) return false;
-  const provided = request.headers.get("x-zoryn-jobs-secret") ?? request.headers.get("apikey") ?? "";
+  const provided =
+    request.headers.get("x-zoryn-jobs-secret") ?? request.headers.get("apikey") ?? "";
   const a = Buffer.from(provided);
   const b = Buffer.from(expected);
   return a.length === b.length && timingSafeEqual(a, b);
@@ -58,7 +59,9 @@ export async function resetDemoData(admin: any) {
   for (const table of [...RESET_TABLES].reverse()) {
     const rows = (baseline as any[]).filter((r) => r.table_name === table);
     if (!rows.length) continue;
-    const { error } = await admin.from(table).insert(rows.map((r) => ({ ...(r.data as object), id: r.row_id })));
+    const { error } = await admin
+      .from(table)
+      .insert(rows.map((r) => ({ ...(r.data as object), id: r.row_id })));
     if (error) throw new Error(`${table}: ${error.message}`);
     restored[table] = rows.length;
   }

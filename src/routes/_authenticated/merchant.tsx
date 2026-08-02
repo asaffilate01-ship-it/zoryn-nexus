@@ -8,7 +8,10 @@ export const Route = createFileRoute("/_authenticated/merchant")({
   head: () => ({
     meta: [
       { title: `Zoryn ${config.name} portal — ${config.tagline}` },
-      { name: "description", content: `${config.name} portal on Zoryn: ${config.tagline}. Demo mode with pluggable banking and acquiring adapters.` },
+      {
+        name: "description",
+        content: `${config.name} portal on Zoryn: ${config.tagline}. Demo mode with pluggable banking and acquiring adapters.`,
+      },
       { property: "og:title", content: `Zoryn ${config.name} portal` },
       { property: "og:description", content: `${config.name} portal on Zoryn: ${config.tagline}.` },
       { property: "og:type", content: "website" },

@@ -42,9 +42,13 @@ export const Route = createFileRoute("/onboarding-status")({
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(providerSnapshotQueryOptions),
   errorComponent: ({ error }) => (
-    <main role="alert" className="p-10 text-foreground">Onboarding states unavailable: {error.message}</main>
+    <main role="alert" className="p-10 text-foreground">
+      Onboarding states unavailable: {error.message}
+    </main>
   ),
-  notFoundComponent: () => <main className="p-10 text-foreground">No onboarding states found.</main>,
+  notFoundComponent: () => (
+    <main className="p-10 text-foreground">No onboarding states found.</main>
+  ),
   component: OnboardingStatus,
 });
 
@@ -54,11 +58,16 @@ export function OnboardingStatus() {
   return (
     <main className="min-h-screen bg-background p-6 text-foreground">
       <div className="mx-auto max-w-4xl space-y-6">
-        <Link to="/provider-ready" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+        <Link
+          to="/provider-ready"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="h-4 w-4" /> {t("Provider-ready centre")}
         </Link>
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">{t("Zoryn onboarding")}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary">
+            {t("Zoryn onboarding")}
+          </p>
           <h1 className="mt-2 font-display text-3xl">{t("Complete account-state experience")}</h1>
           <p className="mt-2 text-muted-foreground">
             {t(
@@ -77,7 +86,9 @@ export function OnboardingStatus() {
                 a.dueAt
                   ? t("{description} Due by {date}.", {
                       description: t(a.description),
-                      date: new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" }).format(new Date(a.dueAt)),
+                      date: new Intl.DateTimeFormat("de-DE", { dateStyle: "medium" }).format(
+                        new Date(a.dueAt),
+                      ),
                     })
                   : t(a.description)
               }
