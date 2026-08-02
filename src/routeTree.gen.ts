@@ -36,6 +36,7 @@ import { Route as AuthenticatedZorynpayWorkspaceRouteImport } from './routes/_au
 import { Route as ApiPublicDemoResetRouteImport } from './routes/api/public/demo-reset'
 import { Route as ApiPublicNotificationWorkerRouteImport } from './routes/api/public/notification-worker'
 import { Route as ApiPublicPlatformProviderWebhooksRouteImport } from './routes/api/public/platform-provider-webhooks'
+import { Route as ApiPublicProviderActivationRouteImport } from './routes/api/public/provider-activation'
 import { Route as ApiPublicProviderApiRouteImport } from './routes/api/public/provider-api'
 import { Route as ApiPublicProviderCommandWorkerRouteImport } from './routes/api/public/provider-command-worker'
 import { Route as ApiPublicProviderEventProcessorRouteImport } from './routes/api/public/provider-event-processor'
@@ -189,6 +190,12 @@ const ApiPublicPlatformProviderWebhooksRoute =
     path: '/api/public/platform-provider-webhooks',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicProviderActivationRoute =
+  ApiPublicProviderActivationRouteImport.update({
+    id: '/api/public/provider-activation',
+    path: '/api/public/provider-activation',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicProviderApiRoute = ApiPublicProviderApiRouteImport.update({
   id: '/api/public/provider-api',
   path: '/api/public/provider-api',
@@ -262,6 +269,7 @@ export interface FileRoutesByFullPath {
   '/api/public/demo-reset': typeof ApiPublicDemoResetRoute
   '/api/public/notification-worker': typeof ApiPublicNotificationWorkerRoute
   '/api/public/platform-provider-webhooks': typeof ApiPublicPlatformProviderWebhooksRoute
+  '/api/public/provider-activation': typeof ApiPublicProviderActivationRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-command-worker': typeof ApiPublicProviderCommandWorkerRoute
   '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
@@ -298,6 +306,7 @@ export interface FileRoutesByTo {
   '/api/public/demo-reset': typeof ApiPublicDemoResetRoute
   '/api/public/notification-worker': typeof ApiPublicNotificationWorkerRoute
   '/api/public/platform-provider-webhooks': typeof ApiPublicPlatformProviderWebhooksRoute
+  '/api/public/provider-activation': typeof ApiPublicProviderActivationRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-command-worker': typeof ApiPublicProviderCommandWorkerRoute
   '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
@@ -336,6 +345,7 @@ export interface FileRoutesById {
   '/api/public/demo-reset': typeof ApiPublicDemoResetRoute
   '/api/public/notification-worker': typeof ApiPublicNotificationWorkerRoute
   '/api/public/platform-provider-webhooks': typeof ApiPublicPlatformProviderWebhooksRoute
+  '/api/public/provider-activation': typeof ApiPublicProviderActivationRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
   '/api/public/provider-command-worker': typeof ApiPublicProviderCommandWorkerRoute
   '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
@@ -374,6 +384,7 @@ export interface FileRouteTypes {
     | '/api/public/demo-reset'
     | '/api/public/notification-worker'
     | '/api/public/platform-provider-webhooks'
+    | '/api/public/provider-activation'
     | '/api/public/provider-api'
     | '/api/public/provider-command-worker'
     | '/api/public/provider-event-processor'
@@ -410,6 +421,7 @@ export interface FileRouteTypes {
     | '/api/public/demo-reset'
     | '/api/public/notification-worker'
     | '/api/public/platform-provider-webhooks'
+    | '/api/public/provider-activation'
     | '/api/public/provider-api'
     | '/api/public/provider-command-worker'
     | '/api/public/provider-event-processor'
@@ -447,6 +459,7 @@ export interface FileRouteTypes {
     | '/api/public/demo-reset'
     | '/api/public/notification-worker'
     | '/api/public/platform-provider-webhooks'
+    | '/api/public/provider-activation'
     | '/api/public/provider-api'
     | '/api/public/provider-command-worker'
     | '/api/public/provider-event-processor'
@@ -473,6 +486,7 @@ export interface RootRouteChildren {
   ApiPublicDemoResetRoute: typeof ApiPublicDemoResetRoute
   ApiPublicNotificationWorkerRoute: typeof ApiPublicNotificationWorkerRoute
   ApiPublicPlatformProviderWebhooksRoute: typeof ApiPublicPlatformProviderWebhooksRoute
+  ApiPublicProviderActivationRoute: typeof ApiPublicProviderActivationRoute
   ApiPublicProviderApiRoute: typeof ApiPublicProviderApiRoute
   ApiPublicProviderCommandWorkerRoute: typeof ApiPublicProviderCommandWorkerRoute
   ApiPublicProviderEventProcessorRoute: typeof ApiPublicProviderEventProcessorRoute
@@ -674,6 +688,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPlatformProviderWebhooksRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/provider-activation': {
+      id: '/api/public/provider-activation'
+      path: '/api/public/provider-activation'
+      fullPath: '/api/public/provider-activation'
+      preLoaderRoute: typeof ApiPublicProviderActivationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/provider-api': {
       id: '/api/public/provider-api'
       path: '/api/public/provider-api'
@@ -783,6 +804,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicNotificationWorkerRoute: ApiPublicNotificationWorkerRoute,
   ApiPublicPlatformProviderWebhooksRoute:
     ApiPublicPlatformProviderWebhooksRoute,
+  ApiPublicProviderActivationRoute: ApiPublicProviderActivationRoute,
   ApiPublicProviderApiRoute: ApiPublicProviderApiRoute,
   ApiPublicProviderCommandWorkerRoute: ApiPublicProviderCommandWorkerRoute,
   ApiPublicProviderEventProcessorRoute: ApiPublicProviderEventProcessorRoute,
