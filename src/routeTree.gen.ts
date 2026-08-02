@@ -24,14 +24,19 @@ import { Route as ScenarioLabRouteImport } from './routes/scenario-lab'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedBusinessRouteImport } from './routes/_authenticated/business'
 import { Route as AuthenticatedBusinessWorkspaceRouteImport } from './routes/_authenticated/business-workspace'
+import { Route as AuthenticatedControlRoomRouteImport } from './routes/_authenticated/control-room'
 import { Route as AuthenticatedMerchantRouteImport } from './routes/_authenticated/merchant'
 import { Route as AuthenticatedPersonalRouteImport } from './routes/_authenticated/personal'
 import { Route as AuthenticatedPersonalWorkspaceRouteImport } from './routes/_authenticated/personal-workspace'
 import { Route as AuthenticatedProviderIntegrationRouteImport } from './routes/_authenticated/provider-integration'
 import { Route as AuthenticatedZorynpayWorkspaceRouteImport } from './routes/_authenticated/zorynpay-workspace'
 import { Route as ApiPublicDemoResetRouteImport } from './routes/api/public/demo-reset'
+import { Route as ApiPublicNotificationWorkerRouteImport } from './routes/api/public/notification-worker'
 import { Route as ApiPublicPlatformProviderWebhooksRouteImport } from './routes/api/public/platform-provider-webhooks'
 import { Route as ApiPublicProviderApiRouteImport } from './routes/api/public/provider-api'
+import { Route as ApiPublicProviderCommandWorkerRouteImport } from './routes/api/public/provider-command-worker'
+import { Route as ApiPublicProviderEventProcessorRouteImport } from './routes/api/public/provider-event-processor'
+import { Route as ApiPublicProviderHealthRouteImport } from './routes/api/public/provider-health'
 import { Route as ApiPublicProviderJobsRouteImport } from './routes/api/public/provider-jobs'
 import { Route as ApiPublicProviderWebhooksRouteImport } from './routes/api/public/provider-webhooks'
 
@@ -110,6 +115,12 @@ const AuthenticatedBusinessWorkspaceRoute =
     path: '/business-workspace',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedControlRoomRoute =
+  AuthenticatedControlRoomRouteImport.update({
+    id: '/control-room',
+    path: '/control-room',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedMerchantRoute = AuthenticatedMerchantRouteImport.update({
   id: '/merchant',
   path: '/merchant',
@@ -143,6 +154,12 @@ const ApiPublicDemoResetRoute = ApiPublicDemoResetRouteImport.update({
   path: '/api/public/demo-reset',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicNotificationWorkerRoute =
+  ApiPublicNotificationWorkerRouteImport.update({
+    id: '/api/public/notification-worker',
+    path: '/api/public/notification-worker',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicPlatformProviderWebhooksRoute =
   ApiPublicPlatformProviderWebhooksRouteImport.update({
     id: '/api/public/platform-provider-webhooks',
@@ -152,6 +169,23 @@ const ApiPublicPlatformProviderWebhooksRoute =
 const ApiPublicProviderApiRoute = ApiPublicProviderApiRouteImport.update({
   id: '/api/public/provider-api',
   path: '/api/public/provider-api',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicProviderCommandWorkerRoute =
+  ApiPublicProviderCommandWorkerRouteImport.update({
+    id: '/api/public/provider-command-worker',
+    path: '/api/public/provider-command-worker',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicProviderEventProcessorRoute =
+  ApiPublicProviderEventProcessorRouteImport.update({
+    id: '/api/public/provider-event-processor',
+    path: '/api/public/provider-event-processor',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicProviderHealthRoute = ApiPublicProviderHealthRouteImport.update({
+  id: '/api/public/provider-health',
+  path: '/api/public/provider-health',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicProviderJobsRoute = ApiPublicProviderJobsRouteImport.update({
@@ -181,14 +215,19 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/business': typeof AuthenticatedBusinessRoute
   '/business-workspace': typeof AuthenticatedBusinessWorkspaceRoute
+  '/control-room': typeof AuthenticatedControlRoomRoute
   '/merchant': typeof AuthenticatedMerchantRoute
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
   '/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
   '/api/public/demo-reset': typeof ApiPublicDemoResetRoute
+  '/api/public/notification-worker': typeof ApiPublicNotificationWorkerRoute
   '/api/public/platform-provider-webhooks': typeof ApiPublicPlatformProviderWebhooksRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
+  '/api/public/provider-command-worker': typeof ApiPublicProviderCommandWorkerRoute
+  '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
+  '/api/public/provider-health': typeof ApiPublicProviderHealthRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
@@ -207,14 +246,19 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/business': typeof AuthenticatedBusinessRoute
   '/business-workspace': typeof AuthenticatedBusinessWorkspaceRoute
+  '/control-room': typeof AuthenticatedControlRoomRoute
   '/merchant': typeof AuthenticatedMerchantRoute
   '/personal': typeof AuthenticatedPersonalRoute
   '/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
   '/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
   '/api/public/demo-reset': typeof ApiPublicDemoResetRoute
+  '/api/public/notification-worker': typeof ApiPublicNotificationWorkerRoute
   '/api/public/platform-provider-webhooks': typeof ApiPublicPlatformProviderWebhooksRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
+  '/api/public/provider-command-worker': typeof ApiPublicProviderCommandWorkerRoute
+  '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
+  '/api/public/provider-health': typeof ApiPublicProviderHealthRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
@@ -235,14 +279,19 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/business': typeof AuthenticatedBusinessRoute
   '/_authenticated/business-workspace': typeof AuthenticatedBusinessWorkspaceRoute
+  '/_authenticated/control-room': typeof AuthenticatedControlRoomRoute
   '/_authenticated/merchant': typeof AuthenticatedMerchantRoute
   '/_authenticated/personal': typeof AuthenticatedPersonalRoute
   '/_authenticated/personal-workspace': typeof AuthenticatedPersonalWorkspaceRoute
   '/_authenticated/provider-integration': typeof AuthenticatedProviderIntegrationRoute
   '/_authenticated/zorynpay-workspace': typeof AuthenticatedZorynpayWorkspaceRoute
   '/api/public/demo-reset': typeof ApiPublicDemoResetRoute
+  '/api/public/notification-worker': typeof ApiPublicNotificationWorkerRoute
   '/api/public/platform-provider-webhooks': typeof ApiPublicPlatformProviderWebhooksRoute
   '/api/public/provider-api': typeof ApiPublicProviderApiRoute
+  '/api/public/provider-command-worker': typeof ApiPublicProviderCommandWorkerRoute
+  '/api/public/provider-event-processor': typeof ApiPublicProviderEventProcessorRoute
+  '/api/public/provider-health': typeof ApiPublicProviderHealthRoute
   '/api/public/provider-jobs': typeof ApiPublicProviderJobsRoute
   '/api/public/provider-webhooks': typeof ApiPublicProviderWebhooksRoute
 }
@@ -263,14 +312,19 @@ export interface FileRouteTypes {
     | '/admin'
     | '/business'
     | '/business-workspace'
+    | '/control-room'
     | '/merchant'
     | '/personal'
     | '/personal-workspace'
     | '/provider-integration'
     | '/zorynpay-workspace'
     | '/api/public/demo-reset'
+    | '/api/public/notification-worker'
     | '/api/public/platform-provider-webhooks'
     | '/api/public/provider-api'
+    | '/api/public/provider-command-worker'
+    | '/api/public/provider-event-processor'
+    | '/api/public/provider-health'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
   fileRoutesByTo: FileRoutesByTo
@@ -289,14 +343,19 @@ export interface FileRouteTypes {
     | '/admin'
     | '/business'
     | '/business-workspace'
+    | '/control-room'
     | '/merchant'
     | '/personal'
     | '/personal-workspace'
     | '/provider-integration'
     | '/zorynpay-workspace'
     | '/api/public/demo-reset'
+    | '/api/public/notification-worker'
     | '/api/public/platform-provider-webhooks'
     | '/api/public/provider-api'
+    | '/api/public/provider-command-worker'
+    | '/api/public/provider-event-processor'
+    | '/api/public/provider-health'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
   id:
@@ -316,14 +375,19 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/business'
     | '/_authenticated/business-workspace'
+    | '/_authenticated/control-room'
     | '/_authenticated/merchant'
     | '/_authenticated/personal'
     | '/_authenticated/personal-workspace'
     | '/_authenticated/provider-integration'
     | '/_authenticated/zorynpay-workspace'
     | '/api/public/demo-reset'
+    | '/api/public/notification-worker'
     | '/api/public/platform-provider-webhooks'
     | '/api/public/provider-api'
+    | '/api/public/provider-command-worker'
+    | '/api/public/provider-event-processor'
+    | '/api/public/provider-health'
     | '/api/public/provider-jobs'
     | '/api/public/provider-webhooks'
   fileRoutesById: FileRoutesById
@@ -342,8 +406,12 @@ export interface RootRouteChildren {
   ProviderReadyRoute: typeof ProviderReadyRoute
   ScenarioLabRoute: typeof ScenarioLabRoute
   ApiPublicDemoResetRoute: typeof ApiPublicDemoResetRoute
+  ApiPublicNotificationWorkerRoute: typeof ApiPublicNotificationWorkerRoute
   ApiPublicPlatformProviderWebhooksRoute: typeof ApiPublicPlatformProviderWebhooksRoute
   ApiPublicProviderApiRoute: typeof ApiPublicProviderApiRoute
+  ApiPublicProviderCommandWorkerRoute: typeof ApiPublicProviderCommandWorkerRoute
+  ApiPublicProviderEventProcessorRoute: typeof ApiPublicProviderEventProcessorRoute
+  ApiPublicProviderHealthRoute: typeof ApiPublicProviderHealthRoute
   ApiPublicProviderJobsRoute: typeof ApiPublicProviderJobsRoute
   ApiPublicProviderWebhooksRoute: typeof ApiPublicProviderWebhooksRoute
 }
@@ -455,6 +523,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBusinessWorkspaceRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/control-room': {
+      id: '/_authenticated/control-room'
+      path: '/control-room'
+      fullPath: '/control-room'
+      preLoaderRoute: typeof AuthenticatedControlRoomRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/merchant': {
       id: '/_authenticated/merchant'
       path: '/merchant'
@@ -497,6 +572,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDemoResetRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/notification-worker': {
+      id: '/api/public/notification-worker'
+      path: '/api/public/notification-worker'
+      fullPath: '/api/public/notification-worker'
+      preLoaderRoute: typeof ApiPublicNotificationWorkerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/platform-provider-webhooks': {
       id: '/api/public/platform-provider-webhooks'
       path: '/api/public/platform-provider-webhooks'
@@ -509,6 +591,27 @@ declare module '@tanstack/react-router' {
       path: '/api/public/provider-api'
       fullPath: '/api/public/provider-api'
       preLoaderRoute: typeof ApiPublicProviderApiRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/provider-command-worker': {
+      id: '/api/public/provider-command-worker'
+      path: '/api/public/provider-command-worker'
+      fullPath: '/api/public/provider-command-worker'
+      preLoaderRoute: typeof ApiPublicProviderCommandWorkerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/provider-event-processor': {
+      id: '/api/public/provider-event-processor'
+      path: '/api/public/provider-event-processor'
+      fullPath: '/api/public/provider-event-processor'
+      preLoaderRoute: typeof ApiPublicProviderEventProcessorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/provider-health': {
+      id: '/api/public/provider-health'
+      path: '/api/public/provider-health'
+      fullPath: '/api/public/provider-health'
+      preLoaderRoute: typeof ApiPublicProviderHealthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/provider-jobs': {
@@ -532,6 +635,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedBusinessRoute: typeof AuthenticatedBusinessRoute
   AuthenticatedBusinessWorkspaceRoute: typeof AuthenticatedBusinessWorkspaceRoute
+  AuthenticatedControlRoomRoute: typeof AuthenticatedControlRoomRoute
   AuthenticatedMerchantRoute: typeof AuthenticatedMerchantRoute
   AuthenticatedPersonalRoute: typeof AuthenticatedPersonalRoute
   AuthenticatedPersonalWorkspaceRoute: typeof AuthenticatedPersonalWorkspaceRoute
@@ -543,6 +647,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedBusinessRoute: AuthenticatedBusinessRoute,
   AuthenticatedBusinessWorkspaceRoute: AuthenticatedBusinessWorkspaceRoute,
+  AuthenticatedControlRoomRoute: AuthenticatedControlRoomRoute,
   AuthenticatedMerchantRoute: AuthenticatedMerchantRoute,
   AuthenticatedPersonalRoute: AuthenticatedPersonalRoute,
   AuthenticatedPersonalWorkspaceRoute: AuthenticatedPersonalWorkspaceRoute,
@@ -567,9 +672,13 @@ const rootRouteChildren: RootRouteChildren = {
   ProviderReadyRoute: ProviderReadyRoute,
   ScenarioLabRoute: ScenarioLabRoute,
   ApiPublicDemoResetRoute: ApiPublicDemoResetRoute,
+  ApiPublicNotificationWorkerRoute: ApiPublicNotificationWorkerRoute,
   ApiPublicPlatformProviderWebhooksRoute:
     ApiPublicPlatformProviderWebhooksRoute,
   ApiPublicProviderApiRoute: ApiPublicProviderApiRoute,
+  ApiPublicProviderCommandWorkerRoute: ApiPublicProviderCommandWorkerRoute,
+  ApiPublicProviderEventProcessorRoute: ApiPublicProviderEventProcessorRoute,
+  ApiPublicProviderHealthRoute: ApiPublicProviderHealthRoute,
   ApiPublicProviderJobsRoute: ApiPublicProviderJobsRoute,
   ApiPublicProviderWebhooksRoute: ApiPublicProviderWebhooksRoute,
 }

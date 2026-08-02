@@ -579,6 +579,62 @@ export type Database = {
           },
         ]
       }
+      platform_accounts: {
+        Row: {
+          account_type: string
+          available_balance_minor: number
+          booked_balance_minor: number
+          created_at: string
+          currency: string
+          iban: string | null
+          id: string
+          organisation_id: string | null
+          owner_user_id: string | null
+          provider: string | null
+          provider_external_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          account_type: string
+          available_balance_minor?: number
+          booked_balance_minor?: number
+          created_at?: string
+          currency?: string
+          iban?: string | null
+          id?: string
+          organisation_id?: string | null
+          owner_user_id?: string | null
+          provider?: string | null
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          account_type?: string
+          available_balance_minor?: number
+          booked_balance_minor?: number
+          created_at?: string
+          currency?: string
+          iban?: string | null
+          id?: string
+          organisation_id?: string | null
+          owner_user_id?: string | null
+          provider?: string | null
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_accounts_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "platform_organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_audit_events: {
         Row: {
           action: string
@@ -611,6 +667,224 @@ export type Database = {
           organisation_id?: string | null
         }
         Relationships: []
+      }
+      platform_beneficiaries: {
+        Row: {
+          bic: string | null
+          created_at: string
+          iban: string
+          id: string
+          name: string
+          organisation_id: string | null
+          owner_user_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          bic?: string | null
+          created_at?: string
+          iban: string
+          id?: string
+          name: string
+          organisation_id?: string | null
+          owner_user_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          bic?: string | null
+          created_at?: string
+          iban?: string
+          id?: string
+          name?: string
+          organisation_id?: string | null
+          owner_user_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_beneficiaries_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "platform_organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_cards: {
+        Row: {
+          account_id: string
+          card_type: string
+          cardholder_user_id: string | null
+          created_at: string
+          id: string
+          last_four: string | null
+          provider_external_id: string | null
+          spending_limit_minor: number | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          card_type: string
+          cardholder_user_id?: string | null
+          created_at?: string
+          id?: string
+          last_four?: string | null
+          provider_external_id?: string | null
+          spending_limit_minor?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          card_type?: string
+          cardholder_user_id?: string | null
+          created_at?: string
+          id?: string
+          last_four?: string | null
+          provider_external_id?: string | null
+          spending_limit_minor?: number | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_cards_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "platform_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_incidents: {
+        Row: {
+          id: string
+          metadata: Json
+          provider: string | null
+          resolved_at: string | null
+          severity: string
+          started_at: string
+          status: string
+          summary: string | null
+          title: string
+        }
+        Insert: {
+          id?: string
+          metadata?: Json
+          provider?: string | null
+          resolved_at?: string | null
+          severity: string
+          started_at?: string
+          status?: string
+          summary?: string | null
+          title: string
+        }
+        Update: {
+          id?: string
+          metadata?: Json
+          provider?: string | null
+          resolved_at?: string | null
+          severity?: string
+          started_at?: string
+          status?: string
+          summary?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
+      platform_merchants: {
+        Row: {
+          created_at: string
+          display_name: string
+          id: string
+          organisation_id: string
+          provider_external_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name: string
+          id?: string
+          organisation_id: string
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string
+          id?: string
+          organisation_id?: string
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_merchants_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "platform_organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_notification_outbox: {
+        Row: {
+          attempt_count: number
+          channel: string
+          created_at: string
+          id: string
+          last_error: string | null
+          next_attempt_at: string | null
+          organisation_id: string | null
+          payload: Json
+          sent_at: string | null
+          status: string
+          template_key: string
+          user_id: string | null
+        }
+        Insert: {
+          attempt_count?: number
+          channel: string
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string | null
+          organisation_id?: string | null
+          payload?: Json
+          sent_at?: string | null
+          status?: string
+          template_key: string
+          user_id?: string | null
+        }
+        Update: {
+          attempt_count?: number
+          channel?: string
+          created_at?: string
+          id?: string
+          last_error?: string | null
+          next_attempt_at?: string | null
+          organisation_id?: string | null
+          payload?: Json
+          sent_at?: string | null
+          status?: string
+          template_key?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_notification_outbox_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "platform_organisations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       platform_onboarding_cases: {
         Row: {
@@ -651,6 +925,219 @@ export type Database = {
           status?: string
           updated_at?: string
           user_id?: string | null
+        }
+        Relationships: []
+      }
+      platform_organisation_members: {
+        Row: {
+          created_at: string
+          organisation_id: string
+          role: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          organisation_id: string
+          role: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          organisation_id?: string
+          role?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_organisation_members_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "platform_organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_organisations: {
+        Row: {
+          created_at: string
+          id: string
+          legal_form: string | null
+          legal_name: string | null
+          name: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          legal_form?: string | null
+          legal_name?: string | null
+          name: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          legal_form?: string | null
+          legal_name?: string | null
+          name?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      platform_payments: {
+        Row: {
+          amount_minor: number
+          created_at: string
+          currency: string
+          id: string
+          merchant_id: string
+          provider_external_id: string | null
+          reference: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_minor: number
+          created_at?: string
+          currency?: string
+          id?: string
+          merchant_id: string
+          provider_external_id?: string | null
+          reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_minor?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          merchant_id?: string
+          provider_external_id?: string | null
+          reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_payments_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "platform_merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_pots: {
+        Row: {
+          account_id: string
+          balance_minor: number
+          created_at: string
+          id: string
+          name: string
+          target_date: string | null
+          target_minor: number | null
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          balance_minor?: number
+          created_at?: string
+          id?: string
+          name: string
+          target_date?: string | null
+          target_minor?: number | null
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          balance_minor?: number
+          created_at?: string
+          id?: string
+          name?: string
+          target_date?: string | null
+          target_minor?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_pots_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "platform_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_profiles: {
+        Row: {
+          created_at: string
+          display_name: string | null
+          id: string
+          locale: string
+          phone: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          display_name?: string | null
+          id: string
+          locale?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          locale?: string
+          phone?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      platform_provider_alerts: {
+        Row: {
+          alert_type: string
+          created_at: string
+          details: Json
+          id: string
+          provider: string | null
+          resolved_at: string | null
+          severity: string
+          status: string
+          title: string
+        }
+        Insert: {
+          alert_type: string
+          created_at?: string
+          details?: Json
+          id?: string
+          provider?: string | null
+          resolved_at?: string | null
+          severity: string
+          status?: string
+          title: string
+        }
+        Update: {
+          alert_type?: string
+          created_at?: string
+          details?: Json
+          id?: string
+          provider?: string | null
+          resolved_at?: string | null
+          severity?: string
+          status?: string
+          title?: string
         }
         Relationships: []
       }
@@ -824,6 +1311,240 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      platform_provider_worker_locks: {
+        Row: {
+          command_id: string
+          expires_at: string
+          locked_at: string
+          locked_by: string
+        }
+        Insert: {
+          command_id: string
+          expires_at: string
+          locked_at?: string
+          locked_by: string
+        }
+        Update: {
+          command_id?: string
+          expires_at?: string
+          locked_at?: string
+          locked_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_provider_worker_locks_command_id_fkey"
+            columns: ["command_id"]
+            isOneToOne: true
+            referencedRelation: "platform_provider_commands"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_reconciliation_runs: {
+        Row: {
+          actual_minor: number
+          completed_at: string | null
+          details: Json
+          difference_minor: number | null
+          expected_minor: number
+          id: string
+          run_type: string
+          started_at: string
+          status: string
+        }
+        Insert: {
+          actual_minor?: number
+          completed_at?: string | null
+          details?: Json
+          difference_minor?: number | null
+          expected_minor?: number
+          id?: string
+          run_type: string
+          started_at?: string
+          status: string
+        }
+        Update: {
+          actual_minor?: number
+          completed_at?: string | null
+          details?: Json
+          difference_minor?: number | null
+          expected_minor?: number
+          id?: string
+          run_type?: string
+          started_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      platform_settlements: {
+        Row: {
+          created_at: string
+          expected_at: string | null
+          fees_minor: number
+          gross_minor: number
+          id: string
+          merchant_id: string
+          net_minor: number
+          paid_at: string | null
+          provider_external_id: string | null
+          refunds_minor: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          expected_at?: string | null
+          fees_minor?: number
+          gross_minor?: number
+          id?: string
+          merchant_id: string
+          net_minor?: number
+          paid_at?: string | null
+          provider_external_id?: string | null
+          refunds_minor?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          expected_at?: string | null
+          fees_minor?: number
+          gross_minor?: number
+          id?: string
+          merchant_id?: string
+          net_minor?: number
+          paid_at?: string | null
+          provider_external_id?: string | null
+          refunds_minor?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_settlements_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "platform_merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_support_cases: {
+        Row: {
+          assigned_to: string | null
+          case_type: string
+          created_at: string
+          description: string | null
+          due_at: string | null
+          id: string
+          organisation_id: string | null
+          priority: string
+          resolved_at: string | null
+          status: string
+          subject: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          assigned_to?: string | null
+          case_type: string
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          organisation_id?: string | null
+          priority?: string
+          resolved_at?: string | null
+          status?: string
+          subject: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          assigned_to?: string | null
+          case_type?: string
+          created_at?: string
+          description?: string | null
+          due_at?: string | null
+          id?: string
+          organisation_id?: string | null
+          priority?: string
+          resolved_at?: string | null
+          status?: string
+          subject?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_support_cases_organisation_id_fkey"
+            columns: ["organisation_id"]
+            isOneToOne: false
+            referencedRelation: "platform_organisations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_transfers: {
+        Row: {
+          account_id: string
+          amount_minor: number
+          beneficiary_id: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          id: string
+          idempotency_key: string
+          provider_external_id: string | null
+          reference: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          amount_minor: number
+          beneficiary_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          idempotency_key: string
+          provider_external_id?: string | null
+          reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          amount_minor?: number
+          beneficiary_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          id?: string
+          idempotency_key?: string
+          provider_external_id?: string | null
+          reference?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_transfers_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "platform_accounts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "platform_transfers_beneficiary_id_fkey"
+            columns: ["beneficiary_id"]
+            isOneToOne: false
+            referencedRelation: "platform_beneficiaries"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pots: {
         Row: {
@@ -1354,6 +2075,51 @@ export type Database = {
       }
       is_org_member: {
         Args: { _org_id: string; _user_id: string }
+        Returns: boolean
+      }
+      platform_can_access_account: {
+        Args: { _account_id: string; _user_id: string }
+        Returns: boolean
+      }
+      platform_can_access_merchant: {
+        Args: { _merchant_id: string; _user_id: string }
+        Returns: boolean
+      }
+      platform_claim_provider_commands: {
+        Args: { p_limit?: number; p_worker_id: string }
+        Returns: {
+          aggregate_id: string
+          aggregate_type: string
+          attempt_count: number
+          command_type: string
+          created_at: string
+          created_by: string | null
+          id: string
+          idempotency_key: string
+          last_error: string | null
+          next_attempt_at: string | null
+          payload: Json
+          processed_at: string | null
+          provider: string
+          status: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "platform_provider_commands"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      platform_complete_provider_command: {
+        Args: { p_command_id: string; p_error?: string; p_status: string }
+        Returns: undefined
+      }
+      platform_is_org_member: {
+        Args: { _org_id: string; _user_id: string }
+        Returns: boolean
+      }
+      platform_owns_account: {
+        Args: { _account_id: string; _user_id: string }
         Returns: boolean
       }
     }
