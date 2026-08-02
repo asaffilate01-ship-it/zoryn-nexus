@@ -583,9 +583,11 @@ export type Database = {
         Row: {
           account_type: string
           available_balance_minor: number
+          bic: string | null
           booked_balance_minor: number
           created_at: string
           currency: string
+          customer_id: string | null
           iban: string | null
           id: string
           organisation_id: string | null
@@ -598,9 +600,11 @@ export type Database = {
         Insert: {
           account_type: string
           available_balance_minor?: number
+          bic?: string | null
           booked_balance_minor?: number
           created_at?: string
           currency?: string
+          customer_id?: string | null
           iban?: string | null
           id?: string
           organisation_id?: string | null
@@ -613,9 +617,11 @@ export type Database = {
         Update: {
           account_type?: string
           available_balance_minor?: number
+          bic?: string | null
           booked_balance_minor?: number
           created_at?: string
           currency?: string
+          customer_id?: string | null
           iban?: string | null
           id?: string
           organisation_id?: string | null
@@ -626,6 +632,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "platform_accounts_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "platform_customers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "platform_accounts_organisation_id_fkey"
             columns: ["organisation_id"]
@@ -672,6 +685,7 @@ export type Database = {
         Row: {
           bic: string | null
           created_at: string
+          customer_id: string | null
           iban: string
           id: string
           name: string
@@ -683,6 +697,7 @@ export type Database = {
         Insert: {
           bic?: string | null
           created_at?: string
+          customer_id?: string | null
           iban: string
           id?: string
           name: string
@@ -694,6 +709,7 @@ export type Database = {
         Update: {
           bic?: string | null
           created_at?: string
+          customer_id?: string | null
           iban?: string
           id?: string
           name?: string
@@ -703,6 +719,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "platform_beneficiaries_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "platform_customers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "platform_beneficiaries_organisation_id_fkey"
             columns: ["organisation_id"]
@@ -715,11 +738,15 @@ export type Database = {
       platform_cards: {
         Row: {
           account_id: string
+          atm_enabled: boolean
           card_type: string
           cardholder_user_id: string | null
+          contactless_enabled: boolean
           created_at: string
           id: string
+          international_enabled: boolean
           last_four: string | null
+          online_enabled: boolean
           provider_external_id: string | null
           spending_limit_minor: number | null
           status: string
@@ -727,11 +754,15 @@ export type Database = {
         }
         Insert: {
           account_id: string
+          atm_enabled?: boolean
           card_type: string
           cardholder_user_id?: string | null
+          contactless_enabled?: boolean
           created_at?: string
           id?: string
+          international_enabled?: boolean
           last_four?: string | null
+          online_enabled?: boolean
           provider_external_id?: string | null
           spending_limit_minor?: number | null
           status?: string
@@ -739,11 +770,15 @@ export type Database = {
         }
         Update: {
           account_id?: string
+          atm_enabled?: boolean
           card_type?: string
           cardholder_user_id?: string | null
+          contactless_enabled?: boolean
           created_at?: string
           id?: string
+          international_enabled?: boolean
           last_four?: string | null
+          online_enabled?: boolean
           provider_external_id?: string | null
           spending_limit_minor?: number | null
           status?: string
@@ -759,10 +794,89 @@ export type Database = {
           },
         ]
       }
+      platform_chargebacks: {
+        Row: {
+          amount_minor: number
+          created_at: string
+          defence_due_at: string | null
+          id: string
+          payment_id: string
+          provider_external_id: string | null
+          reason: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_minor: number
+          created_at?: string
+          defence_due_at?: string | null
+          id?: string
+          payment_id: string
+          provider_external_id?: string | null
+          reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_minor?: number
+          created_at?: string
+          defence_due_at?: string | null
+          id?: string
+          payment_id?: string
+          provider_external_id?: string | null
+          reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_chargebacks_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "platform_payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_customers: {
+        Row: {
+          created_at: string
+          customer_type: string
+          id: string
+          provider: string | null
+          provider_external_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          customer_type: string
+          id?: string
+          provider?: string | null
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          customer_type?: string
+          id?: string
+          provider?: string | null
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       platform_incidents: {
         Row: {
+          follow_up: string | null
           id: string
           metadata: Json
+          owner_user_id: string | null
           provider: string | null
           resolved_at: string | null
           severity: string
@@ -772,8 +886,10 @@ export type Database = {
           title: string
         }
         Insert: {
+          follow_up?: string | null
           id?: string
           metadata?: Json
+          owner_user_id?: string | null
           provider?: string | null
           resolved_at?: string | null
           severity: string
@@ -783,8 +899,10 @@ export type Database = {
           title: string
         }
         Update: {
+          follow_up?: string | null
           id?: string
           metadata?: Json
+          owner_user_id?: string | null
           provider?: string | null
           resolved_at?: string | null
           severity?: string
@@ -795,32 +913,92 @@ export type Database = {
         }
         Relationships: []
       }
-      platform_merchants: {
+      platform_launch_acceptance: {
         Row: {
+          adyen_passed: boolean
+          approved: boolean | null
+          approved_at: string | null
+          approved_by: string | null
           created_at: string
-          display_name: string
+          engineering_passed: boolean
           id: string
-          organisation_id: string
-          provider_external_id: string | null
-          status: string
+          legal_passed: boolean
+          operations_passed: boolean
+          pilot_passed: boolean
+          release_name: string
+          security_passed: boolean
+          swan_passed: boolean
           updated_at: string
         }
         Insert: {
+          adyen_passed?: boolean
+          approved?: boolean | null
+          approved_at?: string | null
+          approved_by?: string | null
           created_at?: string
-          display_name: string
+          engineering_passed?: boolean
           id?: string
-          organisation_id: string
-          provider_external_id?: string | null
-          status?: string
+          legal_passed?: boolean
+          operations_passed?: boolean
+          pilot_passed?: boolean
+          release_name: string
+          security_passed?: boolean
+          swan_passed?: boolean
           updated_at?: string
         }
         Update: {
+          adyen_passed?: boolean
+          approved?: boolean | null
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          engineering_passed?: boolean
+          id?: string
+          legal_passed?: boolean
+          operations_passed?: boolean
+          pilot_passed?: boolean
+          release_name?: string
+          security_passed?: boolean
+          swan_passed?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      platform_merchants: {
+        Row: {
+          category_code: string | null
+          created_at: string
+          display_name: string
+          id: string
+          legal_name: string | null
+          organisation_id: string
+          provider_external_id: string | null
+          status: string
+          trading_name: string | null
+          updated_at: string
+        }
+        Insert: {
+          category_code?: string | null
+          created_at?: string
+          display_name: string
+          id?: string
+          legal_name?: string | null
+          organisation_id: string
+          provider_external_id?: string | null
+          status?: string
+          trading_name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          category_code?: string | null
           created_at?: string
           display_name?: string
           id?: string
+          legal_name?: string | null
           organisation_id?: string
           provider_external_id?: string | null
           status?: string
+          trading_name?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -886,6 +1064,53 @@ export type Database = {
           },
         ]
       }
+      platform_onboarding_actions: {
+        Row: {
+          action_type: string
+          completed_at: string | null
+          created_at: string
+          due_at: string | null
+          id: string
+          onboarding_case_id: string
+          payload: Json
+          status: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          action_type: string
+          completed_at?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          onboarding_case_id: string
+          payload?: Json
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          action_type?: string
+          completed_at?: string | null
+          created_at?: string
+          due_at?: string | null
+          id?: string
+          onboarding_case_id?: string
+          payload?: Json
+          status?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_onboarding_actions_onboarding_case_id_fkey"
+            columns: ["onboarding_case_id"]
+            isOneToOne: false
+            referencedRelation: "platform_onboarding_cases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_onboarding_cases: {
         Row: {
           created_at: string
@@ -932,6 +1157,7 @@ export type Database = {
         Row: {
           created_at: string
           organisation_id: string
+          payment_limit_minor: number | null
           role: string
           status: string
           updated_at: string
@@ -940,6 +1166,7 @@ export type Database = {
         Insert: {
           created_at?: string
           organisation_id: string
+          payment_limit_minor?: number | null
           role: string
           status?: string
           updated_at?: string
@@ -948,6 +1175,7 @@ export type Database = {
         Update: {
           created_at?: string
           organisation_id?: string
+          payment_limit_minor?: number | null
           role?: string
           status?: string
           updated_at?: string
@@ -970,7 +1198,9 @@ export type Database = {
           legal_form: string | null
           legal_name: string | null
           name: string
+          registration_number: string | null
           status: string
+          trading_name: string | null
           updated_at: string
         }
         Insert: {
@@ -979,7 +1209,9 @@ export type Database = {
           legal_form?: string | null
           legal_name?: string | null
           name: string
+          registration_number?: string | null
           status?: string
+          trading_name?: string | null
           updated_at?: string
         }
         Update: {
@@ -988,43 +1220,107 @@ export type Database = {
           legal_form?: string | null
           legal_name?: string | null
           name?: string
+          registration_number?: string | null
           status?: string
+          trading_name?: string | null
           updated_at?: string
         }
         Relationships: []
       }
-      platform_payments: {
+      platform_payment_links: {
         Row: {
-          amount_minor: number
+          amount_minor: number | null
           created_at: string
           currency: string
+          expires_at: string | null
           id: string
+          label: string | null
           merchant_id: string
           provider_external_id: string | null
-          reference: string | null
+          public_url: string | null
           status: string
           updated_at: string
         }
         Insert: {
-          amount_minor: number
+          amount_minor?: number | null
           created_at?: string
           currency?: string
+          expires_at?: string | null
           id?: string
+          label?: string | null
           merchant_id: string
           provider_external_id?: string | null
-          reference?: string | null
+          public_url?: string | null
           status?: string
           updated_at?: string
         }
         Update: {
+          amount_minor?: number | null
+          created_at?: string
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          label?: string | null
+          merchant_id?: string
+          provider_external_id?: string | null
+          public_url?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_payment_links_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "platform_merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_payments: {
+        Row: {
+          amount_minor: number
+          captured_minor: number
+          created_at: string
+          currency: string
+          id: string
+          merchant_id: string
+          payment_method: string | null
+          provider_external_id: string | null
+          reference: string | null
+          refunded_minor: number
+          status: string
+          store_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_minor: number
+          captured_minor?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          merchant_id: string
+          payment_method?: string | null
+          provider_external_id?: string | null
+          reference?: string | null
+          refunded_minor?: number
+          status?: string
+          store_id?: string | null
+          updated_at?: string
+        }
+        Update: {
           amount_minor?: number
+          captured_minor?: number
           created_at?: string
           currency?: string
           id?: string
           merchant_id?: string
+          payment_method?: string | null
           provider_external_id?: string | null
           reference?: string | null
+          refunded_minor?: number
           status?: string
+          store_id?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -1033,6 +1329,13 @@ export type Database = {
             columns: ["merchant_id"]
             isOneToOne: false
             referencedRelation: "platform_merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "platform_payments_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "platform_stores"
             referencedColumns: ["id"]
           },
         ]
@@ -1391,6 +1694,7 @@ export type Database = {
           difference_minor: number | null
           expected_minor: number
           id: string
+          provider: string | null
           run_type: string
           started_at: string
           status: string
@@ -1402,6 +1706,7 @@ export type Database = {
           difference_minor?: number | null
           expected_minor?: number
           id?: string
+          provider?: string | null
           run_type: string
           started_at?: string
           status: string
@@ -1413,14 +1718,57 @@ export type Database = {
           difference_minor?: number | null
           expected_minor?: number
           id?: string
+          provider?: string | null
           run_type?: string
           started_at?: string
           status?: string
         }
         Relationships: []
       }
+      platform_refunds: {
+        Row: {
+          amount_minor: number
+          created_at: string
+          id: string
+          payment_id: string
+          provider_external_id: string | null
+          reason: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_minor: number
+          created_at?: string
+          id?: string
+          payment_id: string
+          provider_external_id?: string | null
+          reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_minor?: number
+          created_at?: string
+          id?: string
+          payment_id?: string
+          provider_external_id?: string | null
+          reason?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_refunds_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "platform_payments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_settlements: {
         Row: {
+          chargebacks_minor: number
           created_at: string
           expected_at: string | null
           fees_minor: number
@@ -1435,6 +1783,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          chargebacks_minor?: number
           created_at?: string
           expected_at?: string | null
           fees_minor?: number
@@ -1449,6 +1798,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          chargebacks_minor?: number
           created_at?: string
           expected_at?: string | null
           fees_minor?: number
@@ -1465,6 +1815,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "platform_settlements_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "platform_merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_stores: {
+        Row: {
+          address: Json
+          created_at: string
+          id: string
+          merchant_id: string
+          name: string
+          provider_external_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          address?: Json
+          created_at?: string
+          id?: string
+          merchant_id: string
+          name: string
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          address?: Json
+          created_at?: string
+          id?: string
+          merchant_id?: string
+          name?: string
+          provider_external_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_stores_merchant_id_fkey"
             columns: ["merchant_id"]
             isOneToOne: false
             referencedRelation: "platform_merchants"
@@ -1528,11 +1919,134 @@ export type Database = {
           },
         ]
       }
+      platform_terminals: {
+        Row: {
+          battery_percent: number | null
+          created_at: string
+          device_reference: string | null
+          id: string
+          last_seen_at: string | null
+          merchant_id: string
+          name: string | null
+          provider_external_id: string | null
+          status: string
+          store_id: string | null
+          terminal_type: string
+          updated_at: string
+        }
+        Insert: {
+          battery_percent?: number | null
+          created_at?: string
+          device_reference?: string | null
+          id?: string
+          last_seen_at?: string | null
+          merchant_id: string
+          name?: string | null
+          provider_external_id?: string | null
+          status?: string
+          store_id?: string | null
+          terminal_type: string
+          updated_at?: string
+        }
+        Update: {
+          battery_percent?: number | null
+          created_at?: string
+          device_reference?: string | null
+          id?: string
+          last_seen_at?: string | null
+          merchant_id?: string
+          name?: string | null
+          provider_external_id?: string | null
+          status?: string
+          store_id?: string | null
+          terminal_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_terminals_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "platform_merchants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "platform_terminals_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "platform_stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      platform_transactions: {
+        Row: {
+          account_id: string
+          amount_minor: number
+          booked_at: string | null
+          counterparty_name: string | null
+          created_at: string
+          currency: string
+          direction: string
+          id: string
+          merchant_name: string | null
+          provider: string | null
+          provider_external_id: string | null
+          reference: string | null
+          status: string
+          transaction_type: string
+          updated_at: string
+        }
+        Insert: {
+          account_id: string
+          amount_minor: number
+          booked_at?: string | null
+          counterparty_name?: string | null
+          created_at?: string
+          currency?: string
+          direction: string
+          id?: string
+          merchant_name?: string | null
+          provider?: string | null
+          provider_external_id?: string | null
+          reference?: string | null
+          status?: string
+          transaction_type: string
+          updated_at?: string
+        }
+        Update: {
+          account_id?: string
+          amount_minor?: number
+          booked_at?: string | null
+          counterparty_name?: string | null
+          created_at?: string
+          currency?: string
+          direction?: string
+          id?: string
+          merchant_name?: string | null
+          provider?: string | null
+          provider_external_id?: string | null
+          reference?: string | null
+          status?: string
+          transaction_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "platform_transactions_account_id_fkey"
+            columns: ["account_id"]
+            isOneToOne: false
+            referencedRelation: "platform_accounts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_transfers: {
         Row: {
           account_id: string
           amount_minor: number
           beneficiary_id: string | null
+          consent_status: string
           created_at: string
           created_by: string | null
           currency: string
@@ -1540,13 +2054,16 @@ export type Database = {
           idempotency_key: string
           provider_external_id: string | null
           reference: string | null
+          scheduled_for: string | null
           status: string
+          transfer_type: string
           updated_at: string
         }
         Insert: {
           account_id: string
           amount_minor: number
           beneficiary_id?: string | null
+          consent_status?: string
           created_at?: string
           created_by?: string | null
           currency?: string
@@ -1554,13 +2071,16 @@ export type Database = {
           idempotency_key: string
           provider_external_id?: string | null
           reference?: string | null
+          scheduled_for?: string | null
           status?: string
+          transfer_type?: string
           updated_at?: string
         }
         Update: {
           account_id?: string
           amount_minor?: number
           beneficiary_id?: string | null
+          consent_status?: string
           created_at?: string
           created_by?: string | null
           currency?: string
@@ -1568,7 +2088,9 @@ export type Database = {
           idempotency_key?: string
           provider_external_id?: string | null
           reference?: string | null
+          scheduled_for?: string | null
           status?: string
+          transfer_type?: string
           updated_at?: string
         }
         Relationships: [

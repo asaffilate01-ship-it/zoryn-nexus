@@ -25,9 +25,9 @@ export type ProviderCommand = {
 };
 
 export type DispatchResult = {
-  externalId?: string;
-  externalStatus?: string;
-  resourceType?: string;
+  externalId?: string | undefined;
+  externalStatus?: string | undefined;
+  resourceType?: string | undefined;
   [key: string]: unknown;
 };
 
@@ -65,6 +65,11 @@ export async function dispatchCommand(command: ProviderCommand): Promise<Dispatc
   const idem = { "Idempotency-Key": command.idempotency_key };
 
   if (command.provider === "swan") {
+    const { SwanCommandSchemas } = await import("@/features/swan/commands");
+    if (command.command_type in SwanCommandSchemas) {
+      const { executeSwanCommand } = await import("@/features/swan/swanAdapter.server");
+      return executeSwanCommand(command);
+    }
     return postJson(
       `${requireEnv("SWAN_API_URL")}/commands`,
       { Authorization: `Bearer ${requireEnv("SWAN_ACCESS_TOKEN")}`, ...idem },
@@ -73,6 +78,11 @@ export async function dispatchCommand(command: ProviderCommand): Promise<Dispatc
     );
   }
   if (command.provider === "adyen") {
+    const { AdyenCommandSchemas } = await import("@/features/adyen/commands");
+    if (command.command_type in AdyenCommandSchemas) {
+      const { executeAdyenCommand } = await import("@/features/adyen/adyenAdapter.server");
+      return executeAdyenCommand(command);
+    }
     return postJson(
       `${requireEnv("ADYEN_API_URL")}/commands`,
       { "X-API-Key": requireEnv("ADYEN_API_KEY"), ...idem },
