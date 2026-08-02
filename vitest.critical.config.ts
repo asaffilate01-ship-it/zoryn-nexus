@@ -12,6 +12,10 @@ export default defineConfig({
       "tests/provider-fixtures/**/*.test.ts",
       "tests/provider/**/*.test.ts",
       "tests/security/**/*.test.ts",
+      "src/features/providers/**/*.test.ts",
+      "src/features/swan/**/*.test.ts",
+      "src/features/adyen/**/*.test.ts",
+      "src/features/provider-runtime/**/*.test.ts",
     ],
     passWithNoTests: false,
     coverage: {
@@ -28,6 +32,10 @@ export default defineConfig({
         "**/*.d.ts",
         "**/types.ts",
         "**/index.ts",
+        "**/*.test.ts",
+        "**/*Repository.ts",
+        "**/*Client.ts",
+        "**/httpClient.ts",
       ],
       thresholds: {
         lines: 60,
